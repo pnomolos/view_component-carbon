@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+echo "=== Installing Ruby dependencies ==="
+bundle install
+
+echo "=== Installing Node dependencies ==="
+corepack enable pnpm
+pnpm install
+
+echo "=== Setup complete ==="
