@@ -9,14 +9,35 @@
     },
     "ghcr.io/devcontainers/features/github-cli:1": {},
   },
-  "postCreateCommand": "bundle install && npm install",
+  "mounts": [
+    "source=carbon-vc-bashhistory-${devcontainerId},target=/commandhistory,type=volume",
+    "source=carbon-vc-claude-config-${devcontainerId},target=/home/vscode/.claude,type=volume",
+  ],
+  "containerEnv": {
+    "NODE_OPTIONS": "--max-old-space-size=4096",
+    "CLAUDE_CONFIG_DIR": "/home/vscode/.claude",
+  },
+  "postCreateCommand": "corepack enable pnpm && pnpm add -g @anthropic-ai/claude-code@latest && bundle install && pnpm install",
   "customizations": {
     "vscode": {
       "extensions": [
+        "anthropic.claude-code",
         "shopify.ruby-lsp",
         "connorshea.vscode-ruby-test-adapter",
         "palkan.vscode-devcontainer-ruby",
       ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "bash",
+            "icon": "terminal-bash",
+          },
+          "zsh": {
+            "path": "zsh",
+          },
+        },
+      },
     },
   },
   "remoteUser": "vscode",

@@ -3,8 +3,17 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        TZ: ${TZ:-America/Los_Angeles}
+        GIT_DELTA_VERSION: "0.18.2"
     volumes:
       - ..:/workspaces/view_component-carbon:cached
+      - claude-config:/home/vscode/.claude
+      - bash-history:/commandhistory
     command: sleep infinity
     labels:
       - dev.orbstack.domains=carbon-viewcomponents.local
+
+volumes:
+  claude-config:
+  bash-history:
