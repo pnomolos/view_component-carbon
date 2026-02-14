@@ -1,0 +1,10 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ..:/workspaces/view_component-carbon:cached
+    command: sleep infinity
+    labels:
+      - dev.orbstack.domains=carbon-viewcomponents.local

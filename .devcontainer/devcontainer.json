@@ -1,0 +1,23 @@
+{
+  "name": "Carbon ViewComponents",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/view_component-carbon",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22",
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+  },
+  "postCreateCommand": "bundle install && npm install",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "shopify.ruby-lsp",
+        "connorshea.vscode-ruby-test-adapter",
+        "palkan.vscode-devcontainer-ruby",
+      ],
+    },
+  },
+  "remoteUser": "vscode",
+}
