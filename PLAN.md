@@ -6,6 +6,13 @@ Build a Ruby gem (`carbon_view_components`) that implements IBM's Carbon Design 
 
 ---
 
+## Workflow Conventions
+
+- **Package manager**: Use `pnpm` (not npm or yarn) for all Node.js dependency management. The devcontainer is pre-configured with pnpm via corepack.
+- **Git workflow**: Use feature branches and atomic commits where possible. Each phase or logical unit of work should be developed on its own branch and merged via PR. Commits should be small, focused, and self-contained — one logical change per commit.
+
+---
+
 ## Phase 0: Project Infrastructure (Human + Opus)
 
 **Goal**: Set up the gem skeleton, tooling, CLAUDE.md, agents, and skills so that all subsequent work can be parallelized and delegated.
@@ -144,6 +151,8 @@ end
 }
 ```
 
+> **Note:** Use `pnpm install` (not `npm install`) to install dependencies. A `pnpm-lock.yaml` will be committed to the repo.
+
 **`app/assets/stylesheets/carbon_view_components/application.scss`**
 ```scss
 // Consuming apps @use this entrypoint, or import individual components
@@ -159,6 +168,7 @@ The `test/dummy/` directory contains a minimal Rails 8 app:
 - Lookbook mounted at `/lookbook` for component previews
 - Importmap for Stimulus controllers
 - The gem mounted as a local dependency
+- Node dependencies managed via `pnpm`
 
 ### 0.4 HUMAN CHECKPOINT: Review gem structure, naming conventions, BaseComponent API, and interactivity mode switching before proceeding.
 
@@ -511,7 +521,7 @@ Orchestrator assigns 5-6 components per agent
 ### 8.1 Install Generator
 ```ruby
 # lib/generators/carbon_view_components/install_generator.rb
-# Adds @carbon/styles to package.json
+# Adds @carbon/styles via pnpm
 # Configures dartsass-rails load path
 # Adds stylesheet @use to application.scss
 # Mounts Lookbook in development routes
@@ -642,5 +652,6 @@ Final verification:
 1. Create a fresh Rails 8 app
 2. Add `gem "carbon_view_components"` to Gemfile
 3. Run `rails generate carbon_view_components:install`
-4. Render several components in a test page
-5. Verify styles load, Stimulus controllers connect, all interactions work
+4. Run `pnpm install` to install Node dependencies
+5. Render several components in a test page
+6. Verify styles load, Stimulus controllers connect, all interactions work
