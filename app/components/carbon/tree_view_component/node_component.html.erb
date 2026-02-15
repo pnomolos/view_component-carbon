@@ -1,0 +1,25 @@
+<%= content_tag :li, **html_attributes do %>
+  <div class="cds--tree-node__label">
+    <span class="cds--tree-node__label__details">
+      <% if parent_node? %>
+        <span class="cds--tree-parent-node__toggle"
+              data-action="click->carbon--tree-view#toggleNode">
+          <svg class="cds--tree-parent-node__toggle-icon<%= ' cds--tree-parent-node__toggle-icon--expanded' if @expanded %>"
+               focusable="false" preserveAspectRatio="xMidYMid meet"
+               xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16"
+               viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"></path>
+          </svg>
+        </span>
+      <% end %>
+      <span class="cds--tree-node__label__text"><%= @label %></span>
+    </span>
+  </div>
+  <% if parent_node? %>
+    <ul class="<%= children_css_classes %>" role="group">
+      <% nodes.each do |node| %>
+        <%= node %>
+      <% end %>
+    </ul>
+  <% end %>
+<% end %>
