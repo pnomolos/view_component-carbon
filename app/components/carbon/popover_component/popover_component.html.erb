@@ -1,0 +1,13 @@
+<span <%= tag.attributes(html_attributes) %>>
+  <div class="cds--popover__trigger" data-action="click->carbon--popover#toggle">
+    <%= content %>
+  </div>
+  <span class="cds--popover" id="<%= popover_id %>">
+    <span class="cds--popover-content">
+      <%= body %>
+    </span>
+    <% if caret %>
+      <span class="cds--popover-caret"></span>
+    <% end %>
+  </span>
+</span>

@@ -1,0 +1,31 @@
+<div <%= tag.attributes(html_attributes) %>>
+  <% if label_text %>
+    <label for="<%= id %>" class="cds--label"><%= label_text %></label>
+  <% end %>
+  <div class="cds--slider-container" data-controller="carbon--slider">
+    <span class="cds--slider__range-label"><%= min %></span>
+    <div class="cds--slider" data-carbon--slider-min-value="<%= min %>" data-carbon--slider-max-value="<%= max %>">
+      <input type="range"
+             class="cds--slider__input"
+             id="<%= id %>"
+             name="<%= name %>"
+             min="<%= min %>"
+             max="<%= max %>"
+             step="<%= step %>"
+             value="<%= value %>"
+             <%= 'disabled' if disabled %>
+             data-carbon--slider-target="input"
+             data-action="input->carbon--slider#onInput">
+    </div>
+    <span class="cds--slider__range-label"><%= max %></span>
+    <input type="number"
+           class="cds--text-input cds--slider-text-input"
+           data-carbon--slider-target="numberInput"
+           data-action="change->carbon--slider#onNumberChange"
+           value="<%= value %>"
+           min="<%= min %>"
+           max="<%= max %>"
+           step="<%= step %>"
+           <%= 'disabled' if disabled %>>
+  </div>
+</div>
