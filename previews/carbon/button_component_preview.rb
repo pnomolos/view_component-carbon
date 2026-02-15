@@ -12,9 +12,37 @@ module Carbon
       end
     end
 
-    def all_kinds
-      render_with_template
+    # @!group Kinds
+
+    def primary
+      render Carbon::ButtonComponent.new(kind: :primary) { "Primary" }
     end
+
+    def secondary
+      render Carbon::ButtonComponent.new(kind: :secondary) { "Secondary" }
+    end
+
+    def tertiary
+      render Carbon::ButtonComponent.new(kind: :tertiary) { "Tertiary" }
+    end
+
+    def ghost
+      render Carbon::ButtonComponent.new(kind: :ghost) { "Ghost" }
+    end
+
+    def danger
+      render Carbon::ButtonComponent.new(kind: :danger) { "Danger" }
+    end
+
+    def danger_tertiary
+      render Carbon::ButtonComponent.new(kind: :danger_tertiary) { "Danger Tertiary" }
+    end
+
+    def danger_ghost
+      render Carbon::ButtonComponent.new(kind: :danger_ghost) { "Danger Ghost" }
+    end
+
+    # @!endgroup
 
     # @param size select { choices: [sm, md, lg, xl, 2xl] }
     def sizes(size: :lg)
