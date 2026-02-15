@@ -1,0 +1,43 @@
+<div class="cds--form-item">
+  <div <%= tag.attributes(**wrapper_attributes) %>>
+    <div class="cds--date-picker-container">
+      <label for="<%= @id %>" class="<%= label_classes %>"><%= @label_text %></label>
+      <div class="cds--date-picker-input__wrapper" <%= 'data-invalid' if @invalid %>>
+        <input <%= tag.attributes(**input_attributes) %> />
+        <% if calendar_type? %>
+          <%= calendar_icon_svg.html_safe %>
+        <% end %>
+        <% if @invalid %>
+          <%= warning_icon_svg&.html_safe %>
+        <% elsif @warn %>
+          <%= warning_icon_svg&.html_safe %>
+        <% end %>
+      </div>
+      <% if @helper_text && !@invalid && !@warn %>
+        <div class="cds--form__helper-text" id="<%= @helper_text_id %>"><%= @helper_text %></div>
+      <% end %>
+      <% if @invalid && @invalid_text %>
+        <div class="cds--form-requirement" id="<%= @helper_text_id %>"><%= @invalid_text %></div>
+      <% end %>
+      <% if @warn && @warn_text %>
+        <div class="cds--form-requirement" id="<%= @helper_text_id %>"><%= @warn_text %></div>
+      <% end %>
+    </div>
+    <% if @type == :range && range_input %>
+      <div class="cds--date-picker-container">
+        <label for="<%= range_input.id %>" class="<%= label_classes %>"><%= range_input.label_text %></label>
+        <div class="cds--date-picker-input__wrapper">
+          <input type="text"
+                 class="cds--date-picker__input"
+                 placeholder="<%= range_input.placeholder %>"
+                 id="<%= range_input.id %>"
+                 <% if range_input.name %>name="<%= range_input.name %>"<% end %>
+                 <% if range_input.disabled %>disabled<% end %>
+                 <% if range_input.readonly %>readonly<% end %>
+                 data-carbon--date-picker-target="rangeInput" />
+          <%= calendar_icon_svg.html_safe %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
