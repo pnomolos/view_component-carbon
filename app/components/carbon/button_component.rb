@@ -12,21 +12,21 @@ module Carbon
 
     # Mapping from Ruby symbol to CSS class suffix
     KIND_CSS = {
-      primary: "primary",
-      secondary: "secondary",
-      tertiary: "tertiary",
-      ghost: "ghost",
-      danger: "danger",
-      danger_tertiary: "danger--tertiary",
-      danger_ghost: "danger--ghost"
+      primary: 'primary',
+      secondary: 'secondary',
+      tertiary: 'tertiary',
+      ghost: 'ghost',
+      danger: 'danger',
+      danger_tertiary: 'danger--tertiary',
+      danger_ghost: 'danger--ghost'
     }.freeze
 
     SIZE_CSS = {
-      sm: "sm",
-      md: "md",
-      lg: "lg",
-      xl: "xl",
-      "2xl": "2xl"
+      sm: 'sm',
+      md: 'md',
+      lg: 'lg',
+      xl: 'xl',
+      '2xl': '2xl'
     }.freeze
 
     renders_one :icon
@@ -50,29 +50,29 @@ module Carbon
     end
 
     def css_classes
-      classes = ["cds--btn", "cds--btn--#{KIND_CSS[@kind]}", "cds--btn--#{SIZE_CSS[@size]}"]
-      classes << "cds--btn--disabled" if @disabled
-      classes << "cds--btn--icon-only" if @icon_only
+      classes = ['cds--btn', "cds--btn--#{KIND_CSS[@kind]}", "cds--btn--#{SIZE_CSS[@size]}"]
+      classes << 'cds--btn--disabled' if @disabled
+      classes << 'cds--btn--icon-only' if @icon_only
       classes << @system_arguments.delete(:class) if @system_arguments[:class]
       class_names(*classes)
     end
 
-    def html_attributes
+    def html_attributes # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       attrs = @system_arguments.dup
       attrs[:class] = css_classes
-      attrs[:disabled] = "" if @disabled && !href
+      attrs[:disabled] = '' if @disabled && !href
       attrs[:aria] = { disabled: true }.merge(attrs.fetch(:aria, {})) if @disabled && href
       attrs[:href] = @href if href
       attrs[:type] = @type.to_s if tag_name == :button
-      attrs[:role] = "button" if href
+      attrs[:role] = 'button' if href
       attrs[:tabindex] = -1 if @disabled && href
-      attrs[:"aria-label"] = @icon_description if @icon_only && @icon_description
+      attrs[:'aria-label'] = @icon_description if @icon_only && @icon_description
       attrs
     end
 
     private
 
-    def validate_argument(name, value, allowed, default)
+    def validate_argument(name, value, allowed, _default)
       value = value.to_sym if value.is_a?(String)
       return value if allowed.include?(value)
 

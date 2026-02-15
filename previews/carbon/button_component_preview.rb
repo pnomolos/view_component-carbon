@@ -6,40 +6,40 @@ module Carbon
     # @param size select { choices: [sm, md, lg, xl, 2xl] }
     # @param disabled toggle
     # @param label text
-    def default(kind: :primary, size: :lg, disabled: false, label: "Button")
+    def default(kind: :primary, size: :lg, disabled: false, label: 'Button')
       render Carbon::ButtonComponent.new(kind: kind.to_sym, size: size.to_sym, disabled: disabled) do
         label
       end
     end
 
-    # @!group Kinds
+    # @!group All Kinds
 
     def primary
-      render Carbon::ButtonComponent.new(kind: :primary) { "Primary" }
+      render Carbon::ButtonComponent.new(kind: :primary) { 'Primary' }
     end
 
     def secondary
-      render Carbon::ButtonComponent.new(kind: :secondary) { "Secondary" }
+      render Carbon::ButtonComponent.new(kind: :secondary) { 'Secondary' }
     end
 
     def tertiary
-      render Carbon::ButtonComponent.new(kind: :tertiary) { "Tertiary" }
+      render Carbon::ButtonComponent.new(kind: :tertiary) { 'Tertiary' }
     end
 
     def ghost
-      render Carbon::ButtonComponent.new(kind: :ghost) { "Ghost" }
+      render Carbon::ButtonComponent.new(kind: :ghost) { 'Ghost' }
     end
 
     def danger
-      render Carbon::ButtonComponent.new(kind: :danger) { "Danger" }
+      render Carbon::ButtonComponent.new(kind: :danger) { 'Danger' }
     end
 
     def danger_tertiary
-      render Carbon::ButtonComponent.new(kind: :danger_tertiary) { "Danger Tertiary" }
+      render Carbon::ButtonComponent.new(kind: :danger_tertiary) { 'Danger Tertiary' }
     end
 
     def danger_ghost
-      render Carbon::ButtonComponent.new(kind: :danger_ghost) { "Danger Ghost" }
+      render Carbon::ButtonComponent.new(kind: :danger_ghost) { 'Danger Ghost' }
     end
 
     # @!endgroup
@@ -52,15 +52,15 @@ module Carbon
     end
 
     def as_link
-      render Carbon::ButtonComponent.new(href: "#", kind: :primary) do
-        "Link Button"
+      render Carbon::ButtonComponent.new(href: '#', kind: :primary) do
+        'Link Button'
       end
     end
 
     def icon_only
-      render Carbon::ButtonComponent.new(icon_only: true, icon_description: "Add") do |c|
+      render Carbon::ButtonComponent.new(icon_only: true, icon_description: 'Add') do |c|
         c.with_icon do
-          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" fill="currentColor"><path d="M17 15V7h-2v8H7v2h8v8h2v-8h8v-2z"/></svg>'.html_safe
+          add_icon_svg
         end
       end
     end
@@ -68,15 +68,25 @@ module Carbon
     def with_icon
       render Carbon::ButtonComponent.new(kind: :primary) do |c|
         c.with_icon do
-          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" fill="currentColor"><path d="M17 15V7h-2v8H7v2h8v8h2v-8h8v-2z"/></svg>'.html_safe
+          add_icon_svg
         end
-        "Add item"
+        'Add item'
       end
     end
 
+    private
+
+    def add_icon_svg
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" ' \
+      'width="16" height="16" fill="currentColor">' \
+      '<path d="M17 15V7h-2v8H7v2h8v8h2v-8h8v-2z"/></svg>'.html_safe
+    end
+
+    public
+
     def disabled
       render Carbon::ButtonComponent.new(disabled: true) do
-        "Disabled"
+        'Disabled'
       end
     end
   end

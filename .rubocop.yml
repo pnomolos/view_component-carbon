@@ -1,10 +1,11 @@
-require:
+plugins:
   - rubocop-minitest
   - rubocop-rails
 
 AllCops:
   TargetRubyVersion: 3.2
   NewCops: enable
+  SuggestExtensions: false
   Exclude:
     - "node_modules/**/*"
     - "vendor/**/*"
@@ -23,6 +24,14 @@ Metrics/MethodLength:
 
 Metrics/ClassLength:
   Max: 200
+
+Metrics/ParameterLists:
+  Exclude:
+    - "app/components/**/*"
+
+Lint/MissingSuper:
+  Exclude:
+    - "app/components/**/*"
 
 Layout/LineLength:
   Max: 120
