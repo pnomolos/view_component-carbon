@@ -1,0 +1,61 @@
+<div class="cds--form-item">
+  <div class="cds--dropdown__wrapper cds--list-box__wrapper">
+    <label class="<%= label_classes %>"><%= @label_text %></label>
+    <div <%= tag.attributes(**html_attributes) %>>
+      <button type="button"
+              class="cds--list-box__field"
+              role="combobox"
+              aria-expanded="false"
+              aria-haspopup="listbox"
+              aria-controls="<%= @menu_id %>"
+              aria-label="<%= @title_text %>"
+              tabindex="0"
+              <% if @disabled %>disabled<% end %>
+              data-carbon--dropdown-target="trigger"
+              data-action="click->carbon--dropdown#toggle keydown->carbon--dropdown#handleTriggerKeydown">
+        <span class="cds--list-box__label" data-carbon--dropdown-target="label"><%= display_text %></span>
+        <div class="cds--list-box__menu-icon">
+          <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"
+               fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"></path>
+          </svg>
+        </div>
+      </button>
+      <ul class="cds--list-box__menu"
+          role="listbox"
+          id="<%= @menu_id %>"
+          data-carbon--dropdown-target="menu">
+        <% items.each_with_index do |item, index| %>
+          <li class="<%= item.css_classes %>"
+              role="option"
+              aria-selected="<%= item.selected %>"
+              data-value="<%= item.value %>"
+              data-carbon--dropdown-target="item"
+              data-action="click->carbon--dropdown#select"
+              <% if item.disabled %>aria-disabled="true"<% end %>
+              tabindex="-1">
+            <div class="cds--list-box__menu-item__option">
+              <%= item.text %>
+              <% if item.selected %>
+                <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"
+                     fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"
+                     class="cds--list-box__menu-item__selected-icon">
+                  <path d="M13 24L4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"></path>
+                </svg>
+              <% end %>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+    <% if @helper_text && !@invalid && !@warn %>
+      <div class="cds--form__helper-text" id="<%= @helper_text_id %>"><%= @helper_text %></div>
+    <% end %>
+    <% if @invalid && @invalid_text %>
+      <div class="cds--form-requirement" id="<%= @helper_text_id %>"><%= @invalid_text %></div>
+    <% end %>
+    <% if @warn && @warn_text %>
+      <div class="cds--form-requirement" id="<%= @helper_text_id %>"><%= @warn_text %></div>
+    <% end %>
+  </div>
+</div>
