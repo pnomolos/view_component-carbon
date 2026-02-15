@@ -23,8 +23,7 @@ module Carbon
     end
 
     def wrapper_html_attributes
-      attrs = @system_arguments.dup
-      attrs[:class] = nil
+      attrs = @system_arguments.except(:class)
       attrs['data-controller'] = 'carbon--selectable-tile'
       attrs
     end

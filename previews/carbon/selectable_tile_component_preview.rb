@@ -27,20 +27,9 @@ module Carbon
       end
     end
 
+    # @label Multiple Selectable
     def multiple_selectable
-      content_tag :div, style: 'display: flex; gap: 1rem;' do
-        safe_join([
-                    render(Carbon::SelectableTileComponent.new(
-                             name: 'features', value: 'a', selected: true
-                           )) { 'Feature A' },
-                    render(Carbon::SelectableTileComponent.new(
-                             name: 'features', value: 'b'
-                           )) { 'Feature B' },
-                    render(Carbon::SelectableTileComponent.new(
-                             name: 'features', value: 'c', disabled: true
-                           )) { 'Feature C' }
-                  ])
-      end
+      render_with_template(template: 'carbon/selectable_tile_component_preview/multiple_selectable')
     end
   end
 end

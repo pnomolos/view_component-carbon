@@ -6,7 +6,15 @@ module Carbon
     DEFAULT_SIZE = :lg
 
     renders_one :toolbar, 'ToolbarComponent'
-    renders_one :head, 'HeadComponent'
+    renders_one :head, lambda { |**system_arguments|
+      HeadComponent.new(
+        selectable: @selectable,
+        radio: @radio,
+        expandable: @expandable,
+        table_id: @table_id,
+        **system_arguments
+      )
+    }
     renders_many :rows, lambda { |row_id: nil, selected: false, expanded: false, disabled: false, **sys_args|
       RowComponent.new(
         row_id: row_id,
@@ -163,7 +171,7 @@ module Carbon
       private
 
       def css_classes
-        classes = ['cds--toolbar-search-container-expandable']
+        classes = ['cds--toolbar-search-container-persistent']
         classes << @system_arguments[:class] if @system_arguments[:class]
         class_names(classes)
       end
@@ -178,16 +186,14 @@ module Carbon
     class HeadComponent < BaseComponent
       renders_many :cells, 'Carbon::DataTableComponent::HeaderCellComponent'
 
-      def initialize(**system_arguments)
-        @system_arguments = system_arguments
-      end
+      attr_reader :selectable, :radio, :expandable, :table_id
 
-      def call
-        content_tag(:thead) do
-          content_tag(:tr) do
-            safe_join(cells)
-          end
-        end
+      def initialize(selectable: false, radio: false, expandable: false, table_id: nil, **system_arguments)
+        @selectable = selectable
+        @radio = radio
+        @expandable = expandable
+        @table_id = table_id
+        @system_arguments = system_arguments
       end
     end
 

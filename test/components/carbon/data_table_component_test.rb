@@ -762,7 +762,7 @@ module Carbon
         end
       end
 
-      assert_selector '.cds--toolbar-search-container-expandable'
+      assert_selector '.cds--toolbar-search-container-persistent'
       assert_selector 'input.cds--search-input[data-carbon--data-table-target="searchInput"]'
     end
 
@@ -807,7 +807,7 @@ module Carbon
         end
       end
 
-      assert_selector 'button[data-action="carbon--data-table#clearSearch"]'
+      assert_selector 'button[data-action="click->carbon--data-table#clearSearch"]'
     end
 
     # -- Stimulus controller --

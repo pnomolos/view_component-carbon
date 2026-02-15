@@ -62,13 +62,13 @@ module Carbon
       assert_selector "header.cds--header[aria-label='IBM Platform']"
     end
 
-    test 'renders header with stimulus controller' do
+    test 'renders wrapper with stimulus controller' do
       render_inline(Carbon::UIShellComponent.new) do |c|
         c.with_header
         'Content'
       end
 
-      assert_selector "header[data-controller='carbon--ui-shell--ui-shell']"
+      assert_selector "div[data-controller='carbon--ui-shell']"
     end
 
     # -- Header name --
@@ -213,7 +213,7 @@ module Carbon
         'Content'
       end
 
-      assert_selector "li[data-controller='carbon--ui-shell--header-menu']"
+      assert_selector "li[data-controller='carbon--header-menu']"
     end
 
     # -- Global action bar --
@@ -255,7 +255,7 @@ module Carbon
         'Content'
       end
 
-      assert_selector "button[data-action='carbon--ui-shell--ui-shell#togglePanel']"
+      assert_selector "button[data-action='carbon--ui-shell#togglePanel']"
     end
 
     # -- Header panels --
@@ -360,7 +360,7 @@ module Carbon
         'Content'
       end
 
-      assert_selector "nav[data-controller='carbon--ui-shell--side-nav']"
+      assert_selector "nav[data-controller='carbon--side-nav']"
     end
 
     test 'renders side nav overlay' do
@@ -467,7 +467,7 @@ module Carbon
         'Content'
       end
 
-      assert_selector "li[data-controller='carbon--ui-shell--side-nav-menu']"
+      assert_selector "li[data-controller='carbon--side-nav-menu']"
     end
 
     test 'renders side nav menu chevron' do
@@ -493,7 +493,7 @@ module Carbon
         'Content'
       end
 
-      assert_selector "nav[data-carbon--ui-shell--ui-shell-target='sideNav']"
+      assert_selector "nav[data-carbon--ui-shell-target='sideNav']"
     end
 
     test 'overlay has ui-shell target attribute' do
@@ -504,7 +504,7 @@ module Carbon
         'Content'
       end
 
-      assert_selector "div[data-carbon--ui-shell--ui-shell-target='overlay']"
+      assert_selector "div[data-carbon--ui-shell-target='overlay']"
     end
 
     # -- System arguments --
@@ -537,7 +537,7 @@ module Carbon
         'Content'
       end
 
-      assert_selector "nav[data-carbon--ui-shell--side-nav-rail-value='true']"
+      assert_selector "nav[data-carbon--side-nav-rail-value='true']"
     end
   end
 end

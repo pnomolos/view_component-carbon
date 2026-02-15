@@ -1,0 +1,11 @@
+<div style="display: flex; gap: 1rem;">
+  <%= render Carbon::SelectableTileComponent.new(name: 'features', value: 'a', selected: true) do %>
+    Feature A
+  <% end %>
+  <%= render Carbon::SelectableTileComponent.new(name: 'features', value: 'b') do %>
+    Feature B
+  <% end %>
+  <%= render Carbon::SelectableTileComponent.new(name: 'features', value: 'c', disabled: true) do %>
+    Feature C
+  <% end %>
+</div>

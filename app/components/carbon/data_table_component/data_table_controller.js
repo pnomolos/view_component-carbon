@@ -55,8 +55,70 @@ export default class extends Controller {
     const th = button.closest('th');
     if (th) th.setAttribute('aria-sort', newDirection);
 
+    // Update sort icons
+    this.sortHeaderTargets.forEach((header) => {
+      const th = header.closest('th');
+      const icon = th ? th.querySelector('.cds--table-sort__icon, .cds--table-sort__icon-unsorted') : null;
+      if (icon) {
+        if (header === button && newDirection !== 'none') {
+          icon.classList.remove('cds--table-sort__icon-unsorted');
+          icon.classList.add('cds--table-sort__icon');
+        } else {
+          icon.classList.remove('cds--table-sort__icon');
+          icon.classList.add('cds--table-sort__icon-unsorted');
+        }
+      }
+    });
+
+    // Client-side sort
+    this.sortRowsClientSide(button, newDirection);
+
     this.dispatch('sort', {
       detail: { key: button.dataset.sortKey, direction: newDirection },
+    });
+  }
+
+  sortRowsClientSide(button, direction) {
+    if (!this.hasBodyTarget || direction === 'none') return;
+
+    const th = button.closest('th');
+    if (!th) return;
+
+    // Find column index (accounting for expand/select columns)
+    const headerRow = th.closest('tr');
+    const allHeaders = Array.from(headerRow.children);
+    const colIndex = allHeaders.indexOf(th);
+
+    const rows = Array.from(this.rowTargets);
+    const expandedRows = new Map();
+
+    // Collect expanded rows associated with each data row
+    rows.forEach((row) => {
+      const next = row.nextElementSibling;
+      if (next && next.hasAttribute('data-carbon--data-table-target') &&
+          next.dataset['carbon--DataTableTarget'] === 'expandedRow') {
+        expandedRows.set(row, next);
+      } else if (next && next.classList.contains('cds--expandable-row--hover-area')) {
+        expandedRows.set(row, next);
+      }
+    });
+
+    rows.sort((a, b) => {
+      const cellA = a.children[colIndex];
+      const cellB = b.children[colIndex];
+      if (!cellA || !cellB) return 0;
+
+      const textA = (cellA.textContent || '').trim().toLowerCase();
+      const textB = (cellB.textContent || '').trim().toLowerCase();
+
+      const cmp = textA.localeCompare(textB, undefined, { numeric: true });
+      return direction === 'descending' ? -cmp : cmp;
+    });
+
+    rows.forEach((row) => {
+      this.bodyTarget.appendChild(row);
+      const expanded = expandedRows.get(row);
+      if (expanded) this.bodyTarget.appendChild(expanded);
     });
   }
 

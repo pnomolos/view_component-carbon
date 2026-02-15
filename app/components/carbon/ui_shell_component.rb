@@ -79,8 +79,6 @@ module Carbon
         attrs = @system_arguments.except(:class)
         attrs[:class] = css_classes
         attrs[:'aria-label'] = @aria_label if @aria_label
-        attrs[:data] ||= {}
-        attrs[:data][:controller] = 'carbon--ui-shell--ui-shell'
         attrs
       end
     end
@@ -214,7 +212,7 @@ module Carbon
         attrs = @system_arguments.except(:class)
         attrs[:class] = css_classes
         attrs[:data] ||= {}
-        attrs[:data][:controller] = 'carbon--ui-shell--header-menu'
+        attrs[:data][:controller] = 'carbon--header-menu'
         attrs
       end
     end
@@ -266,7 +264,7 @@ module Carbon
           class: css_classes,
           type: 'button',
           'aria-label': @aria_label,
-          'data-action': 'carbon--ui-shell--ui-shell#togglePanel'
+          'data-action': 'carbon--ui-shell#togglePanel'
         }
         btn_attrs[:'aria-expanded'] = @active.to_s
         btn_attrs[:'aria-controls'] = @panel_id if @panel_id
@@ -416,10 +414,10 @@ module Carbon
         attrs[:class] = css_classes
         attrs[:'aria-label'] = @aria_label
         attrs[:data] ||= {}
-        attrs[:data][:controller] = 'carbon--ui-shell--side-nav'
-        attrs[:data][:'carbon--ui-shell--side-nav-expanded-value'] = @expanded.to_s
-        attrs[:data][:'carbon--ui-shell--side-nav-rail-value'] = @rail.to_s
-        attrs[:data][:'carbon--ui-shell--ui-shell-target'] = 'sideNav'
+        attrs[:data][:controller] = 'carbon--side-nav'
+        attrs[:data][:'carbon--side-nav-expanded-value'] = @expanded.to_s
+        attrs[:data][:'carbon--side-nav-rail-value'] = @rail.to_s
+        attrs[:data][:'carbon--ui-shell-target'] = 'sideNav'
         attrs
       end
 
@@ -487,7 +485,7 @@ module Carbon
         attrs = @system_arguments.except(:class)
         attrs[:class] = css_classes
         attrs[:data] ||= {}
-        attrs[:data][:controller] = 'carbon--ui-shell--side-nav-menu'
+        attrs[:data][:controller] = 'carbon--side-nav-menu'
         attrs
       end
 
@@ -496,8 +494,8 @@ module Carbon
           class: 'cds--side-nav__submenu',
           type: 'button',
           'aria-expanded': @expanded.to_s,
-          'data-action': 'carbon--ui-shell--side-nav-menu#toggle',
-          'data-carbon--ui-shell--side-nav-menu-target': 'button'
+          'data-action': 'carbon--side-nav-menu#toggle',
+          'data-carbon--side-nav-menu-target': 'button'
         }
       end
 
