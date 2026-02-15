@@ -1,0 +1,69 @@
+<div class="cds--form-item">
+  <div class="<%= wrapper_classes %>">
+    <% if @label_text %>
+      <label id="<%= @label_id %>" for="<%= @input_id %>" class="cds--label<%= ' cds--label--disabled' if @disabled %>"><%= @label_text %></label>
+    <% end %>
+    <div class="<%= listbox_classes %>"
+         data-controller="carbon--combo-box">
+      <div class="cds--list-box__field"
+           role="combobox"
+           aria-expanded="false"
+           aria-haspopup="listbox"
+           aria-controls="<%= @menu_id %>"
+           aria-owns="<%= @menu_id %>"
+           <% if @label_text %>aria-labelledby="<%= @label_id %>"<% end %>
+           data-carbon--combo-box-target="field"
+           data-action="click->carbon--combo-box#toggle">
+        <input type="text"
+               class="cds--text-input"
+               id="<%= @input_id %>"
+               placeholder="<%= @placeholder %>"
+               autocomplete="off"
+               aria-autocomplete="list"
+               aria-controls="<%= @menu_id %>"
+               <% if @disabled %>disabled<% end %>
+               data-carbon--combo-box-target="input"
+               data-action="input->carbon--combo-box#filter keydown->carbon--combo-box#handleKeydown">
+        <div class="cds--list-box__selection"
+             role="button"
+             tabindex="0"
+             title="Clear selected item"
+             style="display: none;"
+             data-action="click->carbon--combo-box#clear"
+             data-carbon--combo-box-target="clearButton">
+          <%= clear_svg.html_safe %>
+        </div>
+        <div class="cds--list-box__menu-icon"
+             data-action="click->carbon--combo-box#toggleMenu">
+          <%= chevron_svg.html_safe %>
+        </div>
+      </div>
+      <ul class="cds--list-box__menu"
+          role="listbox"
+          id="<%= @menu_id %>"
+          data-carbon--combo-box-target="menu">
+        <% items.each do |item| %>
+          <li class="cds--list-box__menu-item<%= ' cds--list-box__menu-item--disabled' if item.disabled %>"
+              role="option"
+              id="<%= item.item_id %>"
+              aria-selected="false"
+              data-value="<%= item.value %>"
+              data-text="<%= item.text %>"
+              data-carbon--combo-box-target="item"
+              <% unless item.disabled %>data-action="click->carbon--combo-box#selectItem"<% end %>>
+            <div class="cds--list-box__menu-item__option"><%= item.text %></div>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+    <% if @helper_text && !@invalid && !@warn %>
+      <div class="cds--form__helper-text" id="<%= aria_describedby_id %>"><%= @helper_text %></div>
+    <% end %>
+    <% if @invalid && @invalid_text %>
+      <div class="cds--form-requirement" id="<%= aria_describedby_id %>"><%= @invalid_text %></div>
+    <% end %>
+    <% if @warn && @warn_text %>
+      <div class="cds--form-requirement" id="<%= aria_describedby_id %>"><%= @warn_text %></div>
+    <% end %>
+  </div>
+</div>
