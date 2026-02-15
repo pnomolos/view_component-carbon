@@ -1,0 +1,12 @@
+<% if heading %>
+  <h1 <%= tag.attributes(html_attributes_for_element) %>></h1>
+<% elsif paragraph %>
+  <% line_widths.each do |w| %>
+    <% attrs = html_attributes_for_element.merge(style: "width: #{w};") %>
+    <p <%= tag.attributes(attrs) %>></p>
+  <% end %>
+<% else %>
+  <% attrs = html_attributes_for_element %>
+  <% attrs[:style] = "width: #{width};" if width %>
+  <p <%= tag.attributes(attrs) %>></p>
+<% end %>

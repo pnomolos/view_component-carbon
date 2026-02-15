@@ -1,0 +1,8 @@
+<li class="<%= css_classes %>" <%= tag.attributes(html_attributes) %>>
+  <%= icon_svg %>
+  <p class="<%= carbon_class('progress-label') %>"><%= label %></p>
+  <% if secondary_label %>
+    <p class="<%= carbon_class('progress-optional') %>"><%= secondary_label %></p>
+  <% end %>
+  <span class="<%= carbon_class('progress-line') %>"></span>
+</li>

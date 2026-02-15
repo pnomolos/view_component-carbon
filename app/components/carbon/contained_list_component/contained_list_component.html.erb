@@ -1,0 +1,10 @@
+<div class="<%= css_classes %>" <%= tag.attributes(html_attributes) %>>
+  <div class="<%= carbon_class('contained-list', 'header') %>">
+    <span class="<%= carbon_class('contained-list', 'label') %>"><%= label %></span>
+  </div>
+  <div class="<%= carbon_class('contained-list', 'list') %>" role="list">
+    <% items.each do |item| %>
+      <%= item %>
+    <% end %>
+  </div>
+</div>
