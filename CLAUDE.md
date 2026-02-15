@@ -4,7 +4,18 @@
 
 There is an active implementation plan at `PLAN.md` in the project root. This file describes the full phased build-out of the `carbon_view_components` gem — a Rails Engine implementing IBM's Carbon Design System as ViewComponents.
 
-**Current status: Phase 1 — complete. Phase 2 next (reference Button component).**
+**Current status: Phases 0–4 complete. Phase 5 next (complex components).**
+
+### Completed Phases
+- **Phase 0**: Project infrastructure, gem scaffold, dummy Rails app
+- **Phase 1**: CLAUDE.md, agents, skills
+- **Phase 2**: Reference Button component
+- **Phase 3**: 12 simple components (Link, Tag, Badge, Loading, InlineLoading, ProgressBar, Breadcrumb, List, StructuredList, SkeletonText, ContainedList, ProgressIndicator)
+- **Phase 4**: 18 medium components with Stimulus controllers (Accordion, Tabs, ContentSwitcher, Toggle, Checkbox, RadioButton, TextInput, NumberInput, TextArea, ToastNotification, InlineNotification, CodeSnippet, Search, Tooltip, Toggletip, Popover, Slider, Pagination)
+
+### Test Suite
+- 604 tests, 807 assertions, 0 failures, 0 errors
+- Rubocop: 0 offenses
 
 As each phase is completed, update this CLAUDE.md to reflect:
 - The current phase in progress

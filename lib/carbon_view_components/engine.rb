@@ -10,7 +10,10 @@ module CarbonViewComponents
     config.eager_load_paths << root.join('app/components')
 
     initializer 'carbon_view_components.assets' do |app|
-      app.config.assets.precompile += %w[carbon_view_components/application.css] if app.config.respond_to?(:assets)
+      if app.config.respond_to?(:assets)
+        app.config.assets.precompile += %w[carbon_view_components/application.css]
+        app.config.assets.paths << root.join('app/components')
+      end
     end
 
     initializer 'carbon_view_components.importmap', before: 'importmap' do |app|
