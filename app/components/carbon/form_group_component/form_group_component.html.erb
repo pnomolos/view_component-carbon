@@ -1,0 +1,9 @@
+<fieldset <%= tag.attributes(fieldset_attributes) %> aria-labelledby="<%= legend_id %>">
+  <% if @legend_text %>
+    <legend class="cds--label" id="<%= legend_id %>"><%= @legend_text %></legend>
+  <% end %>
+  <%= content %>
+  <% if @message && @message_text %>
+    <div class="cds--form-requirement"><%= @message_text %></div>
+  <% end %>
+</fieldset>
