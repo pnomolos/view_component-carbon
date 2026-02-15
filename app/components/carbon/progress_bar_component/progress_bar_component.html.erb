@@ -1,0 +1,18 @@
+<%= content_tag(:div, **html_attributes) do %>
+  <% if label.present? %>
+    <div class="cds--progress-bar__label">
+      <span class="cds--progress-bar__label-text"><%= label %></span>
+      <% if type == :default && value %>
+        <span class="cds--progress-bar__value"><%= value %>/<%= max %></span>
+      <% end %>
+    </div>
+  <% end %>
+  <div class="cds--progress-bar__track" <%= tag.attributes(progress_attributes) %>>
+    <div class="cds--progress-bar__bar">
+      <div class="cds--progress-bar__bar-inner" style="<%= bar_style %>"></div>
+    </div>
+  </div>
+  <% if helper_text.present? %>
+    <div class="cds--progress-bar__helper-text"><%= helper_text %></div>
+  <% end %>
+<% end %>
