@@ -18,6 +18,8 @@ module Dummy
     config.load_defaults Rails::VERSION::STRING.to_f
     config.eager_load = false
 
-    config.view_component.preview_paths = [CarbonViewComponents::Engine.root.join("previews")]
+    preview_path = CarbonViewComponents::Engine.root.join("previews").to_s
+    config.view_component.preview_paths = [preview_path]
+    config.lookbook.preview_paths = [preview_path] if config.respond_to?(:lookbook)
   end
 end

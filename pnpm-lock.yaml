@@ -8,12 +8,63 @@ importers:
 
   .:
     dependencies:
+      '@carbon/colors':
+        specifier: ^11.47.0
+        version: 11.47.0
+      '@carbon/feature-flags':
+        specifier: ^1.0.0
+        version: 1.0.0
+      '@carbon/grid':
+        specifier: ^11.50.0
+        version: 11.50.0
+      '@carbon/layout':
+        specifier: ^11.48.0
+        version: 11.48.0
+      '@carbon/motion':
+        specifier: ^11.41.0
+        version: 11.41.0
       '@carbon/styles':
         specifier: ^1.x
         version: 1.100.0
+      '@carbon/themes':
+        specifier: ^11.68.0
+        version: 11.68.0
+      '@carbon/type':
+        specifier: ^11.54.0
+        version: 11.54.0
       '@carbon/web-components':
         specifier: ^2.x
         version: 2.48.0
+      '@ibm/plex':
+        specifier: ^6.4.1
+        version: 6.4.1
+      '@ibm/plex-mono':
+        specifier: ^1.1.0
+        version: 1.1.0
+      '@ibm/plex-sans':
+        specifier: ^1.1.0
+        version: 1.1.0
+      '@ibm/plex-sans-arabic':
+        specifier: ^1.1.0
+        version: 1.1.0
+      '@ibm/plex-sans-devanagari':
+        specifier: ^1.1.0
+        version: 1.1.0
+      '@ibm/plex-sans-hebrew':
+        specifier: ^1.1.0
+        version: 1.1.0
+      '@ibm/plex-sans-thai':
+        specifier: ^1.1.0
+        version: 1.1.0
+      '@ibm/plex-sans-thai-looped':
+        specifier: ^1.1.0
+        version: 1.1.0
+      '@ibm/plex-serif':
+        specifier: ^2.0.0
+        version: 2.0.0
+      '@ibm/telemetry-js':
+        specifier: ^1.11.0
+        version: 1.11.0
 
 packages:
 
@@ -88,9 +139,15 @@ packages:
   '@ibm/plex-serif@1.1.0':
     resolution: {integrity: sha512-ORIyWlK8t8mvpFI7AAfhVFH+sacink2l9AjLiKZscmAzLVSa2dqFckrPOXqx4dK/cax567gWwCpJNEYk7xWxBQ==}
 
+  '@ibm/plex-serif@2.0.0':
+    resolution: {integrity: sha512-xVu9JsC18tBoQF2M6fofpsWrHj5a94saxlOZbYmXoC0E3UfjgS1JlibgrnaUJjnkLlEyCpMgI2PdhkDxijw0gA==}
+
   '@ibm/plex@6.0.0-next.6':
     resolution: {integrity: sha512-B3uGruTn2rS5gweynLmfSe7yCawSRsJguJJQHVQiqf4rh2RNgJFu8YLE2Zd/JHV0ZXoVMOslcXP2k3hMkxKEyA==}
     engines: {node: '>=14'}
+
+  '@ibm/plex@6.4.1':
+    resolution: {integrity: sha512-fnsipQywHt3zWvsnlyYKMikcVI7E2fEwpiPnIHFqlbByXVfQfANAAeJk1IV4mNnxhppUIDlhU0TzwYwL++Rn2g==}
 
   '@ibm/telemetry-js@1.11.0':
     resolution: {integrity: sha512-RO/9j+URJnSfseWg9ZkEX9p+a3Ousd33DBU7rOafoZB08RqdzxFVYJ2/iM50dkBuD0o7WX7GYt1sLbNgCoE+pA==}
@@ -269,7 +326,15 @@ snapshots:
     dependencies:
       '@ibm/telemetry-js': 1.11.0
 
+  '@ibm/plex-serif@2.0.0':
+    dependencies:
+      '@ibm/telemetry-js': 1.11.0
+
   '@ibm/plex@6.0.0-next.6': {}
+
+  '@ibm/plex@6.4.1':
+    dependencies:
+      '@ibm/telemetry-js': 1.11.0
 
   '@ibm/telemetry-js@1.11.0': {}
 
