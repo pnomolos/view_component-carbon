@@ -1,11 +1,10 @@
 <span <%= tag.attributes(html_attributes) %>>
-  <button class="cds--tooltip__trigger"
-          aria-describedby="<%= tooltip_id %>"
-          data-action="mouseenter->carbon--tooltip#show mouseleave->carbon--tooltip#hide focus->carbon--tooltip#show blur->carbon--tooltip#hide">
+  <div class="cds--tooltip-trigger__wrapper">
     <%= content %>
-  </button>
+  </div>
   <span class="cds--popover">
-    <span class="cds--popover-content cds--tooltip-content" id="<%= tooltip_id %>" role="tooltip">
+    <span class="cds--popover-content cds--tooltip-content" id="<%= tooltip_id %>" role="tooltip" aria-hidden="true"
+          data-carbon--tooltip-target="content">
       <span><%= label %></span>
       <% if description %>
         <div class="cds--tooltip__footer">

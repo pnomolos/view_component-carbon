@@ -2,15 +2,14 @@
 
 module Carbon
   class ToggletipComponent < BaseComponent
-    ALIGNMENTS = %i[top bottom left right].freeze
-    DEFAULT_ALIGNMENT = :bottom
+    include Carbon::Concerns::Popoverable
 
     renders_one :body
 
     attr_reader :align
 
-    def initialize(align: DEFAULT_ALIGNMENT, **system_arguments)
-      @align = validate_argument(:align, align, ALIGNMENTS, DEFAULT_ALIGNMENT)
+    def initialize(align: DEFAULT_POPOVER_ALIGN, **system_arguments)
+      @align = validate_popover_align(align)
       @system_arguments = system_arguments
     end
 
@@ -19,9 +18,16 @@ module Carbon
     end
 
     def css_classes
-      classes = ['cds--toggletip', "cds--popover--#{@align}"]
-      classes << @system_arguments.delete(:class) if @system_arguments[:class]
-      class_names(*classes)
+      extra = []
+      extra << @system_arguments.delete(:class) if @system_arguments[:class]
+      class_names(*popover_container_classes(
+        base_class: 'cds--toggletip',
+        align: @align,
+        caret: true,
+        drop_shadow: false,
+        high_contrast: true,
+        extra_classes: extra
+      ))
     end
 
     def html_attributes
@@ -30,15 +36,6 @@ module Carbon
       attrs[:data] ||= {}
       attrs[:data][:controller] = 'carbon--toggletip'
       attrs
-    end
-
-    private
-
-    def validate_argument(name, value, allowed, _default)
-      value = value.to_sym if value.is_a?(String)
-      return value if allowed.include?(value)
-
-      raise ArgumentError, "Invalid #{name}: #{value.inspect}. Must be one of: #{allowed.map(&:inspect).join(', ')}"
     end
   end
 end

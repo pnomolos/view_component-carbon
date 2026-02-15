@@ -13,18 +13,10 @@ export default class extends Controller {
 
   open() {
     this.element.classList.add('cds--popover--open')
-    const button = this.element.querySelector('.cds--toggletip__button')
-    if (button) {
-      button.setAttribute('aria-expanded', 'true')
-    }
   }
 
   close() {
     this.element.classList.remove('cds--popover--open')
-    const button = this.element.querySelector('.cds--toggletip__button')
-    if (button) {
-      button.setAttribute('aria-expanded', 'false')
-    }
   }
 
   connect() {

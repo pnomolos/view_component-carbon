@@ -9,8 +9,9 @@ module Carbon
         c.with_body { 'Toggletip content' }
       end
 
-      assert_selector 'span.cds--toggletip.cds--popover--bottom'
-      assert_selector 'button.cds--toggletip__button'
+      assert_selector 'span.cds--popover-container.cds--popover--caret.cds--popover--high-contrast.cds--toggletip'
+      assert_selector 'span.cds--popover--bottom'
+      assert_selector 'button.cds--toggletip-button'
     end
 
     test 'renders toggletip button with info icon' do
@@ -18,7 +19,7 @@ module Carbon
         c.with_body { 'Content' }
       end
 
-      assert_selector 'button.cds--toggletip__button svg'
+      assert_selector 'button.cds--toggletip-button svg'
     end
 
     test 'renders toggletip content in body slot' do
@@ -26,7 +27,7 @@ module Carbon
         c.with_body { 'Helpful information' }
       end
 
-      assert_selector '.cds--toggletip-content', text: 'Helpful information'
+      assert_selector '.cds--popover-content .cds--toggletip-content', text: 'Helpful information'
     end
 
     test 'renders with top alignment' do
@@ -61,6 +62,14 @@ module Carbon
       assert_selector 'span.cds--popover--right'
     end
 
+    test 'renders with extended alignment values' do
+      render_inline(Carbon::ToggletipComponent.new(align: :'bottom-start')) do |c|
+        c.with_body { 'Content' }
+      end
+
+      assert_selector 'span.cds--popover--bottom-start'
+    end
+
     test 'has Stimulus controller' do
       render_inline(Carbon::ToggletipComponent.new) do |c|
         c.with_body { 'Content' }
@@ -69,12 +78,12 @@ module Carbon
       assert_selector 'span[data-controller="carbon--toggletip"]'
     end
 
-    test 'button has correct ARIA attributes' do
+    test 'button has correct attributes' do
       render_inline(Carbon::ToggletipComponent.new) do |c|
         c.with_body { 'Content' }
       end
 
-      assert_selector 'button[type="button"][aria-expanded="false"]'
+      assert_selector 'button[type="button"][aria-label="Show information"]'
     end
 
     test 'button has click action' do
@@ -121,6 +130,22 @@ module Carbon
       end
 
       assert_selector 'span.cds--popover--top'
+    end
+
+    test 'does not render drop shadow class' do
+      render_inline(Carbon::ToggletipComponent.new) do |c|
+        c.with_body { 'Content' }
+      end
+
+      assert_no_selector '.cds--popover--drop-shadow'
+    end
+
+    test 'renders high contrast class' do
+      render_inline(Carbon::ToggletipComponent.new) do |c|
+        c.with_body { 'Content' }
+      end
+
+      assert_selector '.cds--popover--high-contrast'
     end
   end
 end

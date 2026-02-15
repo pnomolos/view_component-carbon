@@ -10,8 +10,16 @@ module Carbon
         'Trigger'
       end
 
-      assert_selector 'span.cds--popover-container.cds--popover--bottom'
-      assert_selector '.cds--popover__trigger', text: 'Trigger'
+      assert_selector 'span.cds--popover-container.cds--popover--caret.cds--popover--drop-shadow.cds--popover--bottom'
+    end
+
+    test 'renders trigger content as direct child' do
+      render_inline(Carbon::PopoverComponent.new) do |c|
+        c.with_body { 'Popover content' }
+        'Trigger'
+      end
+
+      assert_no_selector '.cds--popover__trigger'
     end
 
     test 'renders popover content in body slot' do
@@ -57,6 +65,15 @@ module Carbon
       end
 
       assert_selector 'span.cds--popover--right'
+    end
+
+    test 'renders with extended alignment values' do
+      render_inline(Carbon::PopoverComponent.new(align: :'left-end')) do |c|
+        c.with_body { 'Content' }
+        'Trigger'
+      end
+
+      assert_selector 'span.cds--popover--left-end'
     end
 
     test 'renders with drop shadow by default' do
@@ -120,6 +137,7 @@ module Carbon
       end
 
       assert_selector '.cds--popover-caret'
+      assert_selector 'span.cds--popover--caret'
     end
 
     test 'renders without caret when disabled' do
@@ -129,6 +147,7 @@ module Carbon
       end
 
       assert_no_selector '.cds--popover-caret'
+      assert_no_selector 'span.cds--popover--caret'
     end
 
     test 'has Stimulus controller' do
@@ -140,13 +159,13 @@ module Carbon
       assert_selector 'span[data-controller="carbon--popover"]'
     end
 
-    test 'trigger has click action' do
+    test 'popover span has no id attribute' do
       render_inline(Carbon::PopoverComponent.new) do |c|
         c.with_body { 'Content' }
         'Trigger'
       end
 
-      assert_selector '.cds--popover__trigger[data-action="click->carbon--popover#toggle"]'
+      assert_no_selector '.cds--popover[id]'
     end
 
     test 'passes through system arguments' do

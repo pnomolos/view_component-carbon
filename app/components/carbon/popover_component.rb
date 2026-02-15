@@ -2,16 +2,15 @@
 
 module Carbon
   class PopoverComponent < BaseComponent
-    ALIGNMENTS = %i[top bottom left right].freeze
-    DEFAULT_ALIGNMENT = :bottom
+    include Carbon::Concerns::Popoverable
 
     renders_one :body
 
     attr_reader :align, :open, :caret, :drop_shadow, :high_contrast
 
-    def initialize(align: DEFAULT_ALIGNMENT, open: false, caret: true, drop_shadow: true,
+    def initialize(align: DEFAULT_POPOVER_ALIGN, open: false, caret: true, drop_shadow: true,
                    high_contrast: false, **system_arguments)
-      @align = validate_argument(:align, align, ALIGNMENTS, DEFAULT_ALIGNMENT)
+      @align = validate_popover_align(align)
       @open = open
       @caret = caret
       @drop_shadow = drop_shadow
@@ -19,17 +18,18 @@ module Carbon
       @system_arguments = system_arguments
     end
 
-    def popover_id
-      @popover_id ||= "popover-#{SecureRandom.hex(8)}"
-    end
-
     def css_classes
-      classes = ['cds--popover-container', "cds--popover--#{@align}"]
-      classes << 'cds--popover--drop-shadow' if @drop_shadow
-      classes << 'cds--popover--high-contrast' if @high_contrast
-      classes << 'cds--popover--open' if @open
-      classes << @system_arguments.delete(:class) if @system_arguments[:class]
-      class_names(*classes)
+      extra = []
+      extra << @system_arguments.delete(:class) if @system_arguments[:class]
+      class_names(*popover_container_classes(
+        base_class: nil,
+        align: @align,
+        caret: @caret,
+        drop_shadow: @drop_shadow,
+        high_contrast: @high_contrast,
+        open: @open,
+        extra_classes: extra
+      ))
     end
 
     def html_attributes
@@ -38,15 +38,6 @@ module Carbon
       attrs[:data] ||= {}
       attrs[:data][:controller] = 'carbon--popover'
       attrs
-    end
-
-    private
-
-    def validate_argument(name, value, allowed, _default)
-      value = value.to_sym if value.is_a?(String)
-      return value if allowed.include?(value)
-
-      raise ArgumentError, "Invalid #{name}: #{value.inspect}. Must be one of: #{allowed.map(&:inspect).join(', ')}"
     end
   end
 end

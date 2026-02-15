@@ -7,8 +7,9 @@ module Carbon
     test 'renders default tooltip' do
       render_inline(Carbon::TooltipComponent.new(label: 'This is a tooltip')) { 'Hover me' }
 
-      assert_selector 'span.cds--tooltip.cds--popover--bottom'
-      assert_selector 'button.cds--tooltip__trigger', text: 'Hover me'
+      assert_selector 'span.cds--popover-container.cds--popover--caret.cds--popover--drop-shadow.cds--tooltip'
+      assert_selector 'span.cds--popover--bottom'
+      assert_selector 'div.cds--tooltip-trigger__wrapper', text: 'Hover me'
     end
 
     test 'renders tooltip with label' do
@@ -48,22 +49,22 @@ module Carbon
       assert_selector 'span.cds--popover--right'
     end
 
+    test 'renders with extended alignment values' do
+      render_inline(Carbon::TooltipComponent.new(label: 'Tooltip', align: :'top-start')) { 'Button' }
+
+      assert_selector 'span.cds--popover--top-start'
+    end
+
     test 'has Stimulus controller' do
       render_inline(Carbon::TooltipComponent.new(label: 'Tooltip')) { 'Button' }
 
       assert_selector 'span[data-controller="carbon--tooltip"]'
     end
 
-    test 'trigger has correct ARIA attributes' do
+    test 'tooltip content has role tooltip and aria-hidden' do
       render_inline(Carbon::TooltipComponent.new(label: 'Tooltip')) { 'Button' }
 
-      assert_selector 'button.cds--tooltip__trigger[aria-describedby]'
-    end
-
-    test 'tooltip content has role tooltip' do
-      render_inline(Carbon::TooltipComponent.new(label: 'Tooltip')) { 'Button' }
-
-      assert_selector '.cds--tooltip-content[role="tooltip"]'
+      assert_selector '.cds--tooltip-content[role="tooltip"][aria-hidden="true"]'
     end
 
     test 'includes popover caret' do
@@ -94,6 +95,12 @@ module Carbon
       render_inline(Carbon::TooltipComponent.new(label: 'Tooltip', align: 'top')) { 'Button' }
 
       assert_selector 'span.cds--popover--top'
+    end
+
+    test 'wraps content in trigger wrapper div' do
+      render_inline(Carbon::TooltipComponent.new(label: 'Tooltip')) { 'Button' }
+
+      assert_selector 'div.cds--tooltip-trigger__wrapper', text: 'Button'
     end
   end
 end
