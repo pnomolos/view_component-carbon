@@ -1,7 +1,5 @@
 <div <%= tag.attributes(**html_attributes) %>>
-  <div class="cds--toast-notification__icon">
-    <%= icon_svg %>
-  </div>
+  <%= icon_svg %>
   <div class="cds--toast-notification__details">
     <div class="cds--toast-notification__title"><%= title %></div>
     <% if subtitle.present? %>
@@ -13,7 +11,7 @@
   </div>
   <% unless hide_close_button %>
     <button class="cds--toast-notification__close-button"
-            aria-label="Close"
+            aria-label="close notification"
             type="button"
             data-action="click->carbon--toast-notification#close">
       <%= close_icon %>

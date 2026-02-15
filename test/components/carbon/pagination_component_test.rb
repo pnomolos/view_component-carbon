@@ -13,7 +13,7 @@ module Carbon
     test 'renders items per page label' do
       render_inline(Carbon::PaginationComponent.new(total_items: 100))
 
-      assert_selector '.cds--pagination__text', text: 'Items per page:'
+      assert_selector 'label.cds--pagination__text[for]', text: 'Items per page:'
     end
 
     test 'renders page size select' do
@@ -47,7 +47,7 @@ module Carbon
     test 'renders item range' do
       render_inline(Carbon::PaginationComponent.new(total_items: 100, page: 1, page_size: 10))
 
-      assert_selector '.cds--pagination__text', text: '1-10 of 100 items'
+      assert_selector '.cds--pagination__text.cds--pagination__items-count', text: '1-10 of 100 items'
     end
 
     test 'calculates correct item range for page 2' do
@@ -83,13 +83,27 @@ module Carbon
     test 'renders previous page button' do
       render_inline(Carbon::PaginationComponent.new(total_items: 100))
 
-      assert_selector 'button.cds--pagination__button--backward[aria-label="Previous page"]'
+      assert_selector '.cds--pagination__control-buttons ' \
+                      'button.cds--pagination__button--backward[aria-label="Previous page"]'
     end
 
     test 'renders next page button' do
       render_inline(Carbon::PaginationComponent.new(total_items: 100))
 
-      assert_selector 'button.cds--pagination__button--forward[aria-label="Next page"]'
+      assert_selector '.cds--pagination__control-buttons ' \
+                      'button.cds--pagination__button--forward[aria-label="Next page"]'
+    end
+
+    test 'renders control-buttons wrapper' do
+      render_inline(Carbon::PaginationComponent.new(total_items: 100))
+
+      assert_selector '.cds--pagination__right .cds--pagination__control-buttons'
+    end
+
+    test 'renders select with page-number class' do
+      render_inline(Carbon::PaginationComponent.new(total_items: 100))
+
+      assert_selector '.cds--select.cds--select--inline.cds--select__page-number'
     end
 
     test 'previous button disabled on first page' do

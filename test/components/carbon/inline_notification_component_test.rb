@@ -71,13 +71,14 @@ module Carbon
     test 'renders close button by default' do
       render_inline(Carbon::InlineNotificationComponent.new(title: 'Title'))
 
-      assert_selector "button.cds--inline-notification__close-button[aria-label='Close']"
+      assert_selector "button.cds--inline-notification__close-button[aria-label='close notification']"
     end
 
     test 'hides close button when hide_close_button is true' do
       render_inline(Carbon::InlineNotificationComponent.new(title: 'Title', hide_close_button: true))
 
       assert_no_selector '.cds--inline-notification__close-button'
+      assert_selector '.cds--inline-notification--hide-close-button'
     end
 
     test 'close button has stimulus action' do
@@ -113,7 +114,7 @@ module Carbon
     test 'renders icon' do
       render_inline(Carbon::InlineNotificationComponent.new(title: 'Title'))
 
-      assert_selector '.cds--inline-notification__icon svg'
+      assert_selector 'svg.cds--inline-notification__icon'
     end
 
     # -- Structure --

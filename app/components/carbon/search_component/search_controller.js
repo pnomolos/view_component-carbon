@@ -7,9 +7,9 @@ export default class extends Controller {
     const hasValue = this.inputTarget.value.length > 0
 
     if (hasValue) {
-      this.closeButtonTarget.removeAttribute('hidden')
+      this.closeButtonTarget.classList.remove('cds--search-close--hidden')
     } else {
-      this.closeButtonTarget.setAttribute('hidden', '')
+      this.closeButtonTarget.classList.add('cds--search-close--hidden')
     }
 
     // Toggle expanded state for expandable search
@@ -24,7 +24,7 @@ export default class extends Controller {
 
   clear() {
     this.inputTarget.value = ''
-    this.closeButtonTarget.setAttribute('hidden', '')
+    this.closeButtonTarget.classList.add('cds--search-close--hidden')
     this.inputTarget.focus()
 
     // Remove expanded state for expandable search

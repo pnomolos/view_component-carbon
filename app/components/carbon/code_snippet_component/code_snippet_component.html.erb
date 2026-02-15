@@ -12,7 +12,8 @@
   </span>
 <% else %>
   <div <%= tag.attributes(**html_attributes) %>>
-    <div class="cds--snippet-container" <%= 'aria-label="Code Snippet Text"'.html_safe %>>
+    <div class="cds--snippet-container" role="textbox" tabindex="0"
+         aria-label="Code Snippet Text" aria-readonly="true"<%= ' aria-multiline="true"'.html_safe if type == :multi %>>
       <pre><code data-carbon--code-snippet-target="code"><%= code %></code></pre>
     </div>
     <% unless hide_copy_button %>
@@ -24,13 +25,14 @@
       </button>
     <% end %>
     <% if type == :multi %>
-      <button class="cds--btn--sm cds--snippet-btn--expand"
+      <button class="cds--btn cds--btn--ghost cds--btn--sm cds--snippet-btn--expand"
               type="button"
               data-action="click->carbon--code-snippet#toggle"
               data-carbon--code-snippet-target="expandButton">
         <span class="cds--snippet-btn--text" data-carbon--code-snippet-target="expandText">
           <%= show_more_text %>
         </span>
+        <%= chevron_icon %>
       </button>
     <% end %>
   </div>

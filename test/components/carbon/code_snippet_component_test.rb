@@ -82,7 +82,8 @@ module Carbon
     test 'multi type has expand button' do
       render_inline(Carbon::CodeSnippetComponent.new(type: :multi, code: 'code'))
 
-      assert_selector 'button.cds--snippet-btn--expand'
+      assert_selector 'button.cds--btn.cds--btn--ghost.cds--btn--sm.cds--snippet-btn--expand'
+      assert_selector 'button.cds--snippet-btn--expand svg.cds--icon-chevron--down.cds--snippet__icon'
     end
 
     test 'multi type expand button shows default text' do
@@ -132,17 +133,19 @@ module Carbon
 
     # -- Structure for single/multi --
 
-    test 'single type has snippet container' do
+    test 'single type has snippet container with accessibility attributes' do
       render_inline(Carbon::CodeSnippetComponent.new(type: :single, code: 'code'))
 
-      assert_selector '.cds--snippet-container'
+      assert_selector '.cds--snippet-container[role="textbox"][tabindex="0"][aria-readonly="true"]'
       assert_selector '.cds--snippet-container pre code'
+      assert_no_selector '.cds--snippet-container[aria-multiline]'
     end
 
-    test 'multi type has snippet container' do
+    test 'multi type has snippet container with accessibility attributes' do
       render_inline(Carbon::CodeSnippetComponent.new(type: :multi, code: 'code'))
 
-      assert_selector '.cds--snippet-container'
+      assert_selector '.cds--snippet-container[role="textbox"][tabindex="0"]' \
+                      '[aria-readonly="true"][aria-multiline="true"]'
       assert_selector '.cds--snippet-container pre code'
     end
 

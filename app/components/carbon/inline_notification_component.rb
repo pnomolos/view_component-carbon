@@ -34,6 +34,7 @@ module Carbon
     def css_classes
       classes = ['cds--inline-notification', "cds--inline-notification--#{KIND_CSS[@kind]}"]
       classes << 'cds--inline-notification--low-contrast' if @low_contrast
+      classes << 'cds--inline-notification--hide-close-button' if @hide_close_button
       classes << @system_arguments.delete(:class) if @system_arguments[:class]
       class_names(*classes)
     end
@@ -71,25 +72,29 @@ module Carbon
     end
 
     def info_icon
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20" height="20" fill="currentColor">' \
+      '<svg class="cds--inline-notification__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" ' \
+      'width="20" height="20" fill="currentColor">' \
       '<path d="M16 2a14 14 0 1 0 14 14A14 14 0 0 0 16 2zm0 26a12 12 0 1 1 12-12 12 12 0 0 1-12 12z"/>' \
       '<path d="M15 10h2v2h-2zm0 4h2v8h-2z"/></svg>'.html_safe
     end
 
     def success_icon
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20" height="20" fill="currentColor">' \
+      '<svg class="cds--inline-notification__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" ' \
+      'width="20" height="20" fill="currentColor">' \
       '<path d="M16 2a14 14 0 1 0 14 14A14 14 0 0 0 16 2zm0 26a12 12 0 1 1 12-12 12 12 0 0 1-12 12z"/>' \
       '<path d="M14 21.5l-5-4.96 1.59-1.57L14 18.35 21.41 11 23 12.58l-9 8.92z"/></svg>'.html_safe
     end
 
     def warning_icon
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20" height="20" fill="currentColor">' \
+      '<svg class="cds--inline-notification__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" ' \
+      'width="20" height="20" fill="currentColor">' \
       '<path d="M16 2a14 14 0 1 0 14 14A14 14 0 0 0 16 2zm0 26a12 12 0 1 1 12-12 12 12 0 0 1-12 12z"/>' \
       '<path d="M15 8h2v11h-2zm1 14a1.5 1.5 0 1 0 1.5 1.5A1.5 1.5 0 0 0 16 22z"/></svg>'.html_safe
     end
 
     def error_icon
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20" height="20" fill="currentColor">' \
+      '<svg class="cds--inline-notification__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" ' \
+      'width="20" height="20" fill="currentColor">' \
       '<path d="M16 2a14 14 0 1 0 14 14A14 14 0 0 0 16 2zm0 26a12 12 0 1 1 12-12 12 12 0 0 1-12 12z"/>' \
       '<path d="M21.41 9l-5.41 5.41L10.59 9 9 10.59 14.41 16 9 21.41 10.59 23 16 17.59 21.41 23 23 21.41 ' \
       '17.59 16 23 10.59 21.41 9z"/></svg>'.html_safe

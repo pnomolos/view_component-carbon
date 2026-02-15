@@ -31,6 +31,7 @@ module Carbon
     def css_classes
       classes = ['cds--search', "cds--search--#{@size}"]
       classes << 'cds--search--expandable' if @expandable
+      classes << 'cds--search--disabled' if @disabled
       classes << @system_arguments.delete(:class) if @system_arguments[:class]
       class_names(*classes)
     end
@@ -39,13 +40,15 @@ module Carbon
       attrs = @system_arguments.dup
       attrs[:class] = css_classes
       attrs[:role] = 'search'
+      attrs[:aria] = { label: @placeholder }.merge(attrs.fetch(:aria, {}))
       attrs[:data] ||= {}
       attrs[:data][:controller] = 'carbon--search'
       attrs
     end
 
     def search_icon
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" fill="currentColor">' \
+      '<svg class="cds--search-magnifier-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" ' \
+      'width="16" height="16" fill="currentColor">' \
       '<path d="M29 27.586l-7.552-7.552a11.018 11.018 0 1 0-1.414 1.414L27.586 29zM4 13a9 9 0 1 1 9 9 9.01 9.01 0 ' \
       '0 1-9-9z"/></svg>'.html_safe
     end

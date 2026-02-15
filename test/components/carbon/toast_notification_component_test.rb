@@ -83,7 +83,7 @@ module Carbon
     test 'renders close button by default' do
       render_inline(Carbon::ToastNotificationComponent.new(title: 'Title'))
 
-      assert_selector "button.cds--toast-notification__close-button[aria-label='Close']"
+      assert_selector "button.cds--toast-notification__close-button[aria-label='close notification']"
     end
 
     test 'hides close button when hide_close_button is true' do
@@ -145,7 +145,7 @@ module Carbon
     test 'renders icon' do
       render_inline(Carbon::ToastNotificationComponent.new(title: 'Title'))
 
-      assert_selector '.cds--toast-notification__icon svg'
+      assert_selector 'svg.cds--toast-notification__icon'
     end
 
     # -- System arguments --

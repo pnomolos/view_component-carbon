@@ -11,7 +11,7 @@ module Carbon
 
       assert_selector '.cds--search.cds--search--md'
       assert_selector "[role='search']"
-      assert_selector 'input.cds--search-input[type="text"]'
+      assert_selector 'input.cds--search-input[type="text"][role="searchbox"][autocomplete="off"]'
     end
 
     # -- Sizes --
@@ -98,12 +98,15 @@ module Carbon
       render_inline(Carbon::SearchComponent.new(disabled: true))
 
       assert_selector 'input[disabled]'
+      assert_selector '.cds--search--disabled'
+      assert_selector 'button.cds--search-close[disabled]', visible: :all
     end
 
     test 'does not render disabled attribute by default' do
       render_inline(Carbon::SearchComponent.new)
 
       assert_no_selector 'input[disabled]'
+      assert_no_selector '.cds--search--disabled'
     end
 
     # -- Close button --
@@ -117,13 +120,13 @@ module Carbon
     test 'close button is hidden by default when no value' do
       render_inline(Carbon::SearchComponent.new)
 
-      assert_selector 'button.cds--search-close[hidden]', visible: :all
+      assert_selector 'button.cds--search-close.cds--search-close--hidden', visible: :all
     end
 
     test 'close button is visible when value is provided' do
       render_inline(Carbon::SearchComponent.new(value: 'search'))
 
-      assert_no_selector 'button.cds--search-close[hidden]', visible: :all
+      assert_no_selector 'button.cds--search-close--hidden', visible: :all
     end
 
     test 'close button has stimulus action' do
@@ -180,7 +183,23 @@ module Carbon
     test 'renders search icon' do
       render_inline(Carbon::SearchComponent.new)
 
-      assert_selector '.cds--search-magnifier svg'
+      assert_selector '.cds--search-magnifier svg.cds--search-magnifier-icon'
+    end
+
+    # -- Aria label on root --
+
+    test 'root element has aria-label matching placeholder' do
+      render_inline(Carbon::SearchComponent.new(placeholder: 'Find items'))
+
+      assert_selector '.cds--search[aria-label="Find items"]'
+    end
+
+    # -- Close button title --
+
+    test 'close button has title attribute' do
+      render_inline(Carbon::SearchComponent.new)
+
+      assert_selector 'button.cds--search-close[title="Clear search"]', visible: :all
     end
 
     test 'renders close icon in button' do
