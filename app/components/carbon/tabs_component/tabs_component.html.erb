@@ -1,0 +1,28 @@
+<%= content_tag :div, **html_attributes do %>
+  <div class="cds--tabs__nav" role="tablist" aria-label="Tab navigation">
+    <% tabs.each do |tab_data| %>
+      <button role="tab"
+              class="<%= class_names(button_css_classes(tab_data)) %>"
+              data-action="click->carbon--tabs#select"
+              data-carbon--tabs-target="tab"
+              data-tab-id="<%= tab_data.tab_id %>"
+              data-panel-id="<%= tab_data.panel_id %>"
+              aria-selected="<%= tab_data.selected %>"
+              <%= 'disabled' if tab_data.disabled %>
+              tabindex="<%= tab_data.selected ? '0' : '-1' %>">
+        <%= tab_data.label %>
+      </button>
+    <% end %>
+  </div>
+  <% tabs.each do |tab_data| %>
+    <div class="<%= class_names(panel_css_classes(tab_data)) %>"
+         role="tabpanel"
+         data-carbon--tabs-target="panel"
+         data-panel-id="<%= tab_data.panel_id %>"
+         id="<%= tab_data.panel_id %>"
+         aria-labelledby="<%= tab_data.tab_id %>"
+         <%= 'hidden' unless tab_data.selected %>>
+      <%= tab_data.content %>
+    </div>
+  <% end %>
+<% end %>

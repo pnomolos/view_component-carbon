@@ -1,0 +1,5 @@
+<%= content_tag :div, **html_attributes do %>
+  <% options.each do |option| %>
+    <%= content_tag :button, option.label, **option.html_attributes %>
+  <% end %>
+<% end %>

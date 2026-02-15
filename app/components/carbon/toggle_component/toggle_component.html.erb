@@ -1,0 +1,14 @@
+<%= content_tag :div, **wrapper_html_attributes do %>
+  <div class="<%= toggle_css_classes %>">
+    <label class="<%= class_names(label_css_classes) %>" for="<%= input_id %>">
+      <% if @label_text %>
+        <span class="<%= label_text_css_classes %>"><%= @label_text %></span>
+      <% end %>
+      <%= tag :input, **input_html_attributes %>
+      <span class="<%= switch_css_classes %>">
+        <span class="cds--toggle__text--off" aria-hidden="true"><%= @label_a %></span>
+        <span class="cds--toggle__text--on" aria-hidden="true"><%= @label_b %></span>
+      </span>
+    </label>
+  </div>
+<% end %>
