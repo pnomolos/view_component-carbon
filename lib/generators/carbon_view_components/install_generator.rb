@@ -30,6 +30,7 @@ module CarbonViewComponents
             prepend_to_file scss_path, carbon_import
           end
         else
+          empty_directory File.dirname(scss_path)
           create_file scss_path, carbon_import
         end
       end
