@@ -1,0 +1,8 @@
+<%= content_tag :fieldset, **html_attributes do %>
+  <% if @legend %>
+    <legend class="cds--label"><%= @legend %></legend>
+  <% end %>
+  <% tiles.each do |tile| %>
+    <%= tile %>
+  <% end %>
+<% end %>
