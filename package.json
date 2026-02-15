@@ -1,0 +1,8 @@
+{
+  "name": "carbon_view_components",
+  "private": true,
+  "dependencies": {
+    "@carbon/styles": "^1.x",
+    "@carbon/web-components": "^2.x"
+  }
+}
