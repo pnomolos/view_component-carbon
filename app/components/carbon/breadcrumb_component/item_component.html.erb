@@ -1,0 +1,7 @@
+<%= content_tag :li, **html_attributes do %>
+  <% if @current %>
+    <%= content %>
+  <% else %>
+    <%= content_tag :a, content, href: @href, class: link_css_classes %>
+  <% end %>
+<% end %>
