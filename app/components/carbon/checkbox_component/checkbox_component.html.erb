@@ -1,0 +1,6 @@
+<div class="<%= wrapper_classes %>"<% if stimulus_controller? %> <%= tag.attributes(wrapper_data_attributes) %><% end %>>
+  <input <%= tag.attributes(checkbox_attributes) %>>
+  <label for="<%= @id %>" class="<%= label_classes %>">
+    <span class="cds--checkbox-label-text"><%= @label_text %></span>
+  </label>
+</div>
