@@ -31,9 +31,8 @@ module Carbon
       class_names(classes)
     end
 
-    def html_attributes
-      attrs = @system_arguments.dup
-      attrs[:class] = css_classes
+    def wrapper_attributes
+      attrs = @system_arguments.except(:class).dup
       attrs['data-controller'] = 'carbon--tabs'
       attrs
     end
@@ -47,8 +46,9 @@ module Carbon
     end
 
     def button_css_classes(tab_data)
-      classes = ['cds--tabs__nav-link']
-      classes << 'cds--tabs__nav-link--disabled' if tab_data.disabled
+      classes = %w[cds--tabs__nav-item cds--tabs__nav-link]
+      classes << 'cds--tabs__nav-item--selected' if tab_data.selected
+      classes << 'cds--tabs__nav-item--disabled' if tab_data.disabled
       classes
     end
 

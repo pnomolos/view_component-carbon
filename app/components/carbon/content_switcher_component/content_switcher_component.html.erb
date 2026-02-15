@@ -1,5 +1,7 @@
 <%= content_tag :div, **html_attributes do %>
   <% options.each do |option| %>
-    <%= content_tag :button, option.label, **option.html_attributes %>
+    <%= content_tag :button, **option.html_attributes do %>
+      <span class="cds--content-switcher__label"><%= option.label %></span>
+    <% end %>
   <% end %>
 <% end %>

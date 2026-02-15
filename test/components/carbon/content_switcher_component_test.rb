@@ -65,10 +65,15 @@ module Carbon
         c.with_option(label: 'Third')
       end
 
-      assert_selector 'button.cds--content-switcher-btn', count: 3
-      assert_selector 'button', text: 'First'
-      assert_selector 'button', text: 'Second'
-      assert_selector 'button', text: 'Third'
+      assert_selector 'button.cds--content-switcher-btn[type="button"]', count: 3
+    end
+
+    test 'renders option label with inner span wrapper' do
+      render_inline(Carbon::ContentSwitcherComponent.new) do |c|
+        c.with_option(label: 'First')
+      end
+
+      assert_selector 'button.cds--content-switcher-btn span.cds--content-switcher__label', text: 'First'
     end
 
     test 'renders selected option' do
@@ -77,13 +82,13 @@ module Carbon
         c.with_option(label: 'Option B')
       end
 
-      selected_btn = page.find('button', text: 'Option A')
+      selected_btn = page.find('.cds--content-switcher__label', text: 'Option A').ancestor('button')
 
       assert_includes selected_btn[:class], 'cds--content-switcher--selected'
       assert_equal 'true', selected_btn['aria-selected']
       assert_equal '0', selected_btn['tabindex']
 
-      unselected_btn = page.find('button', text: 'Option B')
+      unselected_btn = page.find('.cds--content-switcher__label', text: 'Option B').ancestor('button')
 
       assert_not_includes unselected_btn[:class], 'cds--content-switcher--selected'
       assert_equal 'false', unselected_btn['aria-selected']

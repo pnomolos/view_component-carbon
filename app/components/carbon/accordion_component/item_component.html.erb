@@ -10,7 +10,9 @@
     </svg>
     <div class="cds--accordion__title"><%= @title %></div>
   </button>
-  <div class="cds--accordion__content" id="<%= panel_id %>" role="region">
-    <%= content %>
+  <div class="cds--accordion__wrapper">
+    <div class="cds--accordion__content" id="<%= panel_id %>" role="region">
+      <%= content %>
+    </div>
   </div>
 <% end %>

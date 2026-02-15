@@ -58,6 +58,7 @@ module Carbon
       def html_attributes
         attrs = @system_arguments.dup
         attrs[:class] = css_classes
+        attrs[:type] = 'button'
         attrs[:role] = 'tab'
         attrs['aria-selected'] = @selected
         attrs['data-action'] = 'click->carbon--content-switcher#select'

@@ -9,12 +9,13 @@ export default class extends Controller {
 
   select(event) {
     const selectedTab = event.currentTarget;
-    const panelId = selectedTab.dataset.panelId;
+    const panelId = selectedTab.getAttribute('aria-controls');
 
     // Deactivate all tabs
     this.tabTargets.forEach((tab) => {
       tab.setAttribute('aria-selected', 'false');
       tab.setAttribute('tabindex', '-1');
+      tab.classList.remove('cds--tabs__nav-item--selected');
     });
 
     // Hide all panels
@@ -25,10 +26,11 @@ export default class extends Controller {
     // Activate selected tab
     selectedTab.setAttribute('aria-selected', 'true');
     selectedTab.setAttribute('tabindex', '0');
+    selectedTab.classList.add('cds--tabs__nav-item--selected');
 
     // Show corresponding panel
     const selectedPanel = this.panelTargets.find(
-      (panel) => panel.dataset.panelId === panelId
+      (panel) => panel.id === panelId
     );
     if (selectedPanel) {
       selectedPanel.removeAttribute('hidden');

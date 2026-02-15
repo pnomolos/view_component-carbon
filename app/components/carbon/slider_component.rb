@@ -14,6 +14,7 @@ module Carbon
       @label_text = label_text
       @disabled = disabled
       @id = id || "slider-#{SecureRandom.hex(8)}"
+      @label_id = "#{@id}-label"
       @system_arguments = system_arguments
     end
 
@@ -28,5 +29,21 @@ module Carbon
       attrs[:class] = css_classes
       attrs
     end
+
+    def thumb_percent
+      return 0 if @max == @min
+
+      ((@value.to_f - @min) / (@max - @min) * 100).round(4)
+    end
+
+    def filled_fraction
+      return 0 if @max == @min
+
+      ((@value.to_f - @min) / (@max - @min)).round(6)
+    end
+
+    private
+
+    attr_reader :label_id
   end
 end

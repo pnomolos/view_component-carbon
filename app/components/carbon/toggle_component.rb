@@ -31,14 +31,9 @@ module Carbon
     private
 
     def wrapper_css_classes
-      classes = ['cds--form-item']
-      classes << @system_arguments[:class] if @system_arguments[:class]
-      class_names(classes)
-    end
-
-    def toggle_css_classes
       classes = ['cds--toggle']
-      classes << "cds--toggle--#{@size}" if @size != DEFAULT_SIZE
+      classes << 'cds--toggle--disabled' if @disabled
+      classes << @system_arguments[:class] if @system_arguments[:class]
       class_names(classes)
     end
 
@@ -52,12 +47,24 @@ module Carbon
       class_names(classes)
     end
 
-    def input_css_classes
-      'cds--toggle__input'
+    def button_css_classes
+      'cds--toggle__button'
+    end
+
+    def appearance_css_classes
+      classes = ['cds--toggle__appearance']
+      classes << 'cds--toggle__appearance--sm' if @size == :sm
+      class_names(classes)
     end
 
     def switch_css_classes
-      'cds--toggle__switch'
+      classes = ['cds--toggle__switch']
+      classes << 'cds--toggle__switch--checked' if @toggled
+      class_names(classes)
+    end
+
+    def current_text
+      @toggled ? @label_b : @label_a
     end
 
     def wrapper_html_attributes
@@ -67,17 +74,17 @@ module Carbon
       attrs
     end
 
-    def input_html_attributes
+    def button_html_attributes
       attrs = {}
-      attrs[:class] = input_css_classes
-      attrs[:type] = 'checkbox'
-      attrs[:role] = 'switch'
       attrs[:id] = @input_id
-      attrs[:checked] = '' if @toggled
+      attrs[:class] = button_css_classes
+      attrs[:role] = 'switch'
+      attrs[:type] = 'button'
+      attrs['aria-checked'] = @toggled.to_s
+      attrs['aria-labelledby'] = "#{@input_id}_label"
       attrs[:disabled] = '' if @disabled
-      attrs['aria-checked'] = @toggled
-      attrs['data-action'] = 'change->carbon--toggle#change'
-      attrs['data-carbon--toggle-target'] = 'input'
+      attrs['data-action'] = 'click->carbon--toggle#toggle'
+      attrs['data-carbon--toggle-target'] = 'button'
       attrs
     end
 

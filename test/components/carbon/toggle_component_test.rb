@@ -9,9 +9,8 @@ module Carbon
     test 'renders default toggle' do
       render_inline(Carbon::ToggleComponent.new)
 
-      assert_selector 'div.cds--form-item'
       assert_selector 'div.cds--toggle'
-      assert_selector 'input.cds--toggle__input[type="checkbox"][role="switch"]'
+      assert_selector 'button.cds--toggle__button[role="switch"][type="button"]'
     end
 
     test 'renders with stimulus controller' do
@@ -20,18 +19,24 @@ module Carbon
       assert_selector 'div[data-controller="carbon--toggle"]'
     end
 
-    # -- Size --
-
-    test 'renders md size (default)' do
+    test 'does not render cds--form-item wrapper' do
       render_inline(Carbon::ToggleComponent.new)
 
-      assert_no_selector '.cds--toggle--md'
+      assert_no_selector '.cds--form-item'
     end
 
-    test 'renders sm size' do
+    # -- Size --
+
+    test 'renders md size (default) with no size modifier on appearance' do
+      render_inline(Carbon::ToggleComponent.new)
+
+      assert_no_selector '.cds--toggle__appearance--sm'
+    end
+
+    test 'renders sm size with appearance modifier' do
       render_inline(Carbon::ToggleComponent.new(size: :sm))
 
-      assert_selector '.cds--toggle--sm'
+      assert_selector '.cds--toggle__appearance--sm'
     end
 
     # -- Toggled state --
@@ -39,15 +44,15 @@ module Carbon
     test 'renders unchecked by default' do
       render_inline(Carbon::ToggleComponent.new)
 
-      assert_no_selector 'input[checked]'
-      assert_selector 'input[aria-checked="false"]'
+      assert_selector 'button[aria-checked="false"]'
+      assert_no_selector '.cds--toggle__switch--checked'
     end
 
     test 'renders checked when toggled is true' do
       render_inline(Carbon::ToggleComponent.new(toggled: true))
 
-      assert_selector 'input[checked]'
-      assert_selector 'input[aria-checked="true"]'
+      assert_selector 'button[aria-checked="true"]'
+      assert_selector '.cds--toggle__switch--checked'
     end
 
     # -- Disabled state --
@@ -55,34 +60,41 @@ module Carbon
     test 'renders enabled by default' do
       render_inline(Carbon::ToggleComponent.new)
 
-      assert_no_selector 'input[disabled]'
+      assert_no_selector 'button[disabled]'
+      assert_no_selector '.cds--toggle--disabled'
     end
 
     test 'renders disabled when disabled is true' do
       render_inline(Carbon::ToggleComponent.new(disabled: true))
 
-      assert_selector 'input[disabled]'
+      assert_selector 'button[disabled]'
+      assert_selector '.cds--toggle--disabled'
     end
 
     # -- Labels --
 
-    test 'renders default off/on labels' do
+    test 'renders current text based on toggle state' do
       render_inline(Carbon::ToggleComponent.new)
 
-      assert_selector '.cds--toggle__text--off', text: 'Off'
-      assert_selector '.cds--toggle__text--on', text: 'On'
+      assert_selector '.cds--toggle__text[aria-hidden="true"]', text: 'Off'
+    end
+
+    test 'renders On text when toggled' do
+      render_inline(Carbon::ToggleComponent.new(toggled: true))
+
+      assert_selector '.cds--toggle__text[aria-hidden="true"]', text: 'On'
     end
 
     test 'renders custom label_a' do
       render_inline(Carbon::ToggleComponent.new(label_a: 'No'))
 
-      assert_selector '.cds--toggle__text--off', text: 'No'
+      assert_selector '.cds--toggle__text', text: 'No'
     end
 
-    test 'renders custom label_b' do
-      render_inline(Carbon::ToggleComponent.new(label_b: 'Yes'))
+    test 'renders custom label_b when toggled' do
+      render_inline(Carbon::ToggleComponent.new(label_b: 'Yes', toggled: true))
 
-      assert_selector '.cds--toggle__text--on', text: 'Yes'
+      assert_selector '.cds--toggle__text', text: 'Yes'
     end
 
     test 'renders label_text when provided' do
@@ -103,29 +115,12 @@ module Carbon
       assert_selector '.cds--toggle__label-text.cds--visually-hidden', text: 'Hidden'
     end
 
-    # -- Input ID --
+    # -- Appearance wrapper --
 
-    test 'generates unique input id' do
-      render_inline(Carbon::ToggleComponent.new(label_text: 'Test'))
-
-      label = page.find('label.cds--toggle__label')
-      input_id = label['for']
-
-      assert_selector "input##{input_id}"
-    end
-
-    # -- Stimulus --
-
-    test 'renders input with stimulus action' do
+    test 'renders appearance wrapper' do
       render_inline(Carbon::ToggleComponent.new)
 
-      assert_selector 'input[data-action="change->carbon--toggle#change"]'
-    end
-
-    test 'renders input with stimulus target' do
-      render_inline(Carbon::ToggleComponent.new)
-
-      assert_selector 'input[data-carbon--toggle-target="input"]'
+      assert_selector '.cds--toggle__appearance'
     end
 
     # -- Switch element --
@@ -136,11 +131,46 @@ module Carbon
       assert_selector '.cds--toggle__switch'
     end
 
-    test 'renders off and on text with aria-hidden' do
+    test 'renders single toggle text with aria-hidden' do
       render_inline(Carbon::ToggleComponent.new)
 
-      assert_selector '.cds--toggle__text--off[aria-hidden="true"]'
-      assert_selector '.cds--toggle__text--on[aria-hidden="true"]'
+      assert_selector '.cds--toggle__text[aria-hidden="true"]'
+      assert_no_selector '.cds--toggle__text--off'
+      assert_no_selector '.cds--toggle__text--on'
+    end
+
+    # -- Button attributes --
+
+    test 'button has aria-labelledby pointing to label' do
+      render_inline(Carbon::ToggleComponent.new(label_text: 'Test'))
+
+      button = page.find('button.cds--toggle__button')
+      label_id = button['aria-labelledby']
+
+      assert_selector "label##{label_id}"
+    end
+
+    test 'label for attribute matches button id' do
+      render_inline(Carbon::ToggleComponent.new(label_text: 'Test'))
+
+      button = page.find('button.cds--toggle__button')
+      label = page.find('label.cds--toggle__label')
+
+      assert_equal button['id'], label['for']
+    end
+
+    # -- Stimulus --
+
+    test 'renders button with stimulus action' do
+      render_inline(Carbon::ToggleComponent.new)
+
+      assert_selector 'button[data-action="click->carbon--toggle#toggle"]'
+    end
+
+    test 'renders button with stimulus target' do
+      render_inline(Carbon::ToggleComponent.new)
+
+      assert_selector 'button[data-carbon--toggle-target="button"]'
     end
 
     # -- Validation --
@@ -162,7 +192,7 @@ module Carbon
     test 'merges custom class' do
       render_inline(Carbon::ToggleComponent.new(class: 'custom-toggle'))
 
-      assert_selector 'div.cds--form-item.custom-toggle'
+      assert_selector 'div.cds--toggle.custom-toggle'
     end
   end
 end
