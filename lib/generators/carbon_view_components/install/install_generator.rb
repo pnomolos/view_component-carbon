@@ -3,12 +3,12 @@
 module CarbonViewComponents
   module Generators
     class InstallGenerator < Rails::Generators::Base
-      source_root File.expand_path("templates", __dir__)
+      source_root File.expand_path('templates', __dir__)
 
-      desc "Install Carbon ViewComponents into a Rails application"
+      desc 'Install Carbon ViewComponents into a Rails application'
 
       def add_carbon_styles_import
-        stylesheet = "app/assets/stylesheets/application.scss"
+        stylesheet = 'app/assets/stylesheets/application.scss'
 
         if File.exist?(stylesheet)
           append_to_file stylesheet, "\n@use 'carbon_view_components';\n"
@@ -18,7 +18,7 @@ module CarbonViewComponents
       end
 
       def add_dartsass_load_path
-        initializer = "config/initializers/dartsass.rb"
+        initializer = 'config/initializers/dartsass.rb'
 
         create_file initializer, <<~RUBY
           # frozen_string_literal: true
@@ -33,8 +33,8 @@ module CarbonViewComponents
       end
 
       def install_node_dependencies
-        say "Installing Carbon Design System packages via pnpm..."
-        run "pnpm add @carbon/styles @carbon/web-components"
+        say 'Installing Carbon Design System packages via pnpm...'
+        run 'pnpm add @carbon/styles @carbon/web-components'
       end
 
       def mount_lookbook
@@ -44,14 +44,14 @@ module CarbonViewComponents
       end
 
       def print_post_install
-        say ""
-        say "Carbon ViewComponents installed successfully!", :green
-        say ""
-        say "Next steps:"
-        say "  1. Ensure dartsass-rails is configured with --load-path=node_modules"
+        say ''
+        say 'Carbon ViewComponents installed successfully!', :green
+        say ''
+        say 'Next steps:'
+        say '  1. Ensure dartsass-rails is configured with --load-path=node_modules'
         say "  2. Run `pnpm install` if you haven't already"
-        say "  3. Start your server and visit /lookbook for component previews"
-        say ""
+        say '  3. Start your server and visit /lookbook for component previews'
+        say ''
       end
     end
   end

@@ -7,7 +7,7 @@ module Carbon
     private
 
     def class_names(*args)
-      args.flatten.compact.join(" ")
+      args.flatten.compact.join(' ')
     end
 
     def carbon_class(block, element = nil, modifier = nil)

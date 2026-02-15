@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-ENV["RAILS_ENV"] = "test"
+ENV['RAILS_ENV'] = 'test'
 
-require_relative "../test/dummy/config/environment"
+require_relative '../test/dummy/config/environment'
 
-require "rails/test_help"
-require "view_component/test_helpers"
-require "view_component/test_case"
-require "capybara/minitest"
+require 'rails/test_help'
+require 'view_component/test_helpers'
+require 'view_component/test_case'
+require 'capybara/minitest'
 
 module CarbonViewComponents
   class TestCase < ViewComponent::TestCase
