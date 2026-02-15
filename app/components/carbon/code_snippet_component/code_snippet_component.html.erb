@@ -1,0 +1,37 @@
+<% if type == :inline %>
+  <span <%= tag.attributes(**html_attributes) %>>
+    <code data-carbon--code-snippet-target="code"><%= code %></code>
+    <% unless hide_copy_button %>
+      <button class="cds--copy-btn"
+              aria-label="Copy to clipboard"
+              type="button"
+              data-action="click->carbon--code-snippet#copy">
+        <%= copy_icon %>
+      </button>
+    <% end %>
+  </span>
+<% else %>
+  <div <%= tag.attributes(**html_attributes) %>>
+    <div class="cds--snippet-container" <%= 'aria-label="Code Snippet Text"'.html_safe %>>
+      <pre><code data-carbon--code-snippet-target="code"><%= code %></code></pre>
+    </div>
+    <% unless hide_copy_button %>
+      <button class="cds--copy-btn"
+              aria-label="Copy to clipboard"
+              type="button"
+              data-action="click->carbon--code-snippet#copy">
+        <%= copy_icon %>
+      </button>
+    <% end %>
+    <% if type == :multi %>
+      <button class="cds--btn--sm cds--snippet-btn--expand"
+              type="button"
+              data-action="click->carbon--code-snippet#toggle"
+              data-carbon--code-snippet-target="expandButton">
+        <span class="cds--snippet-btn--text" data-carbon--code-snippet-target="expandText">
+          <%= show_more_text %>
+        </span>
+      </button>
+    <% end %>
+  </div>
+<% end %>
