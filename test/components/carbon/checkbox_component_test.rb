@@ -11,7 +11,7 @@ module Carbon
 
       assert_selector '.cds--form-item.cds--checkbox-wrapper'
       assert_selector 'input.cds--checkbox[type="checkbox"]'
-      assert_selector 'label.cds--checkbox-label .cds--checkbox-label-text', text: 'Accept terms'
+      assert_selector 'label.cds--checkbox-label div.cds--checkbox-label-text', text: 'Accept terms'
     end
 
     test 'checkbox has generated id and label for attribute matches' do
@@ -87,6 +87,74 @@ module Carbon
       render_inline(Carbon::CheckboxComponent.new(label_text: 'Test'))
 
       assert_no_selector '[data-controller="carbon--checkbox"]'
+    end
+
+    # -- Invalid state --
+
+    test 'renders invalid state with invalid text' do
+      render_inline(
+        Carbon::CheckboxComponent.new(
+          label_text: 'Test',
+          invalid: true,
+          invalid_text: 'You must accept the terms'
+        )
+      )
+
+      assert_selector '.cds--checkbox-wrapper--invalid'
+      assert_selector 'input[data-invalid]'
+      assert_selector '.cds--checkbox__validation-msg svg.cds--text-input__invalid-icon'
+      assert_selector '.cds--checkbox__validation-msg .cds--form-requirement', text: 'You must accept the terms'
+    end
+
+    # -- Warning state --
+
+    test 'renders warning state with warning text' do
+      render_inline(
+        Carbon::CheckboxComponent.new(
+          label_text: 'Test',
+          warn: true,
+          warn_text: 'Please review this selection'
+        )
+      )
+
+      assert_selector '.cds--checkbox-wrapper--warn'
+      assert_selector '.cds--checkbox__validation-msg svg.cds--text-input__invalid-icon'
+      assert_selector '.cds--checkbox__validation-msg .cds--form-requirement', text: 'Please review this selection'
+    end
+
+    test 'invalid takes precedence over warning' do
+      render_inline(
+        Carbon::CheckboxComponent.new(
+          label_text: 'Test',
+          warn: true,
+          warn_text: 'Warning',
+          invalid: true,
+          invalid_text: 'Invalid'
+        )
+      )
+
+      assert_selector '.cds--checkbox-wrapper--invalid'
+      assert_no_selector '.cds--checkbox-wrapper--warn'
+      assert_selector '.cds--form-requirement', text: 'Invalid'
+    end
+
+    # -- Helper text --
+
+    test 'renders helper text when provided' do
+      render_inline(
+        Carbon::CheckboxComponent.new(
+          label_text: 'Test',
+          helper_text: 'Additional info'
+        )
+      )
+
+      assert_selector '.cds--form__helper-text', text: 'Additional info'
+    end
+
+    test 'does not render helper text when not provided' do
+      render_inline(Carbon::CheckboxComponent.new(label_text: 'Test'))
+
+      assert_no_selector '.cds--form__helper-text'
     end
 
     # -- Custom ID --

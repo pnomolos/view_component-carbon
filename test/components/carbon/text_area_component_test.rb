@@ -9,8 +9,9 @@ module Carbon
     test 'renders default text area' do
       render_inline(Carbon::TextAreaComponent.new(label_text: 'Comments'))
 
-      assert_selector '.cds--form-item.cds--text-area-wrapper'
-      assert_selector 'label.cds--label', text: 'Comments'
+      assert_selector '.cds--form-item'
+      assert_no_selector '.cds--text-area-wrapper'
+      assert_selector '.cds--text-area__label-wrapper label.cds--label', text: 'Comments'
       assert_selector 'textarea.cds--text-area'
       assert_selector '.cds--text-area__wrapper'
     end
@@ -106,6 +107,20 @@ module Carbon
       assert_no_selector '.cds--form__helper-text'
     end
 
+    test 'textarea has aria-describedby pointing to helper text' do
+      render_inline(
+        Carbon::TextAreaComponent.new(
+          label_text: 'Test',
+          helper_text: 'Some help'
+        )
+      )
+
+      helper = page.find('.cds--form__helper-text')
+      textarea = page.find('textarea')
+
+      assert_equal helper[:id], textarea[:'aria-describedby']
+    end
+
     # -- Invalid state --
 
     test 'renders invalid state with invalid text' do
@@ -117,9 +132,11 @@ module Carbon
         )
       )
 
-      assert_selector 'textarea.cds--text-area--invalid[data-invalid="true"][aria-invalid="true"]'
+      assert_selector 'textarea[data-invalid][aria-invalid="true"]'
       assert_selector '.cds--text-area__wrapper--invalid'
+      assert_selector '.cds--text-area__wrapper[data-invalid]'
       assert_selector '.cds--form-requirement', text: 'This field is required'
+      assert_selector '.cds--text-area__wrapper svg.cds--text-input__invalid-icon'
     end
 
     test 'does not show helper text when invalid' do
@@ -136,6 +153,39 @@ module Carbon
       assert_selector '.cds--form-requirement', text: 'Invalid text'
     end
 
+    # -- Warning state --
+
+    test 'renders warning state with warning text' do
+      render_inline(
+        Carbon::TextAreaComponent.new(
+          label_text: 'Test',
+          warn: true,
+          warn_text: 'Check this value'
+        )
+      )
+
+      assert_selector 'textarea[data-warn="true"]'
+      assert_selector '.cds--text-area__wrapper--warn'
+      assert_selector '.cds--form-requirement', text: 'Check this value'
+      assert_selector '.cds--text-area__wrapper svg.cds--text-input__invalid-icon'
+    end
+
+    test 'invalid takes precedence over warning' do
+      render_inline(
+        Carbon::TextAreaComponent.new(
+          label_text: 'Test',
+          warn: true,
+          warn_text: 'Warning',
+          invalid: true,
+          invalid_text: 'Invalid'
+        )
+      )
+
+      assert_selector '.cds--text-area__wrapper--invalid'
+      assert_no_selector '.cds--text-area__wrapper--warn'
+      assert_selector '.cds--form-requirement', text: 'Invalid'
+    end
+
     # -- Character counter --
 
     test 'does not add character counter by default' do
@@ -150,7 +200,9 @@ module Carbon
 
       assert_selector '[data-controller="carbon--text-area"]'
       assert_selector '[data-carbon--text-area-max-count-value="500"]'
-      assert_selector '.cds--text-area__counter[data-carbon--text-area-target="counter"]', text: '0 / 500'
+      assert_selector '.cds--text-area__label-wrapper ' \
+                      '.cds--text-area__counter[data-carbon--text-area-target="counter"]',
+                      text: '0 / 500'
       assert_selector 'textarea[maxlength="500"]'
     end
 
@@ -181,7 +233,7 @@ module Carbon
     test 'merges custom class with component classes' do
       render_inline(Carbon::TextAreaComponent.new(label_text: 'Test', class: 'my-custom-class'))
 
-      assert_selector '.cds--form-item.cds--text-area-wrapper.my-custom-class'
+      assert_selector '.cds--form-item.my-custom-class'
     end
 
     # -- Empty value --

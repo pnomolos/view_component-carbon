@@ -1,24 +1,27 @@
 <div class="<%= wrapper_classes %>"<% if stimulus_controller? %> <%= tag.attributes(wrapper_data_attributes) %><% end %>>
-  <% if @label_text %>
-    <label for="<%= @id %>" class="cds--label"><%= @label_text %></label>
-  <% end %>
-  <div class="cds--text-input__field-outer-wrapper">
-    <div class="<%= field_wrapper_classes %>">
-      <input <%= tag.attributes(input_attributes) %>>
-      <% if stimulus_controller? %>
-        <div class="cds--text-input__counter" data-carbon--text-input-target="counter">
-          0 / <%= @max_count %>
-        </div>
-      <% end %>
-    </div>
+  <div class="cds--text-input__label-wrapper">
+    <% if @label_text %>
+      <label for="<%= @id %>" class="cds--label"><%= @label_text %></label>
+    <% end %>
+    <% if stimulus_controller? %>
+      <div class="cds--text-input__counter" data-carbon--text-input-target="counter">
+        0 / <%= @max_count %>
+      </div>
+    <% end %>
   </div>
-  <% if @helper_text && !@invalid && !@warn %>
-    <div class="cds--form__helper-text"><%= @helper_text %></div>
-  <% end %>
-  <% if @warn && @warn_text && !@invalid %>
-    <div class="cds--form__helper-text cds--form__helper-text--warning"><%= @warn_text %></div>
-  <% end %>
-  <% if @invalid && @invalid_text %>
-    <div class="cds--form-requirement"><%= @invalid_text %></div>
-  <% end %>
+  <div class="cds--text-input__field-outer-wrapper">
+    <div class="<%= field_wrapper_classes %>" <%= tag.attributes(data_invalid_attrs) %>>
+      <%= warning_icon_svg&.html_safe %>
+      <input <%= tag.attributes(input_attributes) %>>
+    </div>
+    <% if @helper_text && !@invalid && !@warn %>
+      <div class="cds--form__helper-text" id="<%= aria_describedby_id %>"><%= @helper_text %></div>
+    <% end %>
+    <% if @invalid && @invalid_text %>
+      <div class="cds--form-requirement" id="<%= aria_describedby_id %>"><%= @invalid_text %></div>
+    <% end %>
+    <% if @warn && @warn_text %>
+      <div class="cds--form-requirement" id="<%= aria_describedby_id %>"><%= @warn_text %></div>
+    <% end %>
+  </div>
 </div>

@@ -16,11 +16,18 @@ module Carbon
       assert_selector '.cds--number__input-wrapper'
     end
 
-    test 'renders increment and decrement buttons' do
+    test 'renders increment and decrement buttons with SVG icons' do
       render_inline(Carbon::NumberInputComponent.new(label_text: 'Test'))
 
-      assert_selector 'button.cds--number__control-btn.down-icon[aria-label="Decrease number"]', text: '−'
-      assert_selector 'button.cds--number__control-btn.up-icon[aria-label="Increase number"]', text: '+'
+      assert_selector '.cds--number__controls button.down-icon[aria-label="Decrease number"] svg'
+      assert_selector '.cds--number__controls button.up-icon[aria-label="Increase number"] svg'
+    end
+
+    test 'buttons have correct attributes' do
+      render_inline(Carbon::NumberInputComponent.new(label_text: 'Test'))
+
+      assert_selector 'button.down-icon[tabindex="-1"][title="Decrement"]'
+      assert_selector 'button.up-icon[tabindex="-1"][title="Increment"]'
     end
 
     test 'buttons have stimulus actions' do
@@ -34,6 +41,19 @@ module Carbon
       render_inline(Carbon::NumberInputComponent.new(label_text: 'Test'))
 
       assert_selector 'input[data-carbon--number-input-target="input"]'
+    end
+
+    test 'renders rule dividers in controls' do
+      render_inline(Carbon::NumberInputComponent.new(label_text: 'Test'))
+
+      assert_selector '.cds--number__controls .cds--number__rule-divider', count: 2
+    end
+
+    test 'buttons are in controls div separate from input wrapper' do
+      render_inline(Carbon::NumberInputComponent.new(label_text: 'Test'))
+
+      assert_selector '.cds--number__controls button', count: 2
+      assert_no_selector '.cds--number__input-wrapper button'
     end
 
     # -- Name and value --
@@ -143,8 +163,10 @@ module Carbon
       )
 
       assert_selector '.cds--number--invalid'
+      assert_selector '.cds--number[data-invalid]'
       assert_selector 'input[aria-invalid="true"]'
       assert_selector '.cds--form-requirement', text: 'Value must be positive'
+      assert_selector '.cds--number__input-wrapper svg.cds--text-input__invalid-icon'
     end
 
     test 'does not show helper text when invalid' do
@@ -159,6 +181,39 @@ module Carbon
 
       assert_no_selector '.cds--form__helper-text', text: 'Helper text'
       assert_selector '.cds--form-requirement', text: 'Invalid text'
+    end
+
+    # -- Warning state --
+
+    test 'renders warning state with warning text' do
+      render_inline(
+        Carbon::NumberInputComponent.new(
+          label_text: 'Test',
+          warn: true,
+          warn_text: 'Check this value'
+        )
+      )
+
+      assert_selector '.cds--number--warning'
+      assert_selector '.cds--number__input-wrapper--warning'
+      assert_selector '.cds--form-requirement', text: 'Check this value'
+      assert_selector '.cds--number__input-wrapper svg.cds--text-input__invalid-icon'
+    end
+
+    test 'invalid takes precedence over warning' do
+      render_inline(
+        Carbon::NumberInputComponent.new(
+          label_text: 'Test',
+          warn: true,
+          warn_text: 'Warning',
+          invalid: true,
+          invalid_text: 'Invalid'
+        )
+      )
+
+      assert_selector '.cds--number--invalid'
+      assert_no_selector '.cds--number--warning'
+      assert_selector '.cds--form-requirement', text: 'Invalid'
     end
 
     # -- Custom ID --

@@ -1,23 +1,31 @@
 <div class="<%= wrapper_classes %>">
-  <div class="<%= number_classes %>" data-controller="carbon--number-input">
+  <div class="<%= number_classes %>" <%= tag.attributes(data_invalid_attrs) %> data-controller="carbon--number-input">
     <% if @label_text %>
       <label for="<%= @id %>" class="cds--label"><%= @label_text %></label>
     <% end %>
-    <div class="cds--number__input-wrapper">
-      <button <%= tag.attributes(button_attributes('down')) %>
-              data-action="click->carbon--number-input#decrement"
-              aria-label="Decrease number">−</button>
+    <div class="<%= input_wrapper_classes %>">
       <input <%= tag.attributes(input_attributes) %>
              data-carbon--number-input-target="input">
+      <%= warning_icon_svg&.html_safe %>
+    </div>
+    <div class="cds--number__controls">
+      <button <%= tag.attributes(button_attributes('down')) %>
+              data-action="click->carbon--number-input#decrement"
+              aria-label="Decrease number"><%= subtract_icon_svg.html_safe %></button>
+      <div class="cds--number__rule-divider"></div>
       <button <%= tag.attributes(button_attributes('up')) %>
               data-action="click->carbon--number-input#increment"
-              aria-label="Increase number">+</button>
+              aria-label="Increase number"><%= add_icon_svg.html_safe %></button>
+      <div class="cds--number__rule-divider"></div>
     </div>
-    <% if @helper_text && !@invalid %>
-      <div class="cds--form__helper-text"><%= @helper_text %></div>
+    <% if @helper_text && !@invalid && !@warn %>
+      <div class="cds--form__helper-text" id="<%= aria_describedby_id %>"><%= @helper_text %></div>
     <% end %>
     <% if @invalid && @invalid_text %>
-      <div class="cds--form-requirement"><%= @invalid_text %></div>
+      <div class="cds--form-requirement" id="<%= aria_describedby_id %>"><%= @invalid_text %></div>
+    <% end %>
+    <% if @warn && @warn_text %>
+      <div class="cds--form-requirement" id="<%= aria_describedby_id %>"><%= @warn_text %></div>
     <% end %>
   </div>
 </div>

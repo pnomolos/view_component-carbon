@@ -2,6 +2,8 @@
 
 module Carbon
   class TextInputComponent < BaseComponent
+    include Carbon::Concerns::FormFieldable
+
     SIZES = %i[sm md lg].freeze
     TYPES = %i[text password email url].freeze
     DEFAULT_SIZE = :md
@@ -31,19 +33,22 @@ module Carbon
       @name = name
       @value = value
       @label_text = label_text
-      @helper_text = helper_text
       @placeholder = placeholder
       @disabled = disabled
       @readonly = readonly
-      @invalid = invalid
-      @invalid_text = invalid_text
-      @warn = warn
-      @warn_text = warn_text
       @size = validate_argument(:size, size, SIZES, DEFAULT_SIZE)
       @type = validate_argument(:type, type, TYPES, DEFAULT_TYPE)
       @id = id || "text-input-#{SecureRandom.hex(4)}"
       @max_count = max_count
       @system_arguments = system_arguments
+
+      initialize_form_field(
+        invalid: invalid,
+        invalid_text: invalid_text,
+        warn: warn,
+        warn_text: warn_text,
+        helper_text: helper_text
+      )
     end
 
     def wrapper_classes
@@ -53,21 +58,20 @@ module Carbon
     end
 
     def field_wrapper_classes
-      classes = ['cds--text-input__field-wrapper']
-      classes << 'cds--text-input__field-wrapper--warning' if @warn && !@invalid
-      class_names(*classes)
+      class_names(*form_field_wrapper_classes('cds--text-input__field-wrapper'))
     end
 
     def input_classes
       classes = ['cds--text-input', "cds--text-input--#{@size}"]
       classes << 'cds--text-input--invalid' if @invalid
-      classes << 'cds--text-input--warning' if @warn && !@invalid
+      classes << 'cds--text-input--warning' if @warn
       class_names(*classes)
     end
 
     def input_attributes
       attrs = base_input_attributes
       add_state_attributes(attrs)
+      attrs[:'aria-describedby'] = aria_describedby_id if aria_describedby_id
       attrs.merge!(@system_arguments)
       attrs.compact
     end
@@ -83,12 +87,12 @@ module Carbon
       }
     end
 
-    def add_state_attributes(attrs) # rubocop:disable Metrics/CyclomaticComplexity
+    def add_state_attributes(attrs)
       attrs[:disabled] = '' if @disabled
       attrs[:readonly] = '' if @readonly
-      attrs[:'data-invalid'] = 'true' if @invalid
+      attrs[:'data-invalid'] = '' if @invalid
       attrs[:'aria-invalid'] = 'true' if @invalid
-      attrs[:'data-warn'] = 'true' if @warn && !@invalid
+      attrs[:'data-warn'] = 'true' if @warn
       attrs[:maxlength] = @max_count if @max_count
     end
 

@@ -10,7 +10,7 @@ module Carbon
       render_inline(Carbon::TextInputComponent.new(label_text: 'Username'))
 
       assert_selector '.cds--form-item.cds--text-input-wrapper'
-      assert_selector 'label.cds--label', text: 'Username'
+      assert_selector '.cds--text-input__label-wrapper label.cds--label', text: 'Username'
       assert_selector 'input.cds--text-input.cds--text-input--md[type="text"]'
     end
 
@@ -122,13 +122,28 @@ module Carbon
         )
       )
 
-      assert_selector '.cds--form__helper-text', text: 'Enter your username'
+      assert_selector '.cds--text-input__field-outer-wrapper .cds--form__helper-text',
+                      text: 'Enter your username'
     end
 
     test 'does not render helper text when not provided' do
       render_inline(Carbon::TextInputComponent.new(label_text: 'Test'))
 
       assert_no_selector '.cds--form__helper-text'
+    end
+
+    test 'input has aria-describedby pointing to helper text' do
+      render_inline(
+        Carbon::TextInputComponent.new(
+          label_text: 'Test',
+          helper_text: 'Some help'
+        )
+      )
+
+      helper = page.find('.cds--form__helper-text')
+      input = page.find('input')
+
+      assert_equal helper[:id], input[:'aria-describedby']
     end
 
     # -- Invalid state --
@@ -142,8 +157,11 @@ module Carbon
         )
       )
 
-      assert_selector 'input.cds--text-input--invalid[data-invalid="true"][aria-invalid="true"]'
+      assert_selector 'input.cds--text-input--invalid[data-invalid][aria-invalid="true"]'
+      assert_selector '.cds--text-input__field-wrapper[data-invalid]'
+      assert_selector '.cds--text-input__field-wrapper--invalid'
       assert_selector '.cds--form-requirement', text: 'This field is required'
+      assert_selector '.cds--text-input__field-wrapper svg.cds--text-input__invalid-icon'
     end
 
     test 'does not show helper text when invalid' do
@@ -172,8 +190,9 @@ module Carbon
       )
 
       assert_selector 'input.cds--text-input--warning[data-warn="true"]'
-      assert_selector '.cds--text-input__field-wrapper--warning'
-      assert_selector '.cds--form__helper-text--warning', text: 'This value might be incorrect'
+      assert_selector '.cds--text-input__field-wrapper--warn'
+      assert_selector '.cds--form-requirement', text: 'This value might be incorrect'
+      assert_selector '.cds--text-input__field-wrapper svg.cds--text-input__invalid-icon'
     end
 
     test 'invalid takes precedence over warning' do
@@ -189,7 +208,6 @@ module Carbon
 
       assert_selector 'input.cds--text-input--invalid'
       assert_no_selector 'input.cds--text-input--warning'
-      assert_no_selector '.cds--form__helper-text--warning'
       assert_selector '.cds--form-requirement', text: 'Invalid'
     end
 
@@ -207,7 +225,9 @@ module Carbon
 
       assert_selector '[data-controller="carbon--text-input"]'
       assert_selector '[data-carbon--text-input-max-count-value="100"]'
-      assert_selector '.cds--text-input__counter[data-carbon--text-input-target="counter"]', text: '0 / 100'
+      assert_selector '.cds--text-input__label-wrapper ' \
+                      '.cds--text-input__counter[data-carbon--text-input-target="counter"]',
+                      text: '0 / 100'
       assert_selector 'input[maxlength="100"]'
     end
 
