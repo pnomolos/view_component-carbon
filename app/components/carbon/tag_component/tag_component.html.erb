@@ -1,0 +1,6 @@
+<%= content_tag(tag_name, **html_attributes) do %>
+  <span class="cds--tag__label"><%= content %></span>
+  <% if closeable? %>
+    <span class="cds--tag__close-icon"><%= close_icon_svg %></span>
+  <% end %>
+<% end %>
