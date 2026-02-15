@@ -6,7 +6,7 @@ module Carbon
   # Comprehensive markup verification test that renders every Stimulus-powered
   # component and checks the critical HTML structure matches Carbon Design System
   # expectations.
-  class MarkupVerificationTest < CarbonViewComponents::TestCase
+  class MarkupVerificationTest < CarbonViewComponents::TestCase # rubocop:disable Metrics/ClassLength
     # =========================================================================
     # ACCORDION
     # =========================================================================
@@ -93,8 +93,9 @@ module Carbon
       end
 
       tab = page.find('button[role="tab"]')
-      assert tab['aria-controls'].present?, 'Tab button should have aria-controls'
-      assert tab['id'].present?, 'Tab button should have id'
+
+      assert_predicate tab['aria-controls'], :present?, 'Tab button should have aria-controls'
+      assert_predicate tab['id'], :present?, 'Tab button should have id'
     end
 
     test 'tabs: inner label wrapper .cds--tabs__nav-item-label-wrapper > .cds--tabs__nav-item-label' do
@@ -175,13 +176,15 @@ module Carbon
       render_inline(Carbon::SliderComponent.new(name: 'slider', value: 50, min: 0, max: 100))
 
       thumb_wrapper = page.find('.cds--slider__thumb-wrapper', visible: :all)
-      assert thumb_wrapper['style'].present?, 'Thumb wrapper should have inline style'
+
+      assert_predicate thumb_wrapper['style'], :present?, 'Thumb wrapper should have inline style'
     end
 
     test 'slider: has div.cds--slider__thumb[role="slider"] with aria attributes' do
       render_inline(Carbon::SliderComponent.new(name: 'slider', value: 50, min: 0, max: 100))
 
-      assert_selector 'div.cds--slider__thumb[role="slider"][aria-valuenow="50"][aria-valuemin="0"][aria-valuemax="100"]'
+      assert_selector 'div.cds--slider__thumb[role="slider"]' \
+                      '[aria-valuenow="50"][aria-valuemin="0"][aria-valuemax="100"]'
     end
 
     test 'slider: has div.cds--slider__track' do
@@ -194,7 +197,8 @@ module Carbon
       render_inline(Carbon::SliderComponent.new(name: 'slider', value: 50, min: 0, max: 100))
 
       filled_track = page.find('.cds--slider__filled-track', visible: :all)
-      assert filled_track['style'].present?, 'Filled track should have inline style'
+
+      assert_predicate filled_track['style'], :present?, 'Filled track should have inline style'
     end
 
     test 'slider: number input wrapped in div.cds--text-input-wrapper.cds--slider-text-input__wrapper' do
@@ -257,7 +261,7 @@ module Carbon
     # TOGGLETIP
     # =========================================================================
 
-    test 'toggletip: container is span with cds--popover-container.cds--popover--caret.cds--popover--high-contrast.cds--toggletip' do
+    test 'toggletip: container has popover-container, caret, high-contrast, toggletip classes' do
       render_inline(Carbon::ToggletipComponent.new) do |c|
         c.with_body { 'Toggletip content' }
       end
@@ -338,8 +342,8 @@ module Carbon
       # The parent should be the notification root container, not a dedicated icon wrapper
       assert_includes parent[:class], 'cds--toast-notification',
                       'SVG icon parent should be the notification root, not a dedicated icon wrapper'
-      refute_includes parent[:class], 'cds--toast-notification__icon',
-                      'SVG icon should NOT be inside a div.cds--toast-notification__icon wrapper'
+      assert_not_includes parent[:class], 'cds--toast-notification__icon',
+                          'SVG icon should NOT be inside a div.cds--toast-notification__icon wrapper'
     end
 
     # =========================================================================
@@ -415,6 +419,7 @@ module Carbon
 
       assert_selector 'button.cds--search-close.cds--search-close--hidden'
       close_btn = page.find('button.cds--search-close', visible: :all)
+
       assert_nil close_btn['hidden'], 'Close button should NOT use hidden attribute'
     end
 
@@ -518,7 +523,8 @@ module Carbon
         assert button.has_css?('svg'), 'Number input buttons should contain SVG icons'
         # Should not contain literal text like "+" or "-"
         text_content = button.text.strip
-        refute_match(/\A[+-]\z/, text_content, 'Button should not have literal +/- text')
+
+        assert_no_match(/\A[+-]\z/, text_content, 'Button should not have literal +/- text')
       end
     end
 
@@ -565,7 +571,8 @@ module Carbon
       render_inline(Carbon::PaginationComponent.new(total_items: 100))
 
       label = page.find('label.cds--pagination__text')
-      assert label['for'].present?, 'Pagination label should have a for attribute'
+
+      assert_predicate label['for'], :present?, 'Pagination label should have a for attribute'
     end
 
     test 'pagination: item range span has .cds--pagination__items-count' do
