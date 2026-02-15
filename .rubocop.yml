@@ -28,6 +28,10 @@ Metrics/ClassLength:
 Metrics/ParameterLists:
   Exclude:
     - "app/components/**/*"
+    - "previews/**/*"
+
+Minitest/MultipleAssertions:
+  Max: 8
 
 Lint/MissingSuper:
   Exclude:

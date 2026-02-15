@@ -9,9 +9,7 @@ module Carbon
     # @param type select { choices: [default, inline, indeterminate] }
     # @param label text
     # @param helper_text text
-    # rubocop:disable Metrics/ParameterLists
     def default(value: 50, max: 100, size: :big, status: :active, type: :default, label: '', helper_text: '')
-      # rubocop:enable Metrics/ParameterLists
       options = {
         size: size.to_sym,
         status: status.to_sym,

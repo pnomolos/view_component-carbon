@@ -66,7 +66,7 @@ module Carbon
       assert_selector '.cds--contained-list-item__content', text: 'Item content'
     end
 
-    test 'renders multiple items' do # rubocop:disable Minitest/MultipleAssertions
+    test 'renders multiple items' do
       render_inline(Carbon::ContainedListComponent.new(label: 'List')) do |c|
         c.with_item { 'First item' }
         c.with_item { 'Second item' }
