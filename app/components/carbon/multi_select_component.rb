@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System MultiSelect dropdown.
+  #
+  # @example Basic usage
+  #   render Carbon::MultiSelectComponent.new(label_text: "Tags") do |ms|
+  #     ms.with_item(value: "a", text: "Alpha")
+  #   end
+  #
+  # @see https://carbondesignsystem.com/components/dropdown/usage/
   class MultiSelectComponent < BaseComponent
     include Carbon::Concerns::FormFieldable
 
@@ -11,8 +19,28 @@ module Carbon
       ItemData.new(value: value, text: text, selected: selected, disabled: disabled)
     }
 
-    attr_reader :size, :label_text, :title_text, :disabled, :filterable
+    # @return [Symbol] component size
+    attr_reader :size
+    # @return [String, nil] label text
+    attr_reader :label_text
+    # @return [String] trigger button text
+    attr_reader :title_text
+    # @return [Boolean] whether disabled
+    attr_reader :disabled
+    # @return [Boolean] whether filterable
+    attr_reader :filterable
 
+    # @param label_text [String, nil] label text
+    # @param size [Symbol] component size (:sm, :md, :lg)
+    # @param disabled [Boolean] disables the component
+    # @param invalid [Boolean] marks as invalid
+    # @param invalid_text [String, nil] validation error message
+    # @param warn [Boolean] marks as warning
+    # @param warn_text [String, nil] warning message
+    # @param helper_text [String, nil] helper text
+    # @param title_text [String] trigger button text
+    # @param filterable [Boolean] enables type-to-filter
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(
       label_text: nil,
       size: DEFAULT_SIZE,
@@ -97,10 +125,23 @@ module Carbon
             "Invalid #{name}: #{value.inspect}. Must be one of: #{allowed.map(&:inspect).join(', ')}"
     end
 
-    # Simple data holder for item slots
+    # Data holder for multi-select item slots.
     class ItemData < ViewComponent::Base
-      attr_reader :value, :text, :selected, :disabled, :item_id
+      # @return [String] item value
+      attr_reader :value
+      # @return [String] item display text
+      attr_reader :text
+      # @return [Boolean] whether selected
+      attr_reader :selected
+      # @return [Boolean] whether disabled
+      attr_reader :disabled
+      # @return [String] unique item ID
+      attr_reader :item_id
 
+      # @param value [String] item value
+      # @param text [String] item display text
+      # @param selected [Boolean] whether selected
+      # @param disabled [Boolean] whether disabled
       def initialize(value:, text:, selected:, disabled:)
         @value = value
         @text = text

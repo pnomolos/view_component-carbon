@@ -1,12 +1,41 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Toggle switch.
+  #
+  # @example Basic usage
+  #   render Carbon::ToggleComponent.new(label_text: "Dark mode", toggled: false)
+  #
+  # @see https://carbondesignsystem.com/components/toggle/usage/
   class ToggleComponent < Carbon::BaseComponent
     SIZES = %i[sm md].freeze
     DEFAULT_SIZE = :md
 
-    attr_reader :size, :toggled, :disabled, :label_a, :label_b, :label_text, :hide_label, :input_id
+    # @return [Symbol] toggle size
+    attr_reader :size
+    # @return [Boolean] whether toggled on
+    attr_reader :toggled
+    # @return [Boolean] whether disabled
+    attr_reader :disabled
+    # @return [String] text shown when off
+    attr_reader :label_a
+    # @return [String] text shown when on
+    attr_reader :label_b
+    # @return [String, nil] label text
+    attr_reader :label_text
+    # @return [Boolean] whether the label is hidden
+    attr_reader :hide_label
+    # @return [String] unique input ID
+    attr_reader :input_id
 
+    # @param size [Symbol] toggle size (:sm, :md)
+    # @param toggled [Boolean] initial toggled state
+    # @param disabled [Boolean] disables the toggle
+    # @param label_a [String] text shown when off
+    # @param label_b [String] text shown when on
+    # @param label_text [String, nil] label text
+    # @param hide_label [Boolean] visually hides the label
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(
       size: DEFAULT_SIZE,
       toggled: false,

@@ -1,14 +1,31 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Tree View with expandable nodes.
+  #
+  # @example Basic usage
+  #   render Carbon::TreeViewComponent.new(label: "Files") do |tree|
+  #     tree.with_node(label: "Documents")
+  #   end
+  #
+  # @see https://carbondesignsystem.com/components/tree-view/usage/
   class TreeViewComponent < Carbon::BaseComponent
     SIZES = %i[xs sm].freeze
     DEFAULT_SIZE = :sm
 
     renders_many :nodes, 'Carbon::TreeViewComponent::NodeComponent'
 
-    attr_reader :label, :multiselect, :size
+    # @return [String] tree accessible label
+    attr_reader :label
+    # @return [Boolean] whether multi-selection is enabled
+    attr_reader :multiselect
+    # @return [Symbol] tree size
+    attr_reader :size
 
+    # @param label [String] accessible tree label
+    # @param multiselect [Boolean] enables multi-selection
+    # @param size [Symbol] tree size (:xs, :sm)
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(label: 'Tree', multiselect: false, size: DEFAULT_SIZE, **system_arguments)
       @label = label
       @multiselect = multiselect
@@ -43,11 +60,30 @@ module Carbon
             "Invalid #{name}: #{value.inspect}. Must be one of: #{allowed.map(&:inspect).join(', ')}"
     end
 
+    # A single node within a TreeView, optionally with child nodes.
     class NodeComponent < Carbon::BaseComponent
       renders_many :nodes, 'Carbon::TreeViewComponent::NodeComponent'
 
-      attr_reader :label, :value, :expanded, :disabled, :selected, :node_id
+      # @return [String] node label
+      attr_reader :label
+      # @return [String, nil] node value
+      attr_reader :value
+      # @return [Boolean] whether expanded
+      attr_reader :expanded
+      # @return [Boolean] whether disabled
+      attr_reader :disabled
+      # @return [Boolean] whether selected
+      attr_reader :selected
+      # @return [String] unique node ID
+      attr_reader :node_id
 
+      # @param label [String] node label
+      # @param value [String, nil] node value
+      # @param expanded [Boolean] initial expanded state
+      # @param disabled [Boolean] disables the node
+      # @param selected [Boolean] initial selected state
+      # @param icon [String, nil] optional icon content
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(label:, value: nil, expanded: false, disabled: false, selected: false,
                      icon: nil, **system_arguments)
         @label = label
@@ -60,6 +96,7 @@ module Carbon
         @node_id = "tree-node-#{SecureRandom.hex(8)}"
       end
 
+      # @return [Boolean] whether this node has children
       def parent_node?
         nodes.any?
       end

@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Select (native HTML select).
+  #
+  # @example Basic usage
+  #   render Carbon::SelectComponent.new(label_text: "Country") do |s|
+  #     s.with_option(value: "us", text: "United States")
+  #   end
+  #
+  # @see https://carbondesignsystem.com/components/select/usage/
   class SelectComponent < BaseComponent
     include Carbon::Concerns::FormFieldable
 
@@ -14,8 +22,32 @@ module Carbon
       group
     }
 
-    attr_reader :label_text, :size, :disabled, :inline, :hide_label, :name
+    # @return [String] label text
+    attr_reader :label_text
+    # @return [Symbol] select size
+    attr_reader :size
+    # @return [Boolean] whether disabled
+    attr_reader :disabled
+    # @return [Boolean] whether to render inline
+    attr_reader :inline
+    # @return [Boolean] whether the label is hidden
+    attr_reader :hide_label
+    # @return [String, nil] select name attribute
+    attr_reader :name
 
+    # @param label_text [String] label text
+    # @param size [Symbol] select size (:sm, :md, :lg)
+    # @param disabled [Boolean] disables the select
+    # @param invalid [Boolean] marks as invalid
+    # @param invalid_text [String, nil] validation error message
+    # @param warn [Boolean] marks as warning
+    # @param warn_text [String, nil] warning message
+    # @param helper_text [String, nil] helper text
+    # @param inline [Boolean] renders inline layout
+    # @param hide_label [Boolean] visually hides the label
+    # @param name [String, nil] select name attribute
+    # @param id [String, nil] unique element ID
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(
       label_text: 'Label',
       size: DEFAULT_SIZE,
@@ -43,6 +75,7 @@ module Carbon
                             warn_text: warn_text, helper_text: helper_text)
     end
 
+    # @return [String] unique select element ID
     def select_id
       @id
     end
@@ -98,9 +131,22 @@ module Carbon
       raise ArgumentError, "Invalid #{name}: #{value.inspect}. Must be one of: #{allowed.map(&:inspect).join(', ')}"
     end
 
+    # A single select option.
     class OptionComponent < BaseComponent
-      attr_reader :value, :text, :selected, :disabled
+      # @return [String] option value
+      attr_reader :value
+      # @return [String] option display text
+      attr_reader :text
+      # @return [Boolean] whether selected
+      attr_reader :selected
+      # @return [Boolean] whether disabled
+      attr_reader :disabled
 
+      # @param value [String] option value
+      # @param text [String] option display text
+      # @param selected [Boolean] marks option as selected
+      # @param disabled [Boolean] disables the option
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(value:, text:, selected: false, disabled: false, **system_arguments)
         @value = value
         @text = text
@@ -115,11 +161,15 @@ module Carbon
       end
     end
 
+    # A group of select options with a label.
     class OptionGroupComponent < BaseComponent
+      # @return [String] group label
       attr_reader :label
 
       renders_many :options, 'Carbon::SelectComponent::OptionComponent'
 
+      # @param label [String] group label
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(label:, **system_arguments)
         @label = label
         @system_arguments = system_arguments

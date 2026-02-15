@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Inline Notification.
+  #
+  # @example Basic usage
+  #   render Carbon::InlineNotificationComponent.new(title: "Success!", kind: :success)
+  #
+  # @see https://carbondesignsystem.com/components/notification/usage/
   class InlineNotificationComponent < BaseComponent
     KINDS = %i[info success warning error info_square].freeze
 
@@ -14,8 +20,23 @@ module Carbon
       info_square: 'info-square'
     }.freeze
 
-    attr_reader :kind, :title, :subtitle, :hide_close_button, :low_contrast
+    # @return [Symbol] notification kind
+    attr_reader :kind
+    # @return [String] notification title
+    attr_reader :title
+    # @return [String, nil] notification subtitle
+    attr_reader :subtitle
+    # @return [Boolean] whether to hide the close button
+    attr_reader :hide_close_button
+    # @return [Boolean] whether to use low-contrast styling
+    attr_reader :low_contrast
 
+    # @param title [String] notification title
+    # @param kind [Symbol] notification kind (:info, :success, :warning, :error, :info_square)
+    # @param subtitle [String, nil] notification subtitle
+    # @param hide_close_button [Boolean] hides the close button
+    # @param low_contrast [Boolean] uses low-contrast styling
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(
       title:, kind: DEFAULT_KIND,
       subtitle: nil,
@@ -31,6 +52,7 @@ module Carbon
       @system_arguments = system_arguments
     end
 
+    # @return [String] CSS class string
     def css_classes
       classes = ['cds--inline-notification', "cds--inline-notification--#{KIND_CSS[@kind]}"]
       classes << 'cds--inline-notification--low-contrast' if @low_contrast
@@ -39,6 +61,7 @@ module Carbon
       class_names(*classes)
     end
 
+    # @return [Hash] HTML attributes for the notification element
     def html_attributes
       attrs = @system_arguments.dup
       attrs[:class] = css_classes
@@ -49,6 +72,7 @@ module Carbon
       attrs
     end
 
+    # @return [String] SVG markup for the notification icon
     def icon_svg
       case @kind
       when :success

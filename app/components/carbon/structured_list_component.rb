@@ -1,10 +1,21 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Structured List.
+  #
+  # @example Basic usage
+  #   render Carbon::StructuredListComponent.new do |list|
+  #     list.with_header { |h| h.with_cell { "Column" } }
+  #     list.with_row { |r| r.with_cell { "Value" } }
+  #   end
+  #
+  # @see https://carbondesignsystem.com/components/structured-list/usage/
   class StructuredListComponent < Carbon::BaseComponent
     renders_one :header, 'Carbon::StructuredListComponent::HeaderComponent'
     renders_many :rows, 'Carbon::StructuredListComponent::RowComponent'
 
+    # @param selection [Boolean] enables row selection mode
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(selection: false, **system_arguments)
       @selection = selection
       @system_arguments = system_arguments
@@ -26,9 +37,11 @@ module Carbon
       attrs
     end
 
+    # Structured list header row.
     class HeaderComponent < Carbon::BaseComponent
       renders_many :cells, 'Carbon::StructuredListComponent::HeaderCellComponent'
 
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(**system_arguments)
         @system_arguments = system_arguments
       end
@@ -49,9 +62,11 @@ module Carbon
       end
     end
 
+    # Structured list body row.
     class RowComponent < Carbon::BaseComponent
       renders_many :cells, 'Carbon::StructuredListComponent::CellComponent'
 
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(**system_arguments)
         @system_arguments = system_arguments
       end
@@ -72,7 +87,9 @@ module Carbon
       end
     end
 
+    # Structured list body cell.
     class CellComponent < Carbon::BaseComponent
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(**system_arguments)
         @system_arguments = system_arguments
       end
@@ -93,7 +110,9 @@ module Carbon
       end
     end
 
+    # Structured list header cell.
     class HeaderCellComponent < Carbon::BaseComponent
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(**system_arguments)
         @system_arguments = system_arguments
       end

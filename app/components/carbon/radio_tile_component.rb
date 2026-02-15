@@ -1,9 +1,30 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Radio Tile (selectable tile with radio behavior).
+  #
+  # @example Basic usage
+  #   render Carbon::RadioTileComponent.new(value: "opt1", name: "options") { "Option 1" }
+  #
+  # @see https://carbondesignsystem.com/components/tile/usage/
   class RadioTileComponent < Carbon::BaseComponent
-    attr_reader :value, :checked, :disabled, :input_id, :name
+    # @return [String] input value
+    attr_reader :value
+    # @return [Boolean] whether checked
+    attr_reader :checked
+    # @return [Boolean] whether disabled
+    attr_reader :disabled
+    # @return [String] unique input ID
+    attr_reader :input_id
+    # @return [String, nil] input name attribute
+    attr_reader :name
 
+    # @param value [String] input value
+    # @param checked [Boolean] initial checked state
+    # @param disabled [Boolean] disables the tile
+    # @param id [String, nil] unique input ID
+    # @param name [String, nil] input name attribute
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(value:, checked: false, disabled: false, id: nil, name: nil, **system_arguments)
       @value = value
       @checked = checked

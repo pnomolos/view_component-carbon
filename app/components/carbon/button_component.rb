@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Button.
+  #
+  # @example Basic usage
+  #   render Carbon::ButtonComponent.new(kind: :primary) { "Click me" }
+  #
+  # @see https://carbondesignsystem.com/components/button/usage/
   class ButtonComponent < BaseComponent
     KINDS = %i[primary secondary tertiary ghost danger danger_tertiary danger_ghost].freeze
     SIZES = %i[sm md lg xl 2xl].freeze
@@ -31,8 +37,28 @@ module Carbon
 
     renders_one :icon
 
-    attr_reader :kind, :size, :disabled, :icon_only, :href, :type
+    # @return [Symbol] button variant
+    attr_reader :kind
+    # @return [Symbol] button size
+    attr_reader :size
+    # @return [Boolean] whether the button is disabled
+    attr_reader :disabled
+    # @return [Boolean] whether the button shows only an icon
+    attr_reader :icon_only
+    # @return [String, nil] link URL (renders as anchor when set)
+    attr_reader :href
+    # @return [Symbol] HTML button type
+    attr_reader :type
 
+    # @param kind [Symbol] button variant
+    #   (:primary, :secondary, :tertiary, :ghost, :danger, :danger_tertiary, :danger_ghost)
+    # @param size [Symbol] button size (:sm, :md, :lg, :xl, :"2xl")
+    # @param disabled [Boolean] whether the button is disabled
+    # @param icon_only [Boolean] renders an icon-only button
+    # @param href [String, nil] renders as a link when provided
+    # @param type [Symbol] HTML button type (:button, :submit, :reset)
+    # @param icon_description [String, nil] accessible label for icon-only buttons
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(kind: DEFAULT_KIND, size: DEFAULT_SIZE, disabled: false, icon_only: false,
                    href: nil, type: DEFAULT_TYPE, icon_description: nil, **system_arguments)
       @kind = validate_argument(:kind, kind, KINDS, DEFAULT_KIND)
@@ -45,10 +71,12 @@ module Carbon
       @system_arguments = system_arguments
     end
 
+    # @return [Symbol] the HTML tag to render (:a or :button)
     def tag_name
       href ? :a : :button
     end
 
+    # @return [String] CSS class string for the button
     def css_classes
       classes = ['cds--btn', "cds--btn--#{KIND_CSS[@kind]}", "cds--btn--#{SIZE_CSS[@size]}"]
       classes << 'cds--btn--disabled' if @disabled
@@ -57,6 +85,7 @@ module Carbon
       class_names(*classes)
     end
 
+    # @return [Hash] HTML attributes for the button element
     def html_attributes # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       attrs = @system_arguments.dup
       attrs[:class] = css_classes

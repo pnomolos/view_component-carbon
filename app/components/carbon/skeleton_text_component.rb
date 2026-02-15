@@ -1,7 +1,18 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Skeleton Text placeholder.
+  #
+  # @example Basic usage
+  #   render Carbon::SkeletonTextComponent.new(lines: 3)
+  #
+  # @see https://carbondesignsystem.com/components/skeleton/usage/
   class SkeletonTextComponent < BaseComponent
+    # @param heading [Boolean] renders as a skeleton heading
+    # @param lines [Integer] number of skeleton lines to render
+    # @param width [String, nil] custom width for the skeleton
+    # @param paragraph [Boolean, nil] whether to render as a paragraph
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(heading: false, lines: 3, width: nil, paragraph: nil, **system_arguments)
       @heading = heading
       @lines = lines

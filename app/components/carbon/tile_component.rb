@@ -1,9 +1,18 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Tile (static container).
+  #
+  # @example Basic usage
+  #   render Carbon::TileComponent.new { "Tile content" }
+  #
+  # @see https://carbondesignsystem.com/components/tile/usage/
   class TileComponent < Carbon::BaseComponent
+    # @return [Boolean] whether to use light variant
     attr_reader :light
 
+    # @param light [Boolean] uses the light color variant
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(light: false, **system_arguments)
       @light = light
       @system_arguments = system_arguments

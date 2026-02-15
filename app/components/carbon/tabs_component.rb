@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Tabs component.
+  #
+  # @example Basic usage
+  #   render Carbon::TabsComponent.new do |tabs|
+  #     tabs.with_tab(label: "Tab 1", selected: true) { "Content 1" }
+  #   end
+  #
+  # @see https://carbondesignsystem.com/components/tabs/usage/
   class TabsComponent < Carbon::BaseComponent
     TYPES = %i[default contained].freeze
     DEFAULT_TYPE = :default
@@ -15,8 +23,11 @@ module Carbon
       )
     }
 
+    # @return [Symbol] tabs type
     attr_reader :type
 
+    # @param type [Symbol] tabs type (:default, :contained)
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(type: DEFAULT_TYPE, **system_arguments)
       @type = validate_argument(:type, type, TYPES, DEFAULT_TYPE)
       @system_arguments = system_arguments
@@ -58,10 +69,28 @@ module Carbon
       class_names(classes)
     end
 
-    # Simple component to hold tab data
+    # Data holder for tab slot content.
     class TabData < ViewComponent::Base
-      attr_reader :label, :selected, :disabled, :system_arguments, :content_block, :tab_id, :panel_id
+      # @return [String] tab label
+      attr_reader :label
+      # @return [Boolean] whether selected
+      attr_reader :selected
+      # @return [Boolean] whether disabled
+      attr_reader :disabled
+      # @return [Hash] additional HTML attributes
+      attr_reader :system_arguments
+      # @return [Proc, nil] block that produces tab panel content
+      attr_reader :content_block
+      # @return [String] unique tab ID
+      attr_reader :tab_id
+      # @return [String] unique panel ID
+      attr_reader :panel_id
 
+      # @param label [String] tab label
+      # @param selected [Boolean] whether selected
+      # @param disabled [Boolean] whether disabled
+      # @param system_arguments [Hash] additional HTML attributes
+      # @param content_block [Proc, nil] block for panel content
       def initialize(label:, selected:, disabled:, system_arguments:, content_block:)
         @label = label
         @selected = selected
@@ -73,6 +102,7 @@ module Carbon
         super()
       end
 
+      # @return [String, nil] rendered panel content
       def content
         @content_block&.call
       end

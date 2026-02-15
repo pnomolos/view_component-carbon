@@ -1,9 +1,27 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Clickable Tile.
+  #
+  # @example Basic usage
+  #   render Carbon::ClickableTileComponent.new(href: "/page") { "Tile content" }
+  #
+  # @see https://carbondesignsystem.com/components/tile/usage/
   class ClickableTileComponent < Carbon::BaseComponent
-    attr_reader :href, :disabled, :target, :rel
+    # @return [String, nil] link URL
+    attr_reader :href
+    # @return [Boolean] whether the tile is disabled
+    attr_reader :disabled
+    # @return [String, nil] link target attribute
+    attr_reader :target
+    # @return [String, nil] link rel attribute
+    attr_reader :rel
 
+    # @param href [String, nil] link URL
+    # @param disabled [Boolean] disables the tile
+    # @param target [String, nil] link target attribute
+    # @param rel [String, nil] link rel attribute
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(href: nil, disabled: false, target: nil, rel: nil, **system_arguments)
       @href = href
       @disabled = disabled
@@ -12,6 +30,7 @@ module Carbon
       @system_arguments = system_arguments
     end
 
+    # @return [Boolean] whether the tile renders as a link
     def link?
       @href.present?
     end

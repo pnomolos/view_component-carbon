@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Dropdown select.
+  #
+  # @example Basic usage
+  #   render Carbon::DropdownComponent.new(label_text: "Color") do |dd|
+  #     dd.with_item(value: "red", text: "Red")
+  #   end
+  #
+  # @see https://carbondesignsystem.com/components/dropdown/usage/
   class DropdownComponent < BaseComponent
     include Carbon::Concerns::FormFieldable
 
@@ -9,8 +17,28 @@ module Carbon
 
     renders_many :items, 'Carbon::DropdownComponent::ItemComponent'
 
-    attr_reader :label_text, :size, :disabled, :hide_label, :title_text
+    # @return [String] label text
+    attr_reader :label_text
+    # @return [Symbol] dropdown size
+    attr_reader :size
+    # @return [Boolean] whether disabled
+    attr_reader :disabled
+    # @return [Boolean] whether the label is hidden
+    attr_reader :hide_label
+    # @return [String] title text for the trigger button
+    attr_reader :title_text
 
+    # @param label_text [String] label text
+    # @param size [Symbol] dropdown size (:sm, :md, :lg)
+    # @param disabled [Boolean] disables the dropdown
+    # @param invalid [Boolean] marks as invalid
+    # @param invalid_text [String, nil] validation error message
+    # @param warn [Boolean] marks as warning
+    # @param warn_text [String, nil] warning message
+    # @param helper_text [String, nil] helper text
+    # @param hide_label [Boolean] visually hides the label
+    # @param title_text [String] trigger button text
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(
       label_text: 'Label',
       size: DEFAULT_SIZE,
@@ -35,10 +63,12 @@ module Carbon
                             warn_text: warn_text, helper_text: helper_text)
     end
 
+    # @return [ItemComponent, nil] the currently selected item
     def selected_item
       items.find(&:selected)
     end
 
+    # @return [String] text shown in the trigger button
     def display_text
       selected_item&.text || @title_text
     end
@@ -76,9 +106,22 @@ module Carbon
       raise ArgumentError, "Invalid #{name}: #{value.inspect}. Must be one of: #{allowed.map(&:inspect).join(', ')}"
     end
 
+    # A single dropdown option.
     class ItemComponent < BaseComponent
-      attr_reader :value, :text, :selected, :disabled
+      # @return [String] item value
+      attr_reader :value
+      # @return [String] item display text
+      attr_reader :text
+      # @return [Boolean] whether selected
+      attr_reader :selected
+      # @return [Boolean] whether disabled
+      attr_reader :disabled
 
+      # @param value [String] item value
+      # @param text [String] item display text
+      # @param selected [Boolean] marks item as selected
+      # @param disabled [Boolean] disables the item
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(value:, text:, selected: false, disabled: false, **system_arguments)
         @value = value
         @text = text
@@ -87,6 +130,7 @@ module Carbon
         @system_arguments = system_arguments
       end
 
+      # @return [String] CSS class string for the item
       def css_classes
         classes = ['cds--list-box__menu-item']
         classes << 'cds--list-box__menu-item--active' if @selected

@@ -1,15 +1,62 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Number Input with increment/decrement controls.
+  #
+  # @example Basic usage
+  #   render Carbon::NumberInputComponent.new(label_text: "Quantity", value: 1)
+  #
+  # @see https://carbondesignsystem.com/components/number-input/usage/
   class NumberInputComponent < BaseComponent
     include Carbon::Concerns::FormFieldable
 
     SIZES = %i[sm md lg].freeze
     DEFAULT_SIZE = :md
 
-    attr_reader :name, :value, :label_text, :helper_text, :min, :max, :step, :disabled, :invalid, :invalid_text,
-                :warn, :warn_text, :size, :id
+    # @return [String, nil] input name
+    attr_reader :name
+    # @return [Numeric, nil] current value
+    attr_reader :value
+    # @return [String, nil] label text
+    attr_reader :label_text
+    # @return [String, nil] helper text
+    attr_reader :helper_text
+    # @return [Numeric, nil] minimum value
+    attr_reader :min
+    # @return [Numeric, nil] maximum value
+    attr_reader :max
+    # @return [Numeric] step increment
+    attr_reader :step
+    # @return [Boolean] whether disabled
+    attr_reader :disabled
+    # @return [Boolean] whether in invalid state
+    attr_reader :invalid
+    # @return [String, nil] validation error message
+    attr_reader :invalid_text
+    # @return [Boolean] whether in warning state
+    attr_reader :warn
+    # @return [String, nil] warning message
+    attr_reader :warn_text
+    # @return [Symbol] input size
+    attr_reader :size
+    # @return [String] unique element ID
+    attr_reader :id
 
+    # @param label_text [String, nil] label text
+    # @param name [String, nil] input name attribute
+    # @param value [Numeric, nil] initial value
+    # @param helper_text [String, nil] helper text
+    # @param min [Numeric, nil] minimum allowed value
+    # @param max [Numeric, nil] maximum allowed value
+    # @param step [Numeric] step increment
+    # @param disabled [Boolean] disables the input
+    # @param invalid [Boolean] marks as invalid
+    # @param invalid_text [String, nil] validation error message
+    # @param warn [Boolean] marks as warning
+    # @param warn_text [String, nil] warning message
+    # @param size [Symbol] input size (:sm, :md, :lg)
+    # @param id [String, nil] unique element ID
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(
       label_text: nil,
       name: nil,
@@ -47,12 +94,14 @@ module Carbon
       )
     end
 
+    # @return [String] CSS class string for the wrapper
     def wrapper_classes
       classes = ['cds--form-item']
       classes << @system_arguments.delete(:class) if @system_arguments[:class]
       class_names(*classes)
     end
 
+    # @return [String] CSS class string for the number container
     def number_classes
       classes = ['cds--number', "cds--number--#{@size}"]
       classes << 'cds--number--invalid' if @invalid
@@ -60,12 +109,14 @@ module Carbon
       class_names(*classes)
     end
 
+    # @return [String] CSS class string for the input wrapper
     def input_wrapper_classes
       classes = ['cds--number__input-wrapper']
       classes << 'cds--number__input-wrapper--warning' if @warn
       class_names(*classes)
     end
 
+    # @return [Hash] HTML attributes for the number input
     def input_attributes
       attrs = {
         type: 'number',
@@ -84,6 +135,8 @@ module Carbon
       attrs.compact
     end
 
+    # @param type [String] button direction ("up" or "down")
+    # @return [Hash] HTML attributes for increment/decrement buttons
     def button_attributes(type)
       attrs = {
         class: "cds--number__control-btn #{type}-icon",
@@ -95,6 +148,7 @@ module Carbon
       attrs
     end
 
+    # @return [String] SVG markup for the subtract icon
     def subtract_icon_svg
       '<svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" ' \
         'fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true">' \
@@ -102,6 +156,7 @@ module Carbon
         '</svg>'
     end
 
+    # @return [String] SVG markup for the add icon
     def add_icon_svg
       '<svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" ' \
         'fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true">' \

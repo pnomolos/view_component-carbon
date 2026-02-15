@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Data Table with optional sorting, selection, and expansion.
+  #
+  # @example Basic usage
+  #   render Carbon::DataTableComponent.new(title: "Users") do |table|
+  #     table.with_head { |head| head.with_cell { "Name" } }
+  #     table.with_row { |row| row.with_cell { "Alice" } }
+  #   end
+  #
+  # @see https://carbondesignsystem.com/components/data-table/usage/
   class DataTableComponent < BaseComponent
     SIZES = %i[xs sm md lg xl].freeze
     DEFAULT_SIZE = :lg
@@ -29,9 +38,38 @@ module Carbon
       )
     }
 
-    attr_reader :size, :sortable, :selectable, :radio, :expandable, :zebra,
-                :sticky_header, :static_width, :title, :description
+    # @return [Symbol] table row size
+    attr_reader :size
+    # @return [Boolean] whether columns are sortable
+    attr_reader :sortable
+    # @return [Boolean] whether rows are selectable via checkbox
+    attr_reader :selectable
+    # @return [Boolean] whether rows use radio selection
+    attr_reader :radio
+    # @return [Boolean] whether rows are expandable
+    attr_reader :expandable
+    # @return [Boolean] whether to show zebra striping
+    attr_reader :zebra
+    # @return [Boolean] whether the header is sticky
+    attr_reader :sticky_header
+    # @return [Boolean] whether the table has static width
+    attr_reader :static_width
+    # @return [String, nil] table title
+    attr_reader :title
+    # @return [String, nil] table description
+    attr_reader :description
 
+    # @param size [Symbol] row size (:xs, :sm, :md, :lg, :xl)
+    # @param sortable [Boolean] enables column sorting
+    # @param selectable [Boolean] enables row selection via checkbox
+    # @param radio [Boolean] enables single row selection via radio
+    # @param expandable [Boolean] enables row expansion
+    # @param zebra [Boolean] enables zebra striping
+    # @param sticky_header [Boolean] makes the header sticky
+    # @param static_width [Boolean] uses static column widths
+    # @param title [String, nil] table title text
+    # @param description [String, nil] table description text
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(
       size: DEFAULT_SIZE,
       sortable: false,
@@ -99,10 +137,12 @@ module Carbon
 
     # -- Sub-components --
 
+    # Toolbar area above the data table for search and batch actions.
     class ToolbarComponent < BaseComponent
       renders_one :batch_actions, 'Carbon::DataTableComponent::BatchActionsComponent'
       renders_one :search, 'Carbon::DataTableComponent::ToolbarSearchComponent'
 
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(**system_arguments)
         @system_arguments = system_arguments
       end
@@ -122,11 +162,15 @@ module Carbon
       end
     end
 
+    # Container for batch action buttons shown when rows are selected.
     class BatchActionsComponent < BaseComponent
       renders_many :actions, 'Carbon::DataTableComponent::BatchActionButtonComponent'
 
+      # @return [Boolean] whether batch actions are visible
       attr_reader :active
 
+      # @param active [Boolean] whether batch actions are visible
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(active: false, **system_arguments)
         @active = active
         @system_arguments = system_arguments
@@ -149,9 +193,13 @@ module Carbon
       end
     end
 
+    # A button rendered inside the batch actions bar.
     class BatchActionButtonComponent < BaseComponent
+      # @return [String] button label
       attr_reader :label
 
+      # @param label [String] button label text
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(label:, **system_arguments)
         @label = label
         @system_arguments = system_arguments
@@ -162,7 +210,10 @@ module Carbon
       end
     end
 
+    # Search input within the table toolbar.
     class ToolbarSearchComponent < BaseComponent
+      # @param placeholder [String] search input placeholder
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(placeholder: 'Filter table', **system_arguments)
         @placeholder = placeholder
         @system_arguments = system_arguments
@@ -183,11 +234,24 @@ module Carbon
       end
     end
 
+    # Table header row containing header cells.
     class HeadComponent < BaseComponent
       renders_many :cells, 'Carbon::DataTableComponent::HeaderCellComponent'
 
-      attr_reader :selectable, :radio, :expandable, :table_id
+      # @return [Boolean] whether rows are selectable
+      attr_reader :selectable
+      # @return [Boolean] whether radio selection is used
+      attr_reader :radio
+      # @return [Boolean] whether rows are expandable
+      attr_reader :expandable
+      # @return [String, nil] parent table ID
+      attr_reader :table_id
 
+      # @param selectable [Boolean] enables select-all checkbox
+      # @param radio [Boolean] radio selection mode
+      # @param expandable [Boolean] adds expand column
+      # @param table_id [String, nil] parent table ID
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(selectable: false, radio: false, expandable: false, table_id: nil, **system_arguments)
         @selectable = selectable
         @radio = radio
@@ -197,11 +261,21 @@ module Carbon
       end
     end
 
+    # A single header cell with optional sorting.
     class HeaderCellComponent < BaseComponent
       SORT_DIRECTIONS = %i[none ascending descending].freeze
 
-      attr_reader :key, :sortable, :sort_direction
+      # @return [String, nil] column key for sorting
+      attr_reader :key
+      # @return [Boolean] whether the column is sortable
+      attr_reader :sortable
+      # @return [Symbol] current sort direction
+      attr_reader :sort_direction
 
+      # @param key [String, nil] column key for sorting
+      # @param sortable [Boolean] enables sorting on this column
+      # @param sort_direction [Symbol] initial sort (:none, :ascending, :descending)
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(key: nil, sortable: false, sort_direction: :none, **system_arguments)
         @key = key
         @sortable = sortable
@@ -267,13 +341,37 @@ module Carbon
       end
     end
 
+    # A single data table row with optional selection and expansion.
     class RowComponent < BaseComponent
       renders_many :cells, 'Carbon::DataTableComponent::CellComponent'
       renders_one :expanded_content
 
-      attr_reader :row_id, :selected, :expanded, :disabled,
-                  :selectable, :radio, :expandable, :table_id
+      # @return [String] unique row ID
+      attr_reader :row_id
+      # @return [Boolean] whether the row is selected
+      attr_reader :selected
+      # @return [Boolean] whether the row is expanded
+      attr_reader :expanded
+      # @return [Boolean] whether the row is disabled
+      attr_reader :disabled
+      # @return [Boolean] whether selection is enabled
+      attr_reader :selectable
+      # @return [Boolean] whether radio selection is used
+      attr_reader :radio
+      # @return [Boolean] whether the row is expandable
+      attr_reader :expandable
+      # @return [String, nil] parent table ID
+      attr_reader :table_id
 
+      # @param row_id [String, nil] unique row ID
+      # @param selected [Boolean] whether the row is selected
+      # @param expanded [Boolean] whether the row is expanded
+      # @param disabled [Boolean] whether the row is disabled
+      # @param selectable [Boolean] enables row selection
+      # @param radio [Boolean] radio selection mode
+      # @param expandable [Boolean] enables row expansion
+      # @param table_id [String, nil] parent table ID
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(
         row_id: nil,
         selected: false,
@@ -336,7 +434,9 @@ module Carbon
       end
     end
 
+    # A single data cell within a table row.
     class CellComponent < BaseComponent
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(**system_arguments)
         @system_arguments = system_arguments
       end

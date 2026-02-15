@@ -1,6 +1,16 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System UI Shell with header, side navigation, and panels.
+  #
+  # @example Basic usage
+  #   render Carbon::UIShellComponent.new do |shell|
+  #     shell.with_header do |h|
+  #       h.with_name(href: "/") { "App Name" }
+  #     end
+  #   end
+  #
+  # @see https://carbondesignsystem.com/components/ui-shell-header/usage/
   class UIShellComponent < Carbon::BaseComponent
     renders_one :skip_to_content, lambda { |href: '#main-content', text: 'Skip to main content', **system_arguments|
       SkipToContentComponent.new(href: href, text: text, **system_arguments)
@@ -16,13 +26,16 @@ module Carbon
       )
     }
 
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(**system_arguments)
       @system_arguments = system_arguments
     end
 
-    # -- SkipToContentComponent --
-
+    # Skip-to-content accessibility link.
     class SkipToContentComponent < Carbon::BaseComponent
+      # @param href [String] anchor target
+      # @param text [String] link text
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(href: '#main-content', text: 'Skip to main content', **system_arguments)
         @href = href
         @text = text
@@ -46,8 +59,7 @@ module Carbon
       end
     end
 
-    # -- HeaderComponent --
-
+    # Shell header bar containing name, navigation, and global actions.
     class HeaderComponent < Carbon::BaseComponent
       renders_one :name, lambda { |href:, prefix: 'IBM', **system_arguments|
         HeaderNameComponent.new(href: href, prefix: prefix, **system_arguments)
@@ -62,6 +74,8 @@ module Carbon
         HeaderPanelComponent.new(expanded: expanded, panel_id: panel_id, **system_arguments)
       }
 
+      # @param aria_label [String, nil] accessible label
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(aria_label: nil, **system_arguments)
         @aria_label = aria_label
         @system_arguments = system_arguments
@@ -83,9 +97,11 @@ module Carbon
       end
     end
 
-    # -- HeaderNameComponent --
-
+    # Header name/brand link.
     class HeaderNameComponent < Carbon::BaseComponent
+      # @param href [String] link URL
+      # @param prefix [String] prefix text (e.g., company name)
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(href:, prefix: 'IBM', **system_arguments)
         @href = href
         @prefix = prefix
@@ -114,8 +130,7 @@ module Carbon
       end
     end
 
-    # -- HeaderNavComponent --
-
+    # Header navigation bar containing items and menus.
     class HeaderNavComponent < Carbon::BaseComponent
       renders_many :items, types: {
         item: {
@@ -132,6 +147,8 @@ module Carbon
         }
       }
 
+      # @param aria_label [String] accessible label
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(aria_label: 'Header navigation', **system_arguments)
         @aria_label = aria_label
         @system_arguments = system_arguments
@@ -153,9 +170,12 @@ module Carbon
       end
     end
 
-    # -- HeaderMenuItemComponent --
-
+    # A single navigation item in the header.
     class HeaderMenuItemComponent < Carbon::BaseComponent
+      # @param label [String] item label
+      # @param href [String] link URL
+      # @param active [Boolean] marks as the current page
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(label:, href:, active: false, **system_arguments)
         @label = label
         @href = href
@@ -188,13 +208,14 @@ module Carbon
       end
     end
 
-    # -- HeaderMenuComponent --
-
+    # A dropdown submenu in the header navigation.
     class HeaderMenuComponent < Carbon::BaseComponent
       renders_many :items, lambda { |label:, href:, active: false, **system_arguments|
         HeaderMenuItemComponent.new(label: label, href: href, active: active, **system_arguments)
       }
 
+      # @param label [String] menu trigger label
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(label:, **system_arguments)
         @label = label
         @system_arguments = system_arguments
@@ -217,8 +238,7 @@ module Carbon
       end
     end
 
-    # -- HeaderGlobalBarComponent --
-
+    # Container for global header action buttons.
     class HeaderGlobalBarComponent < Carbon::BaseComponent
       renders_many :actions, lambda { |aria_label:, active: false, panel_id: nil, **system_arguments|
         HeaderGlobalActionComponent.new(
@@ -226,6 +246,7 @@ module Carbon
         )
       }
 
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(**system_arguments)
         @system_arguments = system_arguments
       end
@@ -249,9 +270,12 @@ module Carbon
       end
     end
 
-    # -- HeaderGlobalActionComponent --
-
+    # A global action button in the header (e.g., notifications, user).
     class HeaderGlobalActionComponent < Carbon::BaseComponent
+      # @param aria_label [String] accessible label
+      # @param active [Boolean] whether the action is active
+      # @param panel_id [String, nil] ID of the controlled panel
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(aria_label:, active: false, panel_id: nil, **system_arguments)
         @aria_label = aria_label
         @active = active
@@ -287,13 +311,15 @@ module Carbon
       end
     end
 
-    # -- HeaderPanelComponent --
-
+    # A slide-out panel attached to the header.
     class HeaderPanelComponent < Carbon::BaseComponent
       renders_one :switcher, lambda { |aria_label:, **system_arguments|
         SwitcherComponent.new(aria_label: aria_label, **system_arguments)
       }
 
+      # @param expanded [Boolean] initial expanded state
+      # @param panel_id [String, nil] unique panel ID
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(expanded: false, panel_id: nil, **system_arguments)
         @expanded = expanded
         @panel_id = panel_id
@@ -317,13 +343,14 @@ module Carbon
       end
     end
 
-    # -- SwitcherComponent --
-
+    # Product/application switcher within a header panel.
     class SwitcherComponent < Carbon::BaseComponent
       renders_many :items, lambda { |href:, selected: false, **system_arguments|
         SwitcherItemComponent.new(href: href, selected: selected, **system_arguments)
       }
 
+      # @param aria_label [String] accessible label
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(aria_label:, **system_arguments)
         @aria_label = aria_label
         @system_arguments = system_arguments
@@ -345,9 +372,11 @@ module Carbon
       end
     end
 
-    # -- SwitcherItemComponent --
-
+    # A single item in the switcher.
     class SwitcherItemComponent < Carbon::BaseComponent
+      # @param href [String] link URL
+      # @param selected [Boolean] marks as the current item
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(href:, selected: false, **system_arguments)
         @href = href
         @selected = selected
@@ -372,8 +401,7 @@ module Carbon
       end
     end
 
-    # -- SideNavComponent --
-
+    # Side navigation panel with links and menus.
     class SideNavComponent < Carbon::BaseComponent
       renders_many :items, types: {
         link: {
@@ -390,6 +418,11 @@ module Carbon
         }
       }
 
+      # @param expanded [Boolean] initial expanded state
+      # @param fixed [Boolean] fixed positioning
+      # @param rail [Boolean] rail mode (narrow collapsed)
+      # @param aria_label [String] accessible label
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(expanded: false, fixed: false, rail: false, aria_label: 'Side navigation',
                      **system_arguments)
         @expanded = expanded
@@ -428,9 +461,12 @@ module Carbon
       end
     end
 
-    # -- SideNavLinkComponent --
-
+    # A single link in the side navigation.
     class SideNavLinkComponent < Carbon::BaseComponent
+      # @param label [String] link label
+      # @param href [String] link URL
+      # @param active [Boolean] marks as the current page
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(label:, href:, active: false, **system_arguments)
         @label = label
         @href = href
@@ -458,13 +494,16 @@ module Carbon
       end
     end
 
-    # -- SideNavMenuComponent --
-
+    # An expandable menu in the side navigation.
     class SideNavMenuComponent < Carbon::BaseComponent
       renders_many :items, lambda { |label:, href:, active: false, **system_arguments|
         SideNavMenuItemComponent.new(label: label, href: href, active: active, **system_arguments)
       }
 
+      # @param title [String] menu title
+      # @param active [Boolean] whether the menu is active
+      # @param expanded [Boolean] initial expanded state
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(title:, active: false, expanded: false, **system_arguments)
         @title = title
         @active = active
@@ -502,9 +541,12 @@ module Carbon
       attr_reader :title, :expanded
     end
 
-    # -- SideNavMenuItemComponent --
-
+    # A single item within a side navigation menu.
     class SideNavMenuItemComponent < Carbon::BaseComponent
+      # @param label [String] item label
+      # @param href [String] link URL
+      # @param active [Boolean] marks as the current page
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(label:, href:, active: false, **system_arguments)
         @label = label
         @href = href

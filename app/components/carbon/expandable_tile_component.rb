@@ -1,12 +1,33 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Expandable Tile.
+  #
+  # @example Basic usage
+  #   render Carbon::ExpandableTileComponent.new do |tile|
+  #     tile.with_above_the_fold { "Visible content" }
+  #     tile.with_below_the_fold { "Hidden content" }
+  #   end
+  #
+  # @see https://carbondesignsystem.com/components/tile/usage/
   class ExpandableTileComponent < Carbon::BaseComponent
     renders_one :above_the_fold
     renders_one :below_the_fold
 
-    attr_reader :expanded, :tile_collapsed_icon_text, :tile_expanded_icon_text, :tile_id
+    # @return [Boolean] whether the tile is expanded
+    attr_reader :expanded
+    # @return [String] accessible text when collapsed
+    attr_reader :tile_collapsed_icon_text
+    # @return [String] accessible text when expanded
+    attr_reader :tile_expanded_icon_text
+    # @return [String] unique tile ID
+    attr_reader :tile_id
 
+    # @param expanded [Boolean] initial expanded state
+    # @param tile_collapsed_icon_text [String] accessible text when collapsed
+    # @param tile_expanded_icon_text [String] accessible text when expanded
+    # @param id [String, nil] unique tile ID
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(
       expanded: false,
       tile_collapsed_icon_text: 'Interact to expand tile',

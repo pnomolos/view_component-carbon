@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Menu with items, dividers, and groups.
+  #
+  # @example Basic usage
+  #   render Carbon::MenuComponent.new(open: true) do |menu|
+  #     menu.with_item(label: "Edit")
+  #   end
+  #
+  # @see https://carbondesignsystem.com/components/menu/usage/
   class MenuComponent < Carbon::BaseComponent
     SIZES = %i[xs sm md lg].freeze
     DEFAULT_SIZE = :md
@@ -32,8 +40,15 @@ module Carbon
       }
     }
 
-    attr_reader :size, :open
+    # @return [Symbol] menu size
+    attr_reader :size
+    # @return [Boolean] whether the menu is open
+    attr_reader :open
 
+    # @param size [Symbol] menu size (:xs, :sm, :md, :lg)
+    # @param open [Boolean] whether the menu is open
+    # @param label [String, nil] accessible label
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(size: DEFAULT_SIZE, open: false, label: nil, **system_arguments)
       @size = validate_argument(:size, size, SIZES, DEFAULT_SIZE)
       @open = open
@@ -69,9 +84,22 @@ module Carbon
             "Invalid #{name}: #{value.inspect}. Must be one of: #{allowed.map(&:inspect).join(', ')}"
     end
 
+    # A single menu item.
     class ItemComponent < Carbon::BaseComponent
-      attr_reader :label, :disabled, :danger, :shortcut
+      # @return [String] item label
+      attr_reader :label
+      # @return [Boolean] whether disabled
+      attr_reader :disabled
+      # @return [Boolean] whether this is a danger item
+      attr_reader :danger
+      # @return [String, nil] keyboard shortcut text
+      attr_reader :shortcut
 
+      # @param label [String] item label
+      # @param disabled [Boolean] disables the item
+      # @param danger [Boolean] applies danger styling
+      # @param shortcut [String, nil] keyboard shortcut text
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(label:, disabled: false, danger: false, shortcut: nil, **system_arguments)
         @label = label
         @disabled = disabled
@@ -100,7 +128,9 @@ module Carbon
       end
     end
 
+    # A visual divider between menu items.
     class DividerComponent < Carbon::BaseComponent
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(**system_arguments)
         @system_arguments = system_arguments
       end
@@ -121,6 +151,7 @@ module Carbon
       end
     end
 
+    # A labeled group of menu items.
     class GroupComponent < Carbon::BaseComponent
       renders_many :items, lambda { |label:, disabled: false, danger: false, shortcut: nil, **system_arguments|
         Carbon::MenuComponent::ItemComponent.new(
@@ -132,8 +163,11 @@ module Carbon
         )
       }
 
+      # @return [String] group label
       attr_reader :label
 
+      # @param label [String] group label
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(label:, **system_arguments)
         @label = label
         @system_arguments = system_arguments

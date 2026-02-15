@@ -1,18 +1,36 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Progress Indicator with steps.
+  #
+  # @example Basic usage
+  #   render Carbon::ProgressIndicatorComponent.new(current_index: 1) do |pi|
+  #     pi.with_step(label: "Step 1")
+  #     pi.with_step(label: "Step 2")
+  #   end
+  #
+  # @see https://carbondesignsystem.com/components/progress-indicator/usage/
   class ProgressIndicatorComponent < BaseComponent
     renders_many :steps, 'StepComponent'
 
+    # @param vertical [Boolean] renders steps vertically
+    # @param current_index [Integer] zero-based index of the current step
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(vertical: false, current_index: 0, **system_arguments)
       @vertical = vertical
       @current_index = current_index
       @system_arguments = system_arguments
     end
 
+    # A single step within a ProgressIndicator.
     class StepComponent < BaseComponent
       STATES = %i[complete current incomplete].freeze
 
+      # @param label [String] step label
+      # @param secondary_label [String, nil] secondary label text
+      # @param state [Symbol, nil] step state (:complete, :current, :incomplete)
+      # @param index [Integer, nil] step index (set automatically)
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(label:, secondary_label: nil, state: nil, index: nil, **system_arguments)
         @label = label
         @secondary_label = secondary_label
@@ -21,8 +39,11 @@ module Carbon
         @system_arguments = system_arguments
       end
 
+      # @return [ProgressIndicatorComponent] parent component reference
       attr_accessor :parent
 
+      # @param idx [Integer] step index
+      # @return [void]
       def index=(idx)
         @index = idx
         # Set state based on parent's current_index if not explicitly set and we now have an index
@@ -94,6 +115,7 @@ module Carbon
       end
     end
 
+    # @return [Integer] zero-based index of the current step
     attr_reader :current_index
 
     private

@@ -1,20 +1,33 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Contained List.
+  #
+  # @example Basic usage
+  #   render Carbon::ContainedListComponent.new(label: "Items") do |list|
+  #     list.with_item { "Item 1" }
+  #   end
+  #
+  # @see https://carbondesignsystem.com/components/contained-list/usage/
   class ContainedListComponent < BaseComponent
     KINDS = %i[on_page disclosed].freeze
 
     renders_many :items, 'ItemComponent'
 
+    # @param label [String] accessible label for the list
+    # @param kind [Symbol] list kind (:on_page, :disclosed)
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(label:, kind: :on_page, **system_arguments)
       @label = label
       @kind = validate_argument('kind', kind, KINDS, :on_page)
       @system_arguments = system_arguments
     end
 
+    # A single item within a ContainedList.
     class ItemComponent < BaseComponent
       renders_one :action
 
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(**system_arguments)
         @system_arguments = system_arguments
       end

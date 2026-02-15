@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Tag.
+  #
+  # @example Basic usage
+  #   render Carbon::TagComponent.new(type: :read_only, color: :blue) { "Label" }
+  #
+  # @see https://carbondesignsystem.com/components/tag/usage/
   class TagComponent < BaseComponent
     TYPES = %i[read_only filter dismissible].freeze
     COLORS = %i[red magenta purple blue cyan teal green gray cool_gray warm_gray high_contrast outline].freeze
@@ -37,8 +43,21 @@ module Carbon
       dismissible: 'dismissible'
     }.freeze
 
-    attr_reader :type, :color, :size, :disabled
+    # @return [Symbol] tag type
+    attr_reader :type
+    # @return [Symbol] tag color
+    attr_reader :color
+    # @return [Symbol] tag size
+    attr_reader :size
+    # @return [Boolean] whether disabled
+    attr_reader :disabled
 
+    # @param type [Symbol] tag type (:read_only, :filter, :dismissible)
+    # @param color [Symbol] tag color
+    #   (:red, :magenta, :purple, :blue, :cyan, :teal, :green, :gray, :cool_gray, :warm_gray, :high_contrast, :outline)
+    # @param size [Symbol] tag size (:sm, :md, :lg)
+    # @param disabled [Boolean] disables the tag
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(type: DEFAULT_TYPE, color: DEFAULT_COLOR, size: DEFAULT_SIZE, disabled: false, **system_arguments)
       @type = validate_argument(:type, type, TYPES, DEFAULT_TYPE)
       @color = validate_argument(:color, color, COLORS, DEFAULT_COLOR)
@@ -47,6 +66,7 @@ module Carbon
       @system_arguments = system_arguments
     end
 
+    # @return [String] CSS class string
     def css_classes
       classes = ['cds--tag', "cds--tag--#{SIZE_CSS[@size]}", "cds--tag--#{COLOR_CSS[@color]}"]
       classes << "cds--tag--#{TYPE_CSS[@type]}" if TYPE_CSS[@type]
@@ -54,6 +74,7 @@ module Carbon
       class_names(*classes)
     end
 
+    # @return [Hash] HTML attributes for the tag element
     def html_attributes
       attrs = @system_arguments.dup
       attrs[:class] = css_classes
@@ -61,14 +82,17 @@ module Carbon
       attrs
     end
 
+    # @return [Boolean] whether the tag can be closed
     def closeable?
       @type == :filter || @type == :dismissible
     end
 
+    # @return [Symbol] HTML tag to render (:button or :span)
     def tag_name
       closeable? ? :button : :span
     end
 
+    # @return [String] SVG markup for the close icon
     def close_icon_svg
       '<svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" ' \
       'fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true">' \

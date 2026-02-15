@@ -1,19 +1,32 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Inline Loading indicator.
+  #
+  # @example Basic usage
+  #   render Carbon::InlineLoadingComponent.new(status: :active, description: "Loading...")
+  #
+  # @see https://carbondesignsystem.com/components/inline-loading/usage/
   class InlineLoadingComponent < BaseComponent
     STATUSES = %i[active finished error inactive].freeze
 
     DEFAULT_STATUS = :active
 
-    attr_reader :status, :description
+    # @return [Symbol] loading status
+    attr_reader :status
+    # @return [String, nil] description text
+    attr_reader :description
 
+    # @param status [Symbol] loading status (:active, :finished, :error, :inactive)
+    # @param description [String, nil] description text
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(status: DEFAULT_STATUS, description: nil, **system_arguments)
       @status = validate_argument(:status, status, STATUSES, DEFAULT_STATUS)
       @description = description
       @system_arguments = system_arguments
     end
 
+    # @return [String] CSS class string
     def css_classes
       classes = ['cds--inline-loading']
       classes << "cds--inline-loading--#{@status}"
@@ -21,6 +34,7 @@ module Carbon
       class_names(*classes)
     end
 
+    # @return [Hash] HTML attributes for the loading element
     def html_attributes
       attrs = @system_arguments.dup
       attrs[:class] = css_classes
@@ -29,6 +43,7 @@ module Carbon
       attrs
     end
 
+    # @return [String] SVG markup for the status icon
     def icon_svg
       case @status
       when :finished

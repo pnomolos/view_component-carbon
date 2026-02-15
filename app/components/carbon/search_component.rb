@@ -1,13 +1,40 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Search input.
+  #
+  # @example Basic usage
+  #   render Carbon::SearchComponent.new(label_text: "Search", placeholder: "Search...")
+  #
+  # @see https://carbondesignsystem.com/components/search/usage/
   class SearchComponent < BaseComponent
     SIZES = %i[sm md lg].freeze
 
     DEFAULT_SIZE = :md
 
-    attr_reader :size, :placeholder, :label_text, :value, :disabled, :expandable, :id
+    # @return [Symbol] input size
+    attr_reader :size
+    # @return [String] placeholder text
+    attr_reader :placeholder
+    # @return [String] label text
+    attr_reader :label_text
+    # @return [String, nil] current value
+    attr_reader :value
+    # @return [Boolean] whether disabled
+    attr_reader :disabled
+    # @return [Boolean] whether expandable
+    attr_reader :expandable
+    # @return [String] unique element ID
+    attr_reader :id
 
+    # @param size [Symbol] input size (:sm, :md, :lg)
+    # @param placeholder [String] placeholder text
+    # @param label_text [String] label text
+    # @param value [String, nil] initial value
+    # @param disabled [Boolean] disables the input
+    # @param expandable [Boolean] enables expandable mode
+    # @param id [String, nil] unique element ID
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(
       size: DEFAULT_SIZE,
       placeholder: 'Search',
@@ -28,6 +55,7 @@ module Carbon
       @system_arguments = system_arguments
     end
 
+    # @return [String] CSS class string
     def css_classes
       classes = ['cds--search', "cds--search--#{@size}"]
       classes << 'cds--search--expandable' if @expandable
@@ -36,6 +64,7 @@ module Carbon
       class_names(*classes)
     end
 
+    # @return [Hash] HTML attributes for the search element
     def html_attributes
       attrs = @system_arguments.dup
       attrs[:class] = css_classes
@@ -46,6 +75,7 @@ module Carbon
       attrs
     end
 
+    # @return [String] SVG markup for the search icon
     def search_icon
       '<svg class="cds--search-magnifier-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" ' \
       'width="16" height="16" fill="currentColor">' \
@@ -53,6 +83,7 @@ module Carbon
       '0 1-9-9z"/></svg>'.html_safe
     end
 
+    # @return [String] SVG markup for the close icon
     def close_icon
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" fill="currentColor">' \
       '<path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4l6.6 6.6L8 22.6 9.4 24l6.6-6.6 6.6 6.6 1.4-1.4-6.6-6.6L24 9.4z"/>' \

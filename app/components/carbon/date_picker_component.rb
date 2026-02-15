@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Date Picker with calendar support.
+  #
+  # @example Basic usage
+  #   render Carbon::DatePickerComponent.new(type: :single, label_text: "Date")
+  #
+  # @see https://carbondesignsystem.com/components/date-picker/usage/
   class DatePickerComponent < BaseComponent
     include Carbon::Concerns::FormFieldable
 
@@ -18,8 +24,36 @@ module Carbon
       )
     }
 
-    attr_reader :label_text, :type, :disabled, :readonly, :placeholder, :date_format
+    # @return [String] label text
+    attr_reader :label_text
+    # @return [Symbol] picker type
+    attr_reader :type
+    # @return [Boolean] whether disabled
+    attr_reader :disabled
+    # @return [Boolean] whether readonly
+    attr_reader :readonly
+    # @return [String] input placeholder
+    attr_reader :placeholder
+    # @return [String] date format string
+    attr_reader :date_format
 
+    # @param type [Symbol] picker type (:simple, :single, :range)
+    # @param value [String, nil] initial date value
+    # @param date_format [String] date format string for calendar
+    # @param label_text [String] label text
+    # @param placeholder [String] input placeholder
+    # @param disabled [Boolean] disables the picker
+    # @param readonly [Boolean] makes the input readonly
+    # @param name [String, nil] input name attribute
+    # @param id [String, nil] unique element ID
+    # @param min_date [String, nil] minimum selectable date
+    # @param max_date [String, nil] maximum selectable date
+    # @param invalid [Boolean] marks as invalid
+    # @param invalid_text [String, nil] validation error message
+    # @param warn [Boolean] marks as warning
+    # @param warn_text [String, nil] warning message
+    # @param helper_text [String, nil] helper text
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(
       type: DEFAULT_TYPE,
       value: nil,
@@ -55,10 +89,12 @@ module Carbon
                             warn_text: warn_text, helper_text: helper_text)
     end
 
+    # @return [Boolean] whether this is a simple (no calendar) date picker
     def simple?
       @type == :simple
     end
 
+    # @return [Boolean] whether this picker uses a calendar
     def calendar_type?
       @type == :single || @type == :range
     end
@@ -133,9 +169,27 @@ module Carbon
             "Invalid type: #{value.inspect}. Must be one of: #{TYPES.map(&:inspect).join(', ')}"
     end
 
+    # End-date input for range date pickers.
     class DatePickerRangeInputComponent < BaseComponent
-      attr_reader :label_text, :placeholder, :name, :id, :disabled, :readonly
+      # @return [String] label text
+      attr_reader :label_text
+      # @return [String] input placeholder
+      attr_reader :placeholder
+      # @return [String, nil] input name
+      attr_reader :name
+      # @return [String] element ID
+      attr_reader :id
+      # @return [Boolean] whether disabled
+      attr_reader :disabled
+      # @return [Boolean] whether readonly
+      attr_reader :readonly
 
+      # @param label_text [String] label text
+      # @param placeholder [String] input placeholder
+      # @param name [String, nil] input name attribute
+      # @param id [String, nil] element ID
+      # @param disabled [Boolean] whether disabled
+      # @param readonly [Boolean] whether readonly
       def initialize(label_text:, placeholder:, name:, id:, disabled:, readonly:)
         @label_text = label_text
         @placeholder = placeholder

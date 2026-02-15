@@ -1,9 +1,27 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Form Group (fieldset).
+  #
+  # @example Basic usage
+  #   render Carbon::FormGroupComponent.new(legend_text: "Settings") { "fields" }
+  #
+  # @see https://carbondesignsystem.com/components/form/usage/
   class FormGroupComponent < BaseComponent
-    attr_reader :legend_text, :message, :message_text, :invalid
+    # @return [String, nil] legend text
+    attr_reader :legend_text
+    # @return [Boolean] whether to show a message
+    attr_reader :message
+    # @return [String, nil] message text
+    attr_reader :message_text
+    # @return [Boolean] whether in invalid state
+    attr_reader :invalid
 
+    # @param legend_text [String, nil] fieldset legend text
+    # @param message [Boolean] shows a message below the group
+    # @param message_text [String, nil] message text content
+    # @param invalid [Boolean] marks the group as invalid
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(
       legend_text: nil,
       message: false,
@@ -18,6 +36,7 @@ module Carbon
       @system_arguments = system_arguments
     end
 
+    # @return [String] CSS class string for the fieldset
     def fieldset_classes
       classes = ['cds--fieldset']
       classes << 'cds--fieldset--invalid' if @invalid
@@ -25,6 +44,7 @@ module Carbon
       class_names(*classes)
     end
 
+    # @return [Hash] HTML attributes for the fieldset
     def fieldset_attributes
       attrs = { class: fieldset_classes }
       attrs[:'data-invalid'] = '' if @invalid
@@ -32,6 +52,7 @@ module Carbon
       attrs
     end
 
+    # @return [String] unique legend element ID
     def legend_id
       @legend_id ||= "legend-#{SecureRandom.hex(4)}"
     end

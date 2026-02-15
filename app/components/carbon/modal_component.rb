@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Modal dialog.
+  #
+  # @example Basic usage
+  #   render Carbon::ModalComponent.new(open: true) do |modal|
+  #     modal.with_header(title: "Confirm")
+  #     modal.with_body { "Are you sure?" }
+  #   end
+  #
+  # @see https://carbondesignsystem.com/components/modal/usage/
   class ModalComponent < BaseComponent
     SIZES = %i[xs sm md lg].freeze
 
@@ -10,8 +19,21 @@ module Carbon
     renders_one :body, 'BodyComponent'
     renders_one :footer, 'FooterComponent'
 
-    attr_reader :size, :danger, :open, :prevent_close_on_click_outside
+    # @return [Symbol] modal size
+    attr_reader :size
+    # @return [Boolean] whether this is a danger modal
+    attr_reader :danger
+    # @return [Boolean] whether the modal is open
+    attr_reader :open
+    # @return [Boolean] prevents closing when clicking outside
+    attr_reader :prevent_close_on_click_outside
 
+    # @param open [Boolean] initial open state
+    # @param size [Symbol] modal size (:xs, :sm, :md, :lg)
+    # @param danger [Boolean] applies danger styling
+    # @param prevent_close_on_click_outside [Boolean] prevents closing on overlay click
+    # @param aria_label [String, nil] accessible label
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(
       open: false,
       size: DEFAULT_SIZE,
@@ -78,9 +100,19 @@ module Carbon
             "Invalid #{name}: #{value.inspect}. Must be one of: #{allowed.map(&:inspect).join(', ')}"
     end
 
+    # Modal header with title, subtitle, and close button.
     class HeaderComponent < BaseComponent
-      attr_reader :title, :subtitle, :label
+      # @return [String] modal title
+      attr_reader :title
+      # @return [String, nil] modal subtitle
+      attr_reader :subtitle
+      # @return [String, nil] modal label above the title
+      attr_reader :label
 
+      # @param title [String] modal heading text
+      # @param subtitle [String, nil] description text below the title
+      # @param label [String, nil] label above the title
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(title:, subtitle: nil, label: nil, **system_arguments)
         @title = title
         @subtitle = subtitle
@@ -120,7 +152,9 @@ module Carbon
       end
     end
 
+    # Modal body content area.
     class BodyComponent < BaseComponent
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(**system_arguments)
         @system_arguments = system_arguments
       end
@@ -132,7 +166,9 @@ module Carbon
       end
     end
 
+    # Modal footer area for action buttons.
     class FooterComponent < BaseComponent
+      # @param system_arguments [Hash] additional HTML attributes
       def initialize(**system_arguments)
         @system_arguments = system_arguments
       end

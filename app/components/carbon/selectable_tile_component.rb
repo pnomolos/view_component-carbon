@@ -1,9 +1,30 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Selectable Tile (checkbox tile).
+  #
+  # @example Basic usage
+  #   render Carbon::SelectableTileComponent.new(name: "opt", value: "1") { "Option 1" }
+  #
+  # @see https://carbondesignsystem.com/components/tile/usage/
   class SelectableTileComponent < Carbon::BaseComponent
-    attr_reader :selected, :disabled, :name, :value, :input_id
+    # @return [Boolean] whether selected
+    attr_reader :selected
+    # @return [Boolean] whether disabled
+    attr_reader :disabled
+    # @return [String, nil] input name attribute
+    attr_reader :name
+    # @return [String, nil] input value
+    attr_reader :value
+    # @return [String] unique input ID
+    attr_reader :input_id
 
+    # @param selected [Boolean] initial selected state
+    # @param disabled [Boolean] disables the tile
+    # @param name [String, nil] input name attribute
+    # @param value [String, nil] input value
+    # @param id [String, nil] unique input ID
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(selected: false, disabled: false, name: nil, value: nil, id: nil, **system_arguments)
       @selected = selected
       @disabled = disabled

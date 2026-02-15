@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 module Carbon
+  # Renders a Carbon Design System Progress Bar.
+  #
+  # @example Basic usage
+  #   render Carbon::ProgressBarComponent.new(value: 50, label: "Progress")
+  #
+  # @see https://carbondesignsystem.com/components/progress-bar/usage/
   class ProgressBarComponent < BaseComponent
     SIZES = %i[big small].freeze
     STATUSES = %i[active finished error].freeze
@@ -10,8 +16,29 @@ module Carbon
     DEFAULT_STATUS = :active
     DEFAULT_TYPE = :default
 
-    attr_reader :value, :max, :label, :helper_text, :size, :status, :type
+    # @return [Numeric, nil] current progress value
+    attr_reader :value
+    # @return [Numeric] maximum progress value
+    attr_reader :max
+    # @return [String, nil] accessible label
+    attr_reader :label
+    # @return [String, nil] helper text
+    attr_reader :helper_text
+    # @return [Symbol] bar size
+    attr_reader :size
+    # @return [Symbol] bar status
+    attr_reader :status
+    # @return [Symbol] bar type
+    attr_reader :type
 
+    # @param value [Numeric, nil] current progress value
+    # @param max [Numeric] maximum value
+    # @param label [String, nil] accessible label
+    # @param helper_text [String, nil] helper text
+    # @param size [Symbol] bar size (:big, :small)
+    # @param status [Symbol] bar status (:active, :finished, :error)
+    # @param type [Symbol] bar type (:default, :inline, :indeterminate)
+    # @param system_arguments [Hash] additional HTML attributes
     def initialize(
       value: nil,
       max: 100,
@@ -34,6 +61,7 @@ module Carbon
       validate_value_for_type
     end
 
+    # @return [String] CSS class string
     def css_classes
       classes = ['cds--progress-bar']
       classes << "cds--progress-bar--#{@size}"
@@ -43,12 +71,14 @@ module Carbon
       class_names(*classes)
     end
 
+    # @return [Hash] HTML attributes for the wrapper element
     def html_attributes
       attrs = @system_arguments.dup
       attrs[:class] = css_classes
       attrs
     end
 
+    # @return [Hash] ARIA attributes for the progress bar
     def progress_attributes
       attrs = {
         role: 'progressbar',
@@ -60,6 +90,7 @@ module Carbon
       attrs
     end
 
+    # @return [String] inline style for the bar fill
     def bar_style
       return '' if @type == :indeterminate || @value.nil?
 
