@@ -1,0 +1,23 @@
+<div <%= tag.attributes(html_attributes) %>>
+  <div class="cds--search cds--search--sm" role="search">
+    <label class="cds--label" for="table-search">Filter table</label>
+    <input class="cds--search-input"
+           type="text"
+           id="table-search"
+           placeholder="<%= @placeholder %>"
+           autocomplete="off"
+           data-carbon--data-table-target="searchInput"
+           data-action="input->carbon--data-table#filterRows">
+    <button class="cds--search-close"
+            type="button"
+            aria-label="Clear search"
+            data-action="carbon--data-table#clearSearch">
+      <svg focusable="false" preserveAspectRatio="xMidYMid meet"
+           xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+           width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"
+           class="cds--search-close__icon">
+        <path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"></path>
+      </svg>
+    </button>
+  </div>
+</div>

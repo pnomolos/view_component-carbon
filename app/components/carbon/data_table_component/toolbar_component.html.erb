@@ -1,0 +1,11 @@
+<section <%= tag.attributes(html_attributes) %>>
+  <% if batch_actions? %>
+    <%= batch_actions %>
+  <% end %>
+  <div class="cds--toolbar-content">
+    <% if search? %>
+      <%= search %>
+    <% end %>
+    <%= content %>
+  </div>
+</section>

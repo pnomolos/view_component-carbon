@@ -1,0 +1,17 @@
+<div <%= tag.attributes(html_attributes) %>>
+  <div class="cds--batch-summary">
+    <p class="cds--batch-summary__para">
+      <span data-carbon--data-table-target="selectedCount">0</span> item(s) selected
+    </p>
+  </div>
+  <div class="cds--action-list">
+    <% actions.each do |action| %>
+      <%= action %>
+    <% end %>
+    <button class="cds--btn cds--btn--primary cds--batch-summary__cancel"
+            type="button"
+            data-action="carbon--data-table#cancelBatchActions">
+      Cancel
+    </button>
+  </div>
+</div>

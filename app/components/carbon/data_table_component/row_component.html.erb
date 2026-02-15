@@ -1,0 +1,43 @@
+<tr <%= tag.attributes(html_attributes) %>>
+  <% if @expandable %>
+    <td class="cds--table-expand" data-previous-value="collapsed">
+      <button class="cds--table-expand__button"
+              type="button"
+              aria-expanded="<%= @expanded %>"
+              aria-controls="<%= expanded_row_id %>"
+              data-action="click->carbon--data-table#toggleExpand"
+              data-carbon--data-table-target="expandButton">
+        <%= expand_button_svg %>
+      </button>
+    </td>
+  <% end %>
+  <% if @selectable || @radio %>
+    <td class="cds--table-column-checkbox">
+      <input type="<%= selection_input_type %>"
+             id="<%= @row_id %>-select"
+             name="<%= selection_input_name %>"
+             class="cds--checkbox"
+             <% if @selected %>checked<% end %>
+             <% if @disabled %>disabled<% end %>
+             data-action="change->carbon--data-table#selectRow"
+             data-carbon--data-table-target="rowSelect">
+      <label for="<%= @row_id %>-select" class="cds--checkbox-label">
+        <span class="cds--checkbox-label-text cds--visually-hidden">Select row</span>
+      </label>
+    </td>
+  <% end %>
+  <% cells.each do |cell| %>
+    <%= cell %>
+  <% end %>
+</tr>
+<% if @expandable && expanded_content? %>
+  <tr class="cds--expandable-row--hover-area" id="<%= expanded_row_id %>"
+      data-carbon--data-table-target="expandedRow"
+      <% unless @expanded %>hidden<% end %>>
+    <td colspan="100">
+      <div class="cds--child-row-inner-container">
+        <%= expanded_content %>
+      </div>
+    </td>
+  </tr>
+<% end %>

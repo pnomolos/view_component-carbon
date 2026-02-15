@@ -511,7 +511,7 @@ module Carbon
     test 'number_input: buttons have tabindex="-1"' do
       render_inline(Carbon::NumberInputComponent.new(label_text: 'Count', value: 1))
 
-      page.all('div.cds--number__controls button').each do |button|
+      page.all('div.cds--number__controls button').each do |button| # rubocop:disable Rails/FindEach
         assert_equal '-1', button['tabindex'], 'Number input buttons should have tabindex="-1"'
       end
     end
@@ -519,7 +519,7 @@ module Carbon
     test 'number_input: buttons contain SVG icons (NOT literal +/- text)' do
       render_inline(Carbon::NumberInputComponent.new(label_text: 'Count', value: 1))
 
-      page.all('div.cds--number__controls button').each do |button|
+      page.all('div.cds--number__controls button').each do |button| # rubocop:disable Rails/FindEach
         assert button.has_css?('svg'), 'Number input buttons should contain SVG icons'
         # Should not contain literal text like "+" or "-"
         text_content = button.text.strip
