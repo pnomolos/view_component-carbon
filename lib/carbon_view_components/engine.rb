@@ -6,6 +6,12 @@ module CarbonViewComponents
   class Engine < ::Rails::Engine
     isolate_namespace CarbonViewComponents
 
+    initializer 'carbon_view_components.inflections', before: :bootstrap_hook do
+      ActiveSupport::Inflector.inflections(:en) do |inflect|
+        inflect.acronym 'UI'
+      end
+    end
+
     config.autoload_paths << root.join('app/components')
     config.eager_load_paths << root.join('app/components')
 

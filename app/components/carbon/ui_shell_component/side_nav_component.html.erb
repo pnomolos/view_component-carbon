@@ -1,0 +1,8 @@
+<nav <%= tag.attributes(html_attributes) %>>
+  <ul class="cds--side-nav__items">
+    <% items.each do |item| %>
+      <%= item %>
+    <% end %>
+  </ul>
+</nav>
+<div class="<%= overlay_classes %>" data-carbon--ui-shell--ui-shell-target="overlay" data-action="click->carbon--ui-shell--ui-shell#closeSideNav"></div>

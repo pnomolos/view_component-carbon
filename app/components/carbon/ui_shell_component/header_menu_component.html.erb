@@ -1,0 +1,13 @@
+<li <%= tag.attributes(html_attributes) %>>
+  <button class="cds--header__menu-title" type="button" aria-haspopup="menu" aria-expanded="false" data-action="carbon--ui-shell--header-menu#toggle keydown->carbon--ui-shell--header-menu#handleKeydown" data-carbon--ui-shell--header-menu-target="trigger">
+    <span class="cds--text-truncate--end"><%= @label %></span>
+    <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" class="cds--header__menu-arrow">
+      <path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"></path>
+    </svg>
+  </button>
+  <ul class="cds--header__menu" role="menu" data-carbon--ui-shell--header-menu-target="menu">
+    <% items.each do |item| %>
+      <%= item %>
+    <% end %>
+  </ul>
+</li>

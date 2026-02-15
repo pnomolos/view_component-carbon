@@ -1,0 +1,15 @@
+<li <%= tag.attributes(html_attributes) %>>
+  <button <%= tag.attributes(button_attributes) %>>
+    <span class="cds--side-nav__submenu-title"><%= title %></span>
+    <div class="cds--side-nav__submenu-chevron">
+      <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="20" height="20" viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M16 22L6 12 7.4 10.6 16 19.2 24.6 10.6 26 12z"></path>
+      </svg>
+    </div>
+  </button>
+  <ul class="cds--side-nav__menu" role="menu" data-carbon--ui-shell--side-nav-menu-target="submenu">
+    <% items.each do |item| %>
+      <%= item %>
+    <% end %>
+  </ul>
+</li>

@@ -1,0 +1,14 @@
+<header <%= tag.attributes(html_attributes) %>>
+  <% if name? %>
+    <%= name %>
+  <% end %>
+  <% if nav? %>
+    <%= nav %>
+  <% end %>
+  <% if global_bar? %>
+    <%= global_bar %>
+  <% end %>
+  <% panels.each do |panel| %>
+    <%= panel %>
+  <% end %>
+</header>
