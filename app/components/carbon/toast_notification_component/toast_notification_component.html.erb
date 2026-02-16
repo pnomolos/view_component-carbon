@@ -11,7 +11,7 @@
   </div>
   <% unless hide_close_button %>
     <button class="cds--toast-notification__close-button"
-            aria-label="close notification"
+            aria-label="<%= @close_label %>"
             type="button"
             data-action="click->carbon--toast-notification#close">
       <%= close_icon %>

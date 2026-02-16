@@ -59,28 +59,58 @@ module Carbon
 
     # -- Colors --
 
-    test 'renders red color' do
-      render_inline(Carbon::BadgeComponent.new(color: :red, count: 1))
+    test 'renders red kind' do
+      render_inline(Carbon::BadgeComponent.new(kind: :red, count: 1))
 
       assert_selector '.cds--badge--red'
     end
 
-    test 'renders blue color' do
-      render_inline(Carbon::BadgeComponent.new(color: :blue, count: 1))
+    test 'renders blue kind' do
+      render_inline(Carbon::BadgeComponent.new(kind: :blue, count: 1))
 
       assert_selector '.cds--badge--blue'
     end
 
-    test 'renders green color' do
-      render_inline(Carbon::BadgeComponent.new(color: :green, count: 1))
+    test 'renders green kind' do
+      render_inline(Carbon::BadgeComponent.new(kind: :green, count: 1))
 
       assert_selector '.cds--badge--green'
     end
 
-    test 'renders gray color (default)' do
+    test 'renders gray kind (default)' do
       render_inline(Carbon::BadgeComponent.new(count: 1))
 
       assert_selector '.cds--badge--gray'
+    end
+
+    test 'renders purple kind' do
+      render_inline(Carbon::BadgeComponent.new(kind: :purple, count: 1))
+
+      assert_selector '.cds--badge--purple'
+    end
+
+    test 'renders cyan kind' do
+      render_inline(Carbon::BadgeComponent.new(kind: :cyan, count: 1))
+
+      assert_selector '.cds--badge--cyan'
+    end
+
+    test 'renders teal kind' do
+      render_inline(Carbon::BadgeComponent.new(kind: :teal, count: 1))
+
+      assert_selector '.cds--badge--teal'
+    end
+
+    test 'renders magenta kind' do
+      render_inline(Carbon::BadgeComponent.new(kind: :magenta, count: 1))
+
+      assert_selector '.cds--badge--magenta'
+    end
+
+    test 'renders high-contrast kind' do
+      render_inline(Carbon::BadgeComponent.new(kind: :high_contrast, count: 1))
+
+      assert_selector '.cds--badge--high-contrast'
     end
 
     # -- System arguments --
@@ -99,16 +129,16 @@ module Carbon
 
     # -- Validation --
 
-    test 'raises ArgumentError for invalid color' do
+    test 'raises ArgumentError for invalid kind' do
       assert_raises(ArgumentError) do
-        Carbon::BadgeComponent.new(color: :invalid)
+        Carbon::BadgeComponent.new(kind: :invalid)
       end
     end
 
     # -- String arguments --
 
-    test 'accepts string values for color' do
-      render_inline(Carbon::BadgeComponent.new(count: 1, color: 'blue'))
+    test 'accepts string values for kind' do
+      render_inline(Carbon::BadgeComponent.new(count: 1, kind: 'blue'))
 
       assert_selector '.cds--badge--blue'
     end

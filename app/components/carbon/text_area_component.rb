@@ -38,6 +38,10 @@ module Carbon
     attr_reader :cols
     # @return [Integer, nil] maximum character count
     attr_reader :max_count
+    # @return [String] counter mode ('character' or 'word')
+    attr_reader :counter_mode
+    # @return [Boolean] whether the counter is enabled
+    attr_reader :enable_counter
     # @return [String] unique element ID
     attr_reader :id
 
@@ -55,6 +59,8 @@ module Carbon
     # @param rows [Integer] number of visible rows
     # @param cols [Integer, nil] number of columns
     # @param max_count [Integer, nil] maximum character count
+    # @param counter_mode [String] counter mode ('character' or 'word')
+    # @param enable_counter [Boolean] whether to enable the counter
     # @param id [String, nil] unique element ID
     # @param system_arguments [Hash] additional HTML attributes
     def initialize(
@@ -72,6 +78,8 @@ module Carbon
       rows: 4,
       cols: nil,
       max_count: nil,
+      counter_mode: 'character',
+      enable_counter: false,
       id: nil,
       **system_arguments
     )
@@ -84,6 +92,8 @@ module Carbon
       @rows = rows
       @cols = cols
       @max_count = max_count
+      @counter_mode = counter_mode
+      @enable_counter = enable_counter || max_count.present?
       @id = id || "text-area-#{SecureRandom.hex(4)}"
       @system_arguments = system_arguments
 
@@ -112,7 +122,7 @@ module Carbon
     def textarea_classes
       classes = ['cds--text-area']
       classes << 'cds--text-area--invalid' if @invalid
-      classes << 'cds--text-area--warning' if @warn
+      classes << 'cds--text-area--warn' if @warn
       class_names(*classes)
     end
 
@@ -141,9 +151,10 @@ module Carbon
     def add_textarea_state_attributes(attrs)
       attrs[:disabled] = '' if @disabled
       attrs[:readonly] = '' if @readonly
+      attrs[:'aria-readonly'] = 'true' if @readonly
       add_textarea_validation_attributes(attrs)
       attrs[:maxlength] = @max_count if @max_count
-      attrs[:'aria-describedby'] = aria_describedby_id if aria_describedby_id
+      attrs[:'aria-describedby'] = build_aria_describedby if aria_describedby_id || counter_description_id
     end
 
     # @param attrs [Hash] attributes hash to modify
@@ -169,6 +180,21 @@ module Carbon
           'carbon--text-area-max-count-value': @max_count
         }
       }
+    end
+
+    # @return [String, nil] ID for counter description element
+    def counter_description_id
+      return nil unless stimulus_controller?
+
+      "#{@id}-counter-desc"
+    end
+
+    # @return [String, nil] Combined aria-describedby value
+    def build_aria_describedby
+      ids = []
+      ids << counter_description_id if counter_description_id
+      ids << aria_describedby_id if aria_describedby_id
+      ids.join(' ') if ids.any?
     end
   end
 end

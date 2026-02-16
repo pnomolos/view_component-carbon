@@ -54,5 +54,47 @@ module Carbon
         end
       end
     end
+
+    def manual_activation
+      render Carbon::TabsComponent.new(activation: :manual) do |c|
+        c.with_tab(label: 'Manual Tab 1', selected: true) do
+          '<p>Manual activation mode: Use arrow keys to navigate, then press Enter or Space to select.</p>'.html_safe
+        end
+        c.with_tab(label: 'Manual Tab 2') do
+          '<p>This tab requires pressing Enter/Space to activate.</p>'.html_safe
+        end
+        c.with_tab(label: 'Manual Tab 3') do
+          '<p>Arrow keys move focus without changing content.</p>'.html_safe
+        end
+      end
+    end
+
+    def dismissable_tabs
+      render Carbon::TabsComponent.new(dismissable: true) do |c|
+        c.with_tab(label: 'Closeable Tab 1', selected: true) do
+          'This tab can be closed by clicking the X button.'
+        end
+        c.with_tab(label: 'Closeable Tab 2') do
+          'You can close any tab and it will be removed.'
+        end
+        c.with_tab(label: 'Closeable Tab 3') do
+          'The next tab will be selected when you close the active tab.'
+        end
+      end
+    end
+
+    def custom_aria_label
+      render Carbon::TabsComponent.new(aria_label: 'Settings navigation') do |c|
+        c.with_tab(label: 'General', selected: true) do
+          'General settings content'
+        end
+        c.with_tab(label: 'Privacy') do
+          'Privacy settings content'
+        end
+        c.with_tab(label: 'Notifications') do
+          'Notification settings content'
+        end
+      end
+    end
   end
 end

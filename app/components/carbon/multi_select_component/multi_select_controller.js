@@ -61,16 +61,22 @@ export default class extends Controller {
     if (item.classList.contains('cds--list-box__menu-item--disabled')) return;
 
     const isSelected = item.getAttribute('aria-selected') === 'true';
+    const checkbox = item.querySelector('input[type="checkbox"]');
 
     if (isSelected) {
       item.setAttribute('aria-selected', 'false');
+      item.setAttribute('aria-checked', 'false');
       item.classList.remove('cds--list-box__menu-item--active');
+      if (checkbox) checkbox.checked = false;
     } else {
       item.setAttribute('aria-selected', 'true');
+      item.setAttribute('aria-checked', 'true');
       item.classList.add('cds--list-box__menu-item--active');
+      if (checkbox) checkbox.checked = true;
     }
 
     this.updateLabel();
+    this.updateSelectedClass();
     this.dispatch('change', {
       detail: { selectedValues: this.selectedValues() },
     });
@@ -80,10 +86,14 @@ export default class extends Controller {
     event.stopPropagation();
     this.itemTargets.forEach((item) => {
       item.setAttribute('aria-selected', 'false');
+      item.setAttribute('aria-checked', 'false');
       item.classList.remove('cds--list-box__menu-item--active');
+      const checkbox = item.querySelector('input[type="checkbox"]');
+      if (checkbox) checkbox.checked = false;
     });
     this.updateLabel();
     this.updateClearButton();
+    this.updateSelectedClass();
     this.dispatch('change', { detail: { selectedValues: [] } });
   }
 
@@ -244,5 +254,14 @@ export default class extends Controller {
     this.itemTargets.forEach((item) => {
       item.style.display = '';
     });
+  }
+
+  updateSelectedClass() {
+    const count = this.selectedCount();
+    if (count > 0) {
+      this.element.classList.add('cds--multi-select--selected');
+    } else {
+      this.element.classList.remove('cds--multi-select--selected');
+    }
   }
 }

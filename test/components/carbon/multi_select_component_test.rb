@@ -3,6 +3,7 @@
 require 'test_helper'
 
 module Carbon
+  # rubocop:disable Metrics/ClassLength
   class MultiSelectComponentTest < CarbonViewComponents::TestCase
     # -- Default rendering --
 
@@ -262,5 +263,111 @@ module Carbon
         Carbon::MultiSelectComponent.new(size: :xl)
       end
     end
+
+    # -- P0 Accessibility fixes --
+
+    test 'items have aria-checked attribute' do
+      render_inline(Carbon::MultiSelectComponent.new) do |c|
+        c.with_item(value: 'opt1', text: 'Option 1', selected: true)
+        c.with_item(value: 'opt2', text: 'Option 2', selected: false)
+      end
+
+      assert_selector '.cds--list-box__menu-item[aria-checked="true"]', count: 1
+      assert_selector '.cds--list-box__menu-item[aria-checked="false"]', count: 1
+    end
+
+    test 'items have actual checkbox input elements' do
+      render_inline(Carbon::MultiSelectComponent.new) do |c|
+        c.with_item(value: 'opt1', text: 'Option 1', selected: true)
+        c.with_item(value: 'opt2', text: 'Option 2')
+      end
+
+      assert_selector '.cds--checkbox-wrapper input[type="checkbox"]', count: 2
+      assert_selector '.cds--checkbox-wrapper input[type="checkbox"][checked]', count: 1
+      assert_selector '.cds--checkbox-wrapper label.cds--checkbox-label', count: 2
+    end
+
+    test 'checkbox inputs are hidden from screen readers' do
+      render_inline(Carbon::MultiSelectComponent.new) do |c|
+        c.with_item(value: 'opt1', text: 'Option 1')
+      end
+
+      assert_selector 'input[type="checkbox"][aria-hidden="true"][tabindex="-1"]'
+    end
+
+    test 'selection badge has tabindex -1' do
+      render_inline(Carbon::MultiSelectComponent.new) do |c|
+        c.with_item(value: 'opt1', text: 'Option 1', selected: true)
+      end
+
+      assert_selector '.cds--list-box__selection[tabindex="-1"]'
+    end
+
+    # -- P1 Correctness fixes --
+
+    test 'adds cds--list-box--expanded class when component has selected items' do
+      render_inline(Carbon::MultiSelectComponent.new) do |c|
+        c.with_item(value: 'opt1', text: 'Option 1', selected: true)
+      end
+
+      # NOTE: This class is added initially if items are pre-selected
+      # The Stimulus controller adds it dynamically on open()
+      assert_selector '.cds--multi-select--selected'
+    end
+
+    test 'does not add selected class when no items selected' do
+      render_inline(Carbon::MultiSelectComponent.new) do |c|
+        c.with_item(value: 'opt1', text: 'Option 1')
+      end
+
+      assert_no_selector '.cds--multi-select--selected'
+    end
+
+    test 'selection badge has all required CSS classes' do
+      render_inline(Carbon::MultiSelectComponent.new) do |c|
+        c.with_item(value: 'opt1', text: 'Option 1', selected: true)
+      end
+
+      badge = page.find('.cds--list-box__selection')
+
+      assert_includes badge[:class], 'cds--list-box__selection--multi'
+      assert_includes badge[:class], 'cds--tag'
+      assert_includes badge[:class], 'cds--tag--filter'
+      assert_includes badge[:class], 'cds--tag--high-contrast'
+    end
+
+    test 'disabled item checkbox is disabled' do
+      render_inline(Carbon::MultiSelectComponent.new) do |c|
+        c.with_item(value: 'opt1', text: 'Option 1', disabled: true)
+      end
+
+      assert_selector '.cds--list-box__menu-item--disabled input[type="checkbox"][disabled]'
+    end
+
+    test 'checkbox label has for attribute matching checkbox id' do
+      render_inline(Carbon::MultiSelectComponent.new) do |c|
+        c.with_item(value: 'opt1', text: 'Option 1')
+      end
+
+      checkbox = page.find('input[type="checkbox"]')
+      label = page.find('label.cds--checkbox-label')
+
+      assert_equal checkbox[:id], label[:for]
+    end
+
+    # -- Readonly state --
+
+    test 'renders readonly state' do
+      render_inline(Carbon::MultiSelectComponent.new(label_text: 'Items', readonly: true))
+
+      assert_selector '.cds--multi-select--readonly'
+    end
+
+    test 'renders not readonly by default' do
+      render_inline(Carbon::MultiSelectComponent.new(label_text: 'Items'))
+
+      assert_no_selector '.cds--multi-select--readonly'
+    end
   end
+  # rubocop:enable Metrics/ClassLength
 end

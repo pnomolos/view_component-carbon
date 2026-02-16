@@ -33,6 +33,8 @@ module Carbon
     attr_reader :drop_container
     # @return [String] unique element ID
     attr_reader :id
+    # @return [String, nil] name for form submission
+    attr_reader :name
 
     # @param label_title [String] title for the uploader
     # @param label_description [String, nil] description text
@@ -44,6 +46,7 @@ module Carbon
     # @param kind [Symbol] button kind (:primary, :tertiary)
     # @param drop_container [Boolean] renders as a drop container
     # @param id [String, nil] unique element ID
+    # @param name [String, nil] name for form submission
     # @param system_arguments [Hash] additional HTML attributes
     def initialize(
       label_title: 'Upload files',
@@ -56,6 +59,7 @@ module Carbon
       kind: DEFAULT_KIND,
       drop_container: false,
       id: nil,
+      name: nil,
       **system_arguments
     )
       @label_title = label_title
@@ -68,6 +72,7 @@ module Carbon
       @kind = validate_argument(:kind, kind, KINDS, DEFAULT_KIND)
       @drop_container = drop_container
       @id = id || "file-uploader-#{SecureRandom.hex(4)}"
+      @name = name
       @system_arguments = system_arguments
     end
 
@@ -80,8 +85,7 @@ module Carbon
 
     # @return [String] CSS class string for the upload button
     def button_classes
-      classes = ['cds--btn', "cds--btn--#{@kind}"]
-      classes << "cds--btn--#{@size}" unless @size == :lg
+      classes = ['cds--btn', "cds--btn--#{@kind}", "cds--btn--#{@size}"]
       class_names(*classes)
     end
 
@@ -112,6 +116,7 @@ module Carbon
         type: 'file',
         class: 'cds--visually-hidden',
         id: @id,
+        name: @name,
         accept: accept_string,
         tabindex: '-1'
       }

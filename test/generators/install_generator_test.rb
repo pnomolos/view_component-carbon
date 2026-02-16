@@ -15,11 +15,13 @@ class InstallGeneratorTest < Rails::Generators::TestCase
 
   test 'creates stylesheet if missing' do
     run_generator
-    assert_file 'app/assets/stylesheets/application.scss', /@use '@carbon\/styles'/
+
+    assert_file 'app/assets/stylesheets/application.scss', %r{@use '@carbon/styles'}
   end
 
   test 'appends importmap configuration' do
     run_generator
+
     assert_file 'config/importmap.rb', /Carbon ViewComponents Stimulus controllers/
   end
 end

@@ -7,6 +7,7 @@ export default class extends Controller {
     min: Number,
     max: Number,
     step: Number,
+    stepMultiplier: Number,
     value: Number
   };
 
@@ -43,20 +44,32 @@ export default class extends Controller {
 
   onKeyDown(event) {
     if (this.thumbTarget.getAttribute('aria-disabled') === 'true') return;
+    if (this.thumbTarget.getAttribute('tabindex') === '-1') return;
 
     const step = this.stepValue || 1;
+    const range = this.maxValue - this.minValue;
+    const stepMultiplier = this.stepMultiplierValue || 4;
+    const largeStep = range / stepMultiplier;
     let newValue = this.valueValue;
 
     switch (event.key) {
       case 'ArrowRight':
       case 'ArrowUp':
         event.preventDefault();
-        newValue = Math.min(this.valueValue + step, this.maxValue);
+        if (event.shiftKey) {
+          newValue = Math.min(this.valueValue + largeStep, this.maxValue);
+        } else {
+          newValue = Math.min(this.valueValue + step, this.maxValue);
+        }
         break;
       case 'ArrowLeft':
       case 'ArrowDown':
         event.preventDefault();
-        newValue = Math.max(this.valueValue - step, this.minValue);
+        if (event.shiftKey) {
+          newValue = Math.max(this.valueValue - largeStep, this.minValue);
+        } else {
+          newValue = Math.max(this.valueValue - step, this.minValue);
+        }
         break;
       case 'Home':
         event.preventDefault();
@@ -109,8 +122,11 @@ export default class extends Controller {
     const fraction = range === 0 ? 0 : (value - this.minValue) / range;
 
     this.thumbTarget.setAttribute('aria-valuenow', value);
+    this.thumbTarget.setAttribute('aria-valuetext', value.toString());
     this.thumbWrapperTarget.style.insetInlineStart = `${percent}%`;
     this.filledTrackTarget.style.transform = `translate(0%, -50%) scaleX(${fraction})`;
-    this.numberInputTarget.value = value;
+    if (this.hasNumberInputTarget) {
+      this.numberInputTarget.value = value;
+    }
   }
 }

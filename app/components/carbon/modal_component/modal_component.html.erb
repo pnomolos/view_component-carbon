@@ -9,5 +9,8 @@
     <% if footer? %>
       <%= footer %>
     <% end %>
+    <% if @has_scrolling_content %>
+      <div class="cds--modal-content--overflow-indicator"></div>
+    <% end %>
   </div>
 </div>

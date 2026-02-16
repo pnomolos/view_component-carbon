@@ -12,6 +12,7 @@ module Carbon
       assert_selector 'div.cds--progress-bar.cds--progress-bar--big.cds--progress-bar--active'
       assert_selector '.cds--progress-bar__track[role="progressbar"][aria-valuemin="0"][aria-valuemax="100"]'
       assert_selector '.cds--progress-bar__track[aria-valuenow="50"]'
+      assert_selector '.cds--progress-bar__track[aria-busy="true"]'
     end
 
     test 'renders bar with correct transform' do
@@ -46,12 +47,15 @@ module Carbon
       render_inline(Carbon::ProgressBarComponent.new(value: 100, status: :finished))
 
       assert_selector '.cds--progress-bar--finished'
+      assert_no_selector '.cds--progress-bar__track[aria-busy]'
+      assert_no_selector '.cds--progress-bar__track[aria-invalid]'
     end
 
     test 'renders error status' do
       render_inline(Carbon::ProgressBarComponent.new(value: 50, status: :error))
 
       assert_selector '.cds--progress-bar--error'
+      assert_selector '.cds--progress-bar__track[aria-invalid="true"]'
     end
 
     # -- Types --

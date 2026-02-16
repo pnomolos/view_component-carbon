@@ -27,6 +27,8 @@ module Carbon
     attr_reader :title_text
     # @return [Boolean] whether disabled
     attr_reader :disabled
+    # @return [Boolean] whether readonly
+    attr_reader :readonly
     # @return [Boolean] whether filterable
     attr_reader :filterable
 
@@ -45,6 +47,7 @@ module Carbon
       label_text: nil,
       size: DEFAULT_SIZE,
       disabled: false,
+      readonly: false,
       invalid: false,
       invalid_text: nil,
       warn: false,
@@ -58,6 +61,7 @@ module Carbon
       @label_text = label_text
       @title_text = title_text
       @disabled = disabled
+      @readonly = readonly
       @filterable = filterable
       @system_arguments = system_arguments
       @id = system_arguments[:id] || "multi-select-#{SecureRandom.hex(4)}"
@@ -81,6 +85,8 @@ module Carbon
       classes << "cds--multi-select--#{@size}" if @size != :md
       classes << 'cds--multi-select--filterable' if @filterable
       classes << 'cds--list-box--disabled' if @disabled
+      classes << 'cds--multi-select--readonly' if @readonly
+      classes << 'cds--multi-select--selected' if selected_count.positive?
       classes << @system_arguments[:class] if @system_arguments[:class]
       class_names(classes)
     end
@@ -89,6 +95,7 @@ module Carbon
       attrs = { controller: 'carbon--multi-select' }
       attrs[:'carbon--multi-select-title-text-value'] = @title_text
       attrs[:'carbon--multi-select-filterable-value'] = @filterable.to_s
+      attrs[:'carbon--multi-select-read-only-value'] = @readonly.to_s
       attrs
     end
 

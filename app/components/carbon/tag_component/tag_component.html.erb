@@ -1,6 +1,10 @@
-<%= content_tag(tag_name, **html_attributes) do %>
+<% tag_attrs = html_attributes.dup %>
+<% tag_attrs[:type] = 'button' if tag_name == :button %>
+<%= content_tag(tag_name, **tag_attrs) do %>
   <span class="cds--tag__label"><%= content %></span>
   <% if closeable? %>
-    <span class="cds--tag__close-icon"><%= close_icon_svg %></span>
+    <button type="button" class="cds--tag__close-icon" aria-label="<%= @close_label %>" title="<%= @title %>" tabindex="-1"<%= ' disabled' if disabled %>>
+      <%= close_icon_svg %>
+    </button>
   <% end %>
 <% end %>

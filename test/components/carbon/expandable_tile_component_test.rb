@@ -154,5 +154,73 @@ module Carbon
 
       assert_selector 'div#custom-tile.cds--tile.extra'
     end
+
+    # -- Color scheme --
+
+    test 'renders regular color scheme by default' do
+      render_inline(Carbon::ExpandableTileComponent.new) do |c|
+        c.with_above_the_fold { 'Above' }
+        c.with_below_the_fold { 'Below' }
+      end
+
+      assert_no_selector '.cds--tile--light'
+    end
+
+    test 'renders light color scheme' do
+      render_inline(Carbon::ExpandableTileComponent.new(color_scheme: :light)) do |c|
+        c.with_above_the_fold { 'Above' }
+        c.with_below_the_fold { 'Below' }
+      end
+
+      assert_selector '.cds--tile--light'
+    end
+
+    test 'raises error for invalid color scheme' do
+      assert_raises(ArgumentError) do
+        Carbon::ExpandableTileComponent.new(color_scheme: :invalid)
+      end
+    end
+
+    # -- Interactive content --
+
+    test 'does not render interactive content class by default' do
+      render_inline(Carbon::ExpandableTileComponent.new) do |c|
+        c.with_above_the_fold { 'Above' }
+        c.with_below_the_fold { 'Below' }
+      end
+
+      assert_no_selector '.cds--tile-content__has-interactive-content'
+      assert_no_selector '.cds--tile__chevron--interactive'
+    end
+
+    test 'renders interactive content classes when enabled' do
+      render_inline(Carbon::ExpandableTileComponent.new(with_interactive: true)) do |c|
+        c.with_above_the_fold { 'Above' }
+        c.with_below_the_fold { 'Below' }
+      end
+
+      assert_selector '.cds--tile-content__has-interactive-content'
+      assert_selector '.cds--tile__chevron--interactive'
+    end
+
+    # -- Rounded corners --
+
+    test 'does not render rounded corners by default' do
+      render_inline(Carbon::ExpandableTileComponent.new) do |c|
+        c.with_above_the_fold { 'Above' }
+        c.with_below_the_fold { 'Below' }
+      end
+
+      assert_no_selector '.cds--tile--slug-rounded'
+    end
+
+    test 'renders rounded corners class when enabled' do
+      render_inline(Carbon::ExpandableTileComponent.new(has_rounded_corners: true)) do |c|
+        c.with_above_the_fold { 'Above' }
+        c.with_below_the_fold { 'Below' }
+      end
+
+      assert_selector '.cds--tile--slug-rounded'
+    end
   end
 end

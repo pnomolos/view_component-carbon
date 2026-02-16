@@ -29,6 +29,11 @@ module Carbon
       @toggletip_id ||= "toggletip-#{SecureRandom.hex(8)}"
     end
 
+    # @return [String] unique toggletip content ID
+    def toggletip_content_id
+      @toggletip_content_id ||= "#{toggletip_id}-content"
+    end
+
     # @return [String] CSS class string
     def css_classes
       extra = []

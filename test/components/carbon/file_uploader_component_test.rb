@@ -205,5 +205,80 @@ module Carbon
 
       assert_selector '.cds--form-item.my-custom-class'
     end
+
+    # -- P0: ARIA live region --
+
+    test 'renders ARIA live region for status announcements' do
+      render_inline(Carbon::FileUploaderComponent.new)
+
+      assert_selector(
+        '[aria-live="polite"][aria-atomic="true"].cds--visually-hidden[data-carbon--file-uploader-target="liveRegion"]'
+      )
+    end
+
+    # -- P0: Drag-drop ARIA --
+
+    test 'renders aria-describedby for drop container' do
+      render_inline(Carbon::FileUploaderComponent.new(drop_container: true))
+
+      button = page.find('button.cds--file__drop-container')
+      instructions_id = button['aria-describedby']
+
+      assert_predicate instructions_id, :present?
+      assert_selector "##{instructions_id}.cds--visually-hidden", text: /Drag and drop/
+    end
+
+    test 'renders visually hidden instructions for screen readers' do
+      render_inline(Carbon::FileUploaderComponent.new(drop_container: true))
+
+      assert_selector '.cds--visually-hidden',
+                      text: 'Drag and drop files here or activate to browse and select files to upload'
+    end
+
+    test 'does not render drag-drop instructions for button variant' do
+      render_inline(Carbon::FileUploaderComponent.new(drop_container: false))
+
+      assert_no_selector '[id$="-instructions"]'
+    end
+
+    # -- P1: Button size class logic --
+
+    test 'includes size class for sm size' do
+      render_inline(Carbon::FileUploaderComponent.new(size: :sm))
+
+      assert_selector 'label.cds--btn.cds--btn--sm'
+    end
+
+    test 'includes size class for md size' do
+      render_inline(Carbon::FileUploaderComponent.new(size: :md))
+
+      assert_selector 'label.cds--btn.cds--btn--md'
+    end
+
+    test 'includes size class for lg size' do
+      render_inline(Carbon::FileUploaderComponent.new(size: :lg))
+
+      assert_selector 'label.cds--btn.cds--btn--lg'
+    end
+
+    # -- P1: Name prop --
+
+    test 'does not render name attribute when not provided' do
+      render_inline(Carbon::FileUploaderComponent.new)
+
+      assert_no_selector 'input[name]'
+    end
+
+    test 'renders name attribute when provided' do
+      render_inline(Carbon::FileUploaderComponent.new(name: 'file_upload'))
+
+      assert_selector 'input[name="file_upload"]'
+    end
+
+    test 'supports name for form submission with multiple files' do
+      render_inline(Carbon::FileUploaderComponent.new(name: 'attachments[]', multiple: true))
+
+      assert_selector 'input[name="attachments[]"][multiple]'
+    end
   end
 end

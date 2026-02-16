@@ -1,23 +1,70 @@
 <%= content_tag :div, **wrapper_attributes do %>
   <div class="<%= css_classes %>">
-    <div class="cds--tab--list" role="tablist" aria-label="Tab navigation">
-      <% tabs.each do |tab_data| %>
-        <button role="tab"
-                type="button"
-                class="<%= class_names(button_css_classes(tab_data)) %>"
-                data-action="click->carbon--tabs#select"
-                data-carbon--tabs-target="tab"
-                id="<%= tab_data.tab_id %>"
-                aria-controls="<%= tab_data.panel_id %>"
-                aria-selected="<%= tab_data.selected %>"
-                <%= 'disabled' if tab_data.disabled %>
-                tabindex="<%= tab_data.selected ? '0' : '-1' %>">
-          <div class="cds--tabs__nav-item-label-wrapper">
-            <span class="cds--tabs__nav-item-label"><%= tab_data.label %></span>
+    <button class="cds--tab--overflow-nav-button cds--tab--overflow-nav-button--previous cds--tab--overflow-nav-button--hidden"
+            type="button"
+            aria-hidden="true"
+            tabindex="-1"
+            data-carbon--tabs-target="previousButton"
+            data-action="click->carbon--tabs#scrollPrevious">
+      <svg class="cds--tabs__nav-caret-left" width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <path d="M11 8l-5 5-.7-.7L9.6 8 5.3 3.7 6 3z" transform="rotate(180 8 8)"/>
+      </svg>
+    </button>
+
+    <div class="cds--tabs-nav-content-container">
+      <div class="cds--tabs-nav-content" data-carbon--tabs-target="scrollContainer">
+        <div class="cds--tabs-nav">
+          <div class="cds--tab--list" role="tablist" aria-label="<%= aria_label %>" data-carbon--tabs-target="tablist">
+            <div class="cds--sub-content-left" data-carbon--tabs-target="leftSentinel"></div>
+            <% tabs.each do |tab_data| %>
+              <button role="tab"
+                      type="button"
+                      class="<%= class_names(button_css_classes(tab_data)) %>"
+                      data-action="click->carbon--tabs#select"
+                      data-carbon--tabs-target="tab"
+                      id="<%= tab_data.tab_id %>"
+                      aria-controls="<%= tab_data.panel_id %>"
+                      aria-selected="<%= tab_data.selected %>"
+                      <%= 'disabled' if tab_data.disabled %>
+                      tabindex="<%= tab_data.selected ? '0' : '-1' %>">
+                <div class="cds--tabs__nav-item-label-wrapper">
+                  <span class="cds--tabs__nav-item-label"><%= tab_data.label %></span>
+                </div>
+                <% if tab_data.dismissable || dismissable %>
+                  <button class="cds--tabs__nav-item-close"
+                          type="button"
+                          aria-label="Close tab"
+                          data-action="click->carbon--tabs#close"
+                          data-carbon--tabs-tab-id-param="<%= tab_data.tab_id %>">
+                    <svg width="16" height="16" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4l6.6 6.6L8 22.6 9.4 24l6.6-6.6 6.6 6.6 1.4-1.4-6.6-6.6L24 9.4z"/>
+                    </svg>
+                  </button>
+                <% end %>
+              </button>
+            <% end %>
+            <div class="cds--sub-content-right" data-carbon--tabs-target="rightSentinel"></div>
           </div>
-        </button>
-      <% end %>
+        </div>
+      </div>
     </div>
+
+    <button class="cds--tab--overflow-nav-button cds--tab--overflow-nav-button--next cds--tab--overflow-nav-button--hidden"
+            type="button"
+            aria-hidden="true"
+            tabindex="-1"
+            data-carbon--tabs-target="nextButton"
+            data-action="click->carbon--tabs#scrollNext">
+      <svg class="cds--tabs__nav-caret-right" width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <path d="M11 8l-5 5-.7-.7L9.6 8 5.3 3.7 6 3z"/>
+      </svg>
+    </button>
+
+    <div class="cds--assistive-text"
+         role="status"
+         aria-live="assertive"
+         aria-relevant="additions text"
+         data-carbon--tabs-target="assistiveText"></div>
   </div>
   <% tabs.each do |tab_data| %>
     <div class="<%= class_names(panel_css_classes(tab_data)) %>"

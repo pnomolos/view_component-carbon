@@ -9,10 +9,14 @@
     <% if @drop_container %>
       <button type="button"
               class="<%= drop_container_classes %>"
+              aria-describedby="<%= @id %>-instructions"
               data-action="click->carbon--file-uploader#openFileDialog dragover->carbon--file-uploader#handleDragOver dragleave->carbon--file-uploader#handleDragLeave drop->carbon--file-uploader#handleDrop"
               <% if @disabled %>disabled<% end %>>
         <%= @button_label %>
       </button>
+      <span id="<%= @id %>-instructions" class="cds--visually-hidden">
+        Drag and drop files here or activate to browse and select files to upload
+      </span>
     <% else %>
       <label class="<%= button_classes %>" tabindex="0" for="<%= @id %>"
              role="button"
@@ -22,6 +26,8 @@
     <% end %>
     <input <%= tag.attributes(input_attributes) %>>
     <div class="cds--file-container" data-carbon--file-uploader-target="fileList">
+    </div>
+    <div aria-live="polite" aria-atomic="true" class="cds--visually-hidden" data-carbon--file-uploader-target="liveRegion">
     </div>
   </div>
 </div>

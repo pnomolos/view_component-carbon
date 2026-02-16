@@ -45,6 +45,11 @@ module Carbon
       @system_arguments = system_arguments
     end
 
+    # @return [Symbol] HTML tag to render
+    def tag_name
+      @disabled ? :span : :a
+    end
+
     # @return [String] CSS class string
     def css_classes
       classes = ['cds--link', "cds--link--#{SIZE_CSS[@size]}"]
@@ -60,7 +65,10 @@ module Carbon
       attrs = @system_arguments.dup
       attrs[:class] = css_classes
       attrs[:href] = @href unless @disabled
-      attrs[:aria] = { disabled: true }.merge(attrs.fetch(:aria, {})) if @disabled
+      if @disabled
+        attrs[:role] = 'button'
+        attrs[:aria] = { disabled: true }.merge(attrs.fetch(:aria, {}))
+      end
       attrs
     end
 

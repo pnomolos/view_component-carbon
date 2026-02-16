@@ -29,6 +29,8 @@ module Carbon
     attr_reader :step
     # @return [Boolean] whether disabled
     attr_reader :disabled
+    # @return [Boolean] whether readonly
+    attr_reader :readonly
     # @return [Boolean] whether in invalid state
     attr_reader :invalid
     # @return [String, nil] validation error message
@@ -39,6 +41,8 @@ module Carbon
     attr_reader :warn_text
     # @return [Symbol] input size
     attr_reader :size
+    # @return [Boolean] whether to hide steppers
+    attr_reader :hide_steppers
     # @return [String] unique element ID
     attr_reader :id
 
@@ -55,6 +59,7 @@ module Carbon
     # @param warn [Boolean] marks as warning
     # @param warn_text [String, nil] warning message
     # @param size [Symbol] input size (:sm, :md, :lg)
+    # @param hide_steppers [Boolean] hides increment/decrement controls
     # @param id [String, nil] unique element ID
     # @param system_arguments [Hash] additional HTML attributes
     def initialize(
@@ -66,11 +71,13 @@ module Carbon
       max: nil,
       step: 1,
       disabled: false,
+      readonly: false,
       invalid: false,
       invalid_text: nil,
       warn: false,
       warn_text: nil,
       size: DEFAULT_SIZE,
+      hide_steppers: false,
       id: nil,
       **system_arguments
     )
@@ -81,6 +88,8 @@ module Carbon
       @max = max
       @step = step
       @disabled = disabled
+      @readonly = readonly
+      @hide_steppers = hide_steppers
       @size = validate_argument(:size, size, SIZES, DEFAULT_SIZE)
       @id = id || "number-input-#{SecureRandom.hex(4)}"
       @system_arguments = system_arguments
@@ -103,9 +112,11 @@ module Carbon
 
     # @return [String] CSS class string for the number container
     def number_classes
-      classes = ['cds--number', "cds--number--#{@size}"]
+      classes = ['cds--number', "cds--number--#{@size}", 'cds--number--helpertext']
       classes << 'cds--number--invalid' if @invalid
-      classes << 'cds--number--warning' if @warn
+      classes << 'cds--number--warn' if @warn
+      classes << 'cds--number--readonly' if @readonly
+      classes << 'cds--number--nosteppers' if @hide_steppers
       class_names(*classes)
     end
 
@@ -126,9 +137,13 @@ module Carbon
         value: @value,
         min: @min,
         max: @max,
-        step: @step
+        step: @step,
+        role: 'alert',
+        'aria-atomic': 'true'
       }
       attrs[:disabled] = '' if @disabled
+      attrs[:readonly] = '' if @readonly
+      attrs[:'aria-readonly'] = @readonly.to_s if @readonly
       attrs[:'aria-invalid'] = 'true' if @invalid
       attrs[:'aria-describedby'] = aria_describedby_id if aria_describedby_id
       attrs.merge!(@system_arguments)
@@ -138,13 +153,16 @@ module Carbon
     # @param type [String] button direction ("up" or "down")
     # @return [Hash] HTML attributes for increment/decrement buttons
     def button_attributes(type)
+      label = type == 'down' ? 'decrease number input' : 'increase number input'
       attrs = {
         class: "cds--number__control-btn #{type}-icon",
         type: 'button',
         tabindex: '-1',
-        title: type == 'down' ? 'Decrement' : 'Increment'
+        'aria-label': label,
+        'aria-live': 'polite',
+        'aria-atomic': 'true'
       }
-      attrs[:disabled] = '' if @disabled
+      attrs[:disabled] = '' if @disabled || @readonly
       attrs
     end
 

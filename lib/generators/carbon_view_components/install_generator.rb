@@ -26,9 +26,7 @@ module CarbonViewComponents
         full_path = File.join(destination_root, scss_path)
 
         if File.exist?(full_path)
-          unless File.read(full_path).include?("@use '@carbon/styles'")
-            prepend_to_file scss_path, carbon_import
-          end
+          prepend_to_file scss_path, carbon_import unless File.read(full_path).include?("@use '@carbon/styles'")
         else
           empty_directory File.dirname(scss_path)
           create_file scss_path, carbon_import

@@ -1,10 +1,12 @@
 <div class="<%= css_classes %>" <%= tag.attributes(html_attributes) %>>
-  <div class="<%= carbon_class('contained-list', 'header') %>">
-    <span class="<%= carbon_class('contained-list', 'label') %>"><%= label %></span>
-  </div>
-  <div class="<%= carbon_class('contained-list', 'list') %>" role="list">
+  <% if label_present? %>
+    <div class="<%= carbon_class('contained-list', 'header') %>">
+      <span class="<%= carbon_class('contained-list', 'label') %>" id="<%= label_id %>"><%= render_label_content %></span>
+    </div>
+  <% end %>
+  <ul <%= tag.attributes(list_attributes) %>>
     <% items.each do |item| %>
       <%= item %>
     <% end %>
-  </div>
+  </ul>
 </div>

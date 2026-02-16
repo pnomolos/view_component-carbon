@@ -181,5 +181,45 @@ module Carbon
 
       assert_selector '.cds--toast-notification--success'
     end
+
+    # -- SVG titles for accessibility --
+
+    test 'renders success icon with title element' do
+      render_inline(Carbon::ToastNotificationComponent.new(title: 'Title', kind: :success))
+
+      assert_selector 'svg.cds--toast-notification__icon title', text: 'Success'
+    end
+
+    test 'renders error icon with title element' do
+      render_inline(Carbon::ToastNotificationComponent.new(title: 'Title', kind: :error))
+
+      assert_selector 'svg.cds--toast-notification__icon title', text: 'Error'
+    end
+
+    test 'renders warning icon with title element' do
+      render_inline(Carbon::ToastNotificationComponent.new(title: 'Title', kind: :warning))
+
+      assert_selector 'svg.cds--toast-notification__icon title', text: 'Warning'
+    end
+
+    test 'renders info icon with title element' do
+      render_inline(Carbon::ToastNotificationComponent.new(title: 'Title', kind: :info))
+
+      assert_selector 'svg.cds--toast-notification__icon title', text: 'Info'
+    end
+
+    # -- Close label --
+
+    test 'renders custom close label' do
+      render_inline(Carbon::ToastNotificationComponent.new(title: 'Title', close_label: 'Dismiss notification'))
+
+      assert_selector 'button[aria-label="Dismiss notification"]'
+    end
+
+    test 'renders default close label' do
+      render_inline(Carbon::ToastNotificationComponent.new(title: 'Title'))
+
+      assert_selector 'button[aria-label="close notification"]'
+    end
   end
 end

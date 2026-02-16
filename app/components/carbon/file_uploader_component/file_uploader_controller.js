@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-  static targets = ['input', 'fileList'];
+  static targets = ['input', 'fileList', 'liveRegion'];
   static values = {
     size: { type: String, default: 'md' },
     dropContainer: { type: Boolean, default: false }
@@ -10,6 +10,7 @@ export default class extends Controller {
   handleChange(event) {
     const files = Array.from(event.target.files);
     files.forEach((file) => this.addFileItem(file));
+    this.announceFileAddition(files.length);
   }
 
   openFileDialog() {
@@ -26,7 +27,11 @@ export default class extends Controller {
   handleDragOver(event) {
     event.preventDefault();
     event.stopPropagation();
-    event.currentTarget.classList.add('cds--file__drop-container--drag-over');
+    const target = event.currentTarget;
+    if (!target.classList.contains('cds--file__drop-container--drag-over')) {
+      target.classList.add('cds--file__drop-container--drag-over');
+      this.announceDragState('Drop zone active');
+    }
   }
 
   handleDragLeave(event) {
@@ -42,6 +47,7 @@ export default class extends Controller {
 
     const files = Array.from(event.dataTransfer.files);
     files.forEach((file) => this.addFileItem(file));
+    this.announceFileAddition(files.length);
   }
 
   addFileItem(file) {
@@ -76,8 +82,39 @@ export default class extends Controller {
   removeFileItem(uuid) {
     const item = this.fileListTarget.querySelector(`[data-file-uuid="${uuid}"]`);
     if (item) {
+      const filename = item.querySelector('.cds--file-filename')?.textContent || 'File';
       item.remove();
+      this.announceFileRemoval(filename);
     }
+  }
+
+  announceFileAddition(count) {
+    if (!this.hasLiveRegionTarget) return;
+
+    const message = count === 1
+      ? '1 file added'
+      : `${count} files added`;
+    this.announce(message);
+  }
+
+  announceFileRemoval(filename) {
+    if (!this.hasLiveRegionTarget) return;
+    this.announce(`${filename} removed`);
+  }
+
+  announceDragState(message) {
+    if (!this.hasLiveRegionTarget) return;
+    this.announce(message);
+  }
+
+  announce(message) {
+    if (!this.hasLiveRegionTarget) return;
+
+    // Clear and set message to ensure it's announced
+    this.liveRegionTarget.textContent = '';
+    setTimeout(() => {
+      this.liveRegionTarget.textContent = message;
+    }, 100);
   }
 
   get closeIconSvg() {

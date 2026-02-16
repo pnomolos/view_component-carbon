@@ -34,6 +34,20 @@ module Carbon
     attr_reader :hide_label
     # @return [String, nil] select name attribute
     attr_reader :name
+    # @return [Boolean] whether readonly
+    attr_reader :readonly
+    # @return [Boolean] whether required
+    attr_reader :required
+    # @return [String, nil] placeholder text
+    attr_reader :placeholder
+    # @return [String, nil] current selected value
+    attr_reader :value
+    # @return [Boolean] whether to autofocus
+    attr_reader :autofocus
+    # @return [String, nil] validation pattern
+    attr_reader :pattern
+    # @return [Boolean] whether fluid layout enabled
+    attr_reader :is_fluid
 
     # @param label_text [String] label text
     # @param size [Symbol] select size (:sm, :md, :lg)
@@ -47,7 +61,15 @@ module Carbon
     # @param hide_label [Boolean] visually hides the label
     # @param name [String, nil] select name attribute
     # @param id [String, nil] unique element ID
+    # @param readonly [Boolean] makes the select readonly (disables interaction but shows value)
+    # @param required [Boolean] marks as required for form validation
+    # @param placeholder [String, nil] placeholder text (shown as disabled first option)
+    # @param value [String, nil] current selected value
+    # @param autofocus [Boolean] auto-focus on load
+    # @param pattern [String, nil] validation pattern
+    # @param is_fluid [Boolean] enables fluid layout with divider
     # @param system_arguments [Hash] additional HTML attributes
+    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def initialize(
       label_text: 'Label',
       size: DEFAULT_SIZE,
@@ -61,6 +83,13 @@ module Carbon
       hide_label: false,
       name: nil,
       id: nil,
+      readonly: false,
+      required: false,
+      placeholder: nil,
+      value: nil,
+      autofocus: false,
+      pattern: nil,
+      is_fluid: false,
       **system_arguments
     )
       @label_text = label_text
@@ -70,10 +99,30 @@ module Carbon
       @hide_label = hide_label
       @name = name
       @id = id || "select-#{SecureRandom.hex(4)}"
+      @readonly = readonly
+      @required = required
+      @placeholder = placeholder
+      @value = value
+      @autofocus = autofocus
+      @pattern = pattern
+      @is_fluid = is_fluid
       @system_arguments = system_arguments
-      initialize_form_field(invalid: invalid, invalid_text: invalid_text, warn: warn,
+
+      # Normalize validation states when readonly
+      if @readonly
+        @actual_disabled = false
+        @actual_invalid = false
+        @actual_warn = false
+      else
+        @actual_disabled = @disabled
+        @actual_invalid = !@disabled && invalid
+        @actual_warn = !@disabled && !invalid && warn
+      end
+
+      initialize_form_field(invalid: @actual_invalid, invalid_text: invalid_text, warn: @actual_warn,
                             warn_text: warn_text, helper_text: helper_text)
     end
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     # @return [String] unique select element ID
     def select_id
@@ -84,10 +133,11 @@ module Carbon
 
     def wrapper_classes
       classes = ['cds--select']
-      classes << 'cds--select--disabled' if @disabled
-      classes << 'cds--select--invalid' if @invalid
-      classes << 'cds--select--warning' if @warn
+      classes << 'cds--select--disabled' if @actual_disabled
+      classes << 'cds--select--invalid' if @actual_invalid
+      classes << 'cds--select--warning' if @actual_warn
       classes << 'cds--select--inline' if @inline
+      classes << 'cds--select--readonly' if @readonly
       classes << @system_arguments[:class] if @system_arguments[:class]
       class_names(classes)
     end
@@ -95,7 +145,7 @@ module Carbon
     def label_classes
       classes = ['cds--label']
       classes << 'cds--visually-hidden' if @hide_label
-      classes << 'cds--label--disabled' if @disabled
+      classes << 'cds--label--disabled' if @actual_disabled
       class_names(classes)
     end
 
@@ -105,16 +155,23 @@ module Carbon
       class_names(classes)
     end
 
+    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     def select_attributes
       attrs = @system_arguments.except(:class).dup
       attrs[:class] = select_classes
       attrs[:id] = @id
       attrs[:name] = @name if @name
-      attrs[:disabled] = '' if @disabled
-      attrs['aria-invalid'] = 'true' if @invalid
+      attrs[:disabled] = '' if @actual_disabled
+      attrs[:required] = '' if @required
+      attrs[:autofocus] = '' if @autofocus
+      attrs[:pattern] = @pattern if @pattern.present?
+      attrs[:title] = @value if @value.present?
+      attrs['aria-invalid'] = 'true' if @actual_invalid
+      attrs['aria-readonly'] = @readonly.to_s
       attrs['aria-describedby'] = aria_describedby_id if aria_describedby_id
       attrs
     end
+    # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
     def chevron_svg
       '<svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" ' \

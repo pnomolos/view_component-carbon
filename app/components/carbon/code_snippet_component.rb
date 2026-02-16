@@ -24,6 +24,10 @@ module Carbon
     attr_reader :max_collapsed_lines
     # @return [Boolean] whether to hide the copy button
     attr_reader :hide_copy_button
+    # @return [Boolean] whether disabled
+    attr_reader :disabled
+    # @return [Boolean] whether to wrap text
+    attr_reader :wrap_text
 
     # @param type [Symbol] snippet type (:single, :multi, :inline)
     # @param code [String, nil] code content to display
@@ -31,6 +35,8 @@ module Carbon
     # @param show_less_text [String] label for show less button
     # @param max_collapsed_lines [Integer] max visible lines when collapsed
     # @param hide_copy_button [Boolean] hides the copy button
+    # @param disabled [Boolean] disables the copy button and applies disabled styling
+    # @param wrap_text [Boolean] allows code text to wrap instead of scrolling
     # @param system_arguments [Hash] additional HTML attributes
     def initialize(
       type: DEFAULT_TYPE,
@@ -39,6 +45,8 @@ module Carbon
       show_less_text: 'Show less',
       max_collapsed_lines: 15,
       hide_copy_button: false,
+      disabled: false,
+      wrap_text: false,
       **system_arguments
     )
       @type = validate_argument(:type, type, TYPES, DEFAULT_TYPE)
@@ -47,6 +55,8 @@ module Carbon
       @show_less_text = show_less_text
       @max_collapsed_lines = max_collapsed_lines
       @hide_copy_button = hide_copy_button
+      @disabled = disabled
+      @wrap_text = wrap_text
       @system_arguments = system_arguments
     end
 
@@ -64,6 +74,8 @@ module Carbon
     # @return [String] CSS class string
     def css_classes
       classes = ['cds--snippet', "cds--snippet--#{@type}"]
+      classes << 'cds--snippet--disabled' if @disabled
+      classes << 'cds--snippet--wraptext' if @wrap_text
       classes << @system_arguments.delete(:class) if @system_arguments[:class]
       class_names(*classes)
     end

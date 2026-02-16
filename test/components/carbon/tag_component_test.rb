@@ -27,18 +27,28 @@ module Carbon
       assert_no_selector '.cds--tag__close-icon'
     end
 
-    test 'renders filter type as button with close icon' do
+    test 'renders filter type as span with close button' do
       render_inline(Carbon::TagComponent.new(type: :filter)) { 'Filter' }
 
-      assert_selector 'button.cds--tag.cds--tag--filter'
-      assert_selector '.cds--tag__close-icon'
+      assert_selector 'span.cds--tag.cds--tag--filter'
+      assert_selector 'button.cds--tag__close-icon'
+      assert_selector 'button.cds--tag__close-icon[type="button"]'
     end
 
-    test 'renders dismissible type as button with close icon' do
+    test 'renders dismissible type as span with close button' do
       render_inline(Carbon::TagComponent.new(type: :dismissible)) { 'Dismissible' }
 
-      assert_selector 'button.cds--tag.cds--tag--dismissible'
-      assert_selector '.cds--tag__close-icon'
+      assert_selector 'span.cds--tag.cds--tag--filter'
+      assert_selector 'button.cds--tag__close-icon'
+      assert_selector 'button.cds--tag__close-icon[type="button"]'
+    end
+
+    test 'renders operational type as button with interactive class' do
+      render_inline(Carbon::TagComponent.new(type: :operational)) { 'Operational' }
+
+      assert_selector 'button.cds--tag.cds--tag--interactive'
+      assert_selector 'button[type="button"]'
+      assert_no_selector '.cds--tag__close-icon'
     end
 
     # -- Colors --
@@ -137,16 +147,18 @@ module Carbon
 
     # -- Disabled --
 
-    test 'renders disabled filter tag with disabled attribute' do
+    test 'renders disabled filter tag with disabled class and attribute' do
       render_inline(Carbon::TagComponent.new(type: :filter, disabled: true)) { 'Disabled' }
 
-      assert_selector 'button.cds--tag[disabled]'
+      assert_selector 'span.cds--tag.cds--tag--disabled'
+      assert_selector 'button.cds--tag__close-icon[disabled]'
     end
 
-    test 'renders disabled dismissible tag with disabled attribute' do
+    test 'renders disabled dismissible tag with disabled class and attribute' do
       render_inline(Carbon::TagComponent.new(type: :dismissible, disabled: true)) { 'Disabled' }
 
-      assert_selector 'button.cds--tag[disabled]'
+      assert_selector 'span.cds--tag.cds--tag--disabled'
+      assert_selector 'button.cds--tag__close-icon[disabled]'
     end
 
     test 'disabled does not affect read_only tags' do
@@ -195,7 +207,7 @@ module Carbon
     test 'accepts string values for type' do
       render_inline(Carbon::TagComponent.new(type: 'filter')) { 'String Type' }
 
-      assert_selector 'button.cds--tag--filter'
+      assert_selector 'span.cds--tag--filter'
     end
 
     test 'accepts string values for color' do
@@ -215,7 +227,86 @@ module Carbon
     test 'renders filter tag with custom color and size' do
       render_inline(Carbon::TagComponent.new(type: :filter, color: :red, size: :sm)) { 'Filter' }
 
-      assert_selector 'button.cds--tag--filter.cds--tag--red.cds--tag--sm'
+      assert_selector 'span.cds--tag--filter.cds--tag--red.cds--tag--sm'
+    end
+
+    # -- Close button accessibility (P0 fixes) --
+
+    test 'close button has aria-label with default close label' do
+      render_inline(Carbon::TagComponent.new(type: :filter)) { 'My Filter' }
+
+      assert_selector 'button.cds--tag__close-icon[aria-label="Clear filter"]'
+    end
+
+    test 'close button has title attribute with default title' do
+      render_inline(Carbon::TagComponent.new(type: :filter)) { 'My Filter' }
+
+      assert_selector 'button.cds--tag__close-icon[title="Clear filter"]'
+    end
+
+    test 'close button has type="button" attribute' do
+      render_inline(Carbon::TagComponent.new(type: :filter)) { 'Filter' }
+
+      assert_selector 'button.cds--tag__close-icon[type="button"]'
+    end
+
+    test 'close button has tabindex="-1"' do
+      render_inline(Carbon::TagComponent.new(type: :filter)) { 'Filter' }
+
+      assert_selector 'button.cds--tag__close-icon[tabindex="-1"]'
+    end
+
+    # -- Disabled class (P1 fix) --
+
+    test 'applies disabled class when disabled' do
+      render_inline(Carbon::TagComponent.new(type: :filter, disabled: true)) { 'Disabled' }
+
+      assert_selector 'span.cds--tag.cds--tag--disabled'
+    end
+
+    test 'applies disabled class to read_only tag when disabled' do
+      render_inline(Carbon::TagComponent.new(type: :read_only, disabled: true)) { 'Disabled' }
+
+      assert_selector 'span.cds--tag.cds--tag--disabled'
+    end
+
+    test 'does not apply disabled class when not disabled' do
+      render_inline(Carbon::TagComponent.new(type: :filter, disabled: false)) { 'Not disabled' }
+
+      assert_selector 'span.cds--tag'
+      assert_no_selector '.cds--tag--disabled'
+    end
+
+    # -- Filter class consistency (P1 fix) --
+
+    test 'both filter and dismissible types use cds--tag--filter class' do
+      render_inline(Carbon::TagComponent.new(type: :filter)) { 'Filter' }
+
+      assert_selector 'span.cds--tag--filter'
+
+      render_inline(Carbon::TagComponent.new(type: :dismissible)) { 'Dismissible' }
+
+      assert_selector 'span.cds--tag--filter'
+    end
+
+    # -- Close label --
+
+    test 'renders custom close button label' do
+      render_inline(Carbon::TagComponent.new(type: :filter, close_label: 'Remove tag')) { 'Tag' }
+
+      assert_selector 'button[aria-label="Remove tag"]'
+    end
+
+    test 'renders default close button label' do
+      render_inline(Carbon::TagComponent.new(type: :filter)) { 'Tag' }
+
+      assert_selector 'button[aria-label="Clear filter"]'
+    end
+
+    test 'does not apply cds--tag--dismissible class' do
+      render_inline(Carbon::TagComponent.new(type: :dismissible)) { 'Dismissible' }
+
+      assert_no_selector '.cds--tag--dismissible'
     end
   end
 end

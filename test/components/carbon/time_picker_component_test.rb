@@ -193,6 +193,29 @@ module Carbon
       assert_selector 'label[for="custom-time"]'
     end
 
+    # -- Hide label --
+
+    test 'label is visible by default' do
+      render_inline(Carbon::TimePickerComponent.new(label_text: 'Time'))
+
+      assert_selector 'label.cds--label:not(.cds--visually-hidden)', text: 'Time'
+    end
+
+    test 'hide_label adds visually-hidden class' do
+      render_inline(Carbon::TimePickerComponent.new(label_text: 'Time', hide_label: true))
+
+      assert_selector 'label.cds--label.cds--visually-hidden', text: 'Time'
+    end
+
+    test 'label remains in DOM when hide_label is true' do
+      render_inline(Carbon::TimePickerComponent.new(label_text: 'Time', hide_label: true))
+
+      label = page.find('label')
+
+      assert_equal 'Time', label.text
+      assert_includes label['class'], 'cds--visually-hidden'
+    end
+
     # -- Validation --
 
     test 'raises ArgumentError for invalid size' do
@@ -224,6 +247,23 @@ module Carbon
       render_inline(Carbon::TimePickerComponent.new(label_text: 'Time', class: 'my-custom-class'))
 
       assert_selector '.cds--form-item.my-custom-class'
+    end
+
+    # -- Readonly state --
+
+    test 'renders readonly state' do
+      render_inline(Carbon::TimePickerComponent.new(label_text: 'Time', readonly: true))
+
+      assert_selector '.cds--time-picker--readonly'
+      assert_selector 'input[readonly]'
+      assert_selector 'input[aria-readonly="true"]'
+    end
+
+    test 'renders not readonly by default' do
+      render_inline(Carbon::TimePickerComponent.new(label_text: 'Time'))
+
+      assert_no_selector '.cds--time-picker--readonly'
+      assert_no_selector 'input[readonly]'
     end
   end
 end

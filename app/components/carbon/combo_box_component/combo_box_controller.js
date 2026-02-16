@@ -2,6 +2,11 @@ import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
   static targets = ['field', 'menu', 'item', 'input', 'clearButton'];
+  static values = {
+    typeahead: Boolean,
+    allowCustomValue: Boolean,
+    shouldFilterItem: Boolean,
+  };
 
   connect() {
     this.isOpen = false;
@@ -9,6 +14,7 @@ export default class extends Controller {
     this.selectedValue = null;
     this._handleOutsideClick = this.handleOutsideClick.bind(this);
     document.addEventListener('click', this._handleOutsideClick);
+    this.updateInputEmptyClass();
   }
 
   disconnect() {
@@ -46,20 +52,24 @@ export default class extends Controller {
     if (this.isOpen) return;
     this.isOpen = true;
     this.fieldTarget.setAttribute('aria-expanded', 'true');
+    this.inputTarget.setAttribute('aria-expanded', 'true');
     this.menuTarget.classList.add('cds--list-box__menu--expanded');
     this.element.classList.add('cds--list-box--expanded');
     this.highlightedIndex = -1;
+    this.updateAriaActivedescendant();
   }
 
   close() {
     if (!this.isOpen) return;
     this.isOpen = false;
     this.fieldTarget.setAttribute('aria-expanded', 'false');
+    this.inputTarget.setAttribute('aria-expanded', 'false');
     this.menuTarget.classList.remove('cds--list-box__menu--expanded');
     this.element.classList.remove('cds--list-box--expanded');
     this.clearHighlight();
+    this.updateAriaActivedescendant();
 
-    if (this.selectedValue) {
+    if (this.selectedValue && !this.allowCustomValueValue) {
       const selectedItem = this.itemTargets.find(
         (item) => item.dataset.value === this.selectedValue
       );
@@ -89,6 +99,7 @@ export default class extends Controller {
     this.selectedValue = item.dataset.value;
 
     this.inputTarget.value = item.dataset.text;
+    this.updateInputEmptyClass();
     this.showClearButton();
     this.close();
 
@@ -105,6 +116,7 @@ export default class extends Controller {
     });
     this.selectedValue = null;
     this.inputTarget.value = '';
+    this.updateInputEmptyClass();
     this.hideClearButton();
     this.showAllItems();
     this.inputTarget.focus();
@@ -115,16 +127,24 @@ export default class extends Controller {
   filter() {
     const query = this.inputTarget.value.toLowerCase();
 
-    this.itemTargets.forEach((item) => {
-      const text = (item.dataset.text || item.textContent).toLowerCase().trim();
-      if (text.includes(query)) {
-        item.style.display = '';
-      } else {
-        item.style.display = 'none';
-      }
-    });
+    // Update empty class
+    this.updateInputEmptyClass();
+
+    // Only filter if should_filter_item is true
+    if (this.shouldFilterItemValue) {
+      this.itemTargets.forEach((item) => {
+        const text = (item.dataset.text || item.textContent).toLowerCase().trim();
+        if (text.includes(query)) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
 
     this.highlightedIndex = -1;
+    this.updateAriaActivedescendant();
+
     if (!this.isOpen) {
       this.open();
     }
@@ -221,12 +241,14 @@ export default class extends Controller {
       );
       visibleItems[this.highlightedIndex].scrollIntoView({ block: 'nearest' });
     }
+    this.updateAriaActivedescendant();
   }
 
   clearHighlight() {
     this.itemTargets.forEach((item) => {
       item.classList.remove('cds--list-box__menu-item--highlighted');
     });
+    this.updateAriaActivedescendant();
   }
 
   showAllItems() {
@@ -244,6 +266,30 @@ export default class extends Controller {
   hideClearButton() {
     if (this.hasClearButtonTarget) {
       this.clearButtonTarget.style.display = 'none';
+    }
+  }
+
+  updateInputEmptyClass() {
+    if (this.inputTarget.value.length === 0) {
+      this.inputTarget.classList.add('cds--text-input--empty');
+    } else {
+      this.inputTarget.classList.remove('cds--text-input--empty');
+    }
+  }
+
+  updateAriaActivedescendant() {
+    const visibleItems = this.visibleItems();
+    if (
+      this.isOpen &&
+      this.highlightedIndex >= 0 &&
+      visibleItems[this.highlightedIndex]
+    ) {
+      this.inputTarget.setAttribute(
+        'aria-activedescendant',
+        visibleItems[this.highlightedIndex].id
+      );
+    } else {
+      this.inputTarget.removeAttribute('aria-activedescendant');
     }
   }
 }

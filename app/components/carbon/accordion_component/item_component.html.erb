@@ -1,5 +1,6 @@
 <%= content_tag :li, **html_attributes do %>
   <button class="cds--accordion__heading"
+          type="button"
           data-action="click->carbon--accordion-item#toggle"
           aria-expanded="<%= @open %>"
           aria-controls="<%= panel_id %>">

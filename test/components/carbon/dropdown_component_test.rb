@@ -3,6 +3,7 @@
 require 'test_helper'
 
 module Carbon
+  # rubocop:disable Metrics/ClassLength
   class DropdownComponentTest < CarbonViewComponents::TestCase
     # -- Default rendering --
 
@@ -40,7 +41,8 @@ module Carbon
       assert_selector 'button.cds--list-box__field[role="combobox"]'
       assert_selector 'button[aria-expanded="false"]'
       assert_selector 'button[aria-haspopup="listbox"]'
-      assert_selector 'button[aria-label="Pick one"]'
+      # When no aria_label provided, should use aria-labelledby
+      assert_selector 'button[aria-labelledby]'
     end
 
     test 'renders menu with listbox role' do
@@ -48,7 +50,7 @@ module Carbon
         c.with_item(value: 'a', text: 'A')
       end
 
-      assert_selector 'ul.cds--list-box__menu[role="listbox"]'
+      assert_selector 'div.cds--list-box__menu[role="listbox"]'
     end
 
     # -- Items --
@@ -59,7 +61,7 @@ module Carbon
         c.with_item(value: 'opt2', text: 'Option 2')
       end
 
-      assert_selector 'li.cds--list-box__menu-item[role="option"]', count: 2
+      assert_selector 'div.cds--list-box__menu-item[role="option"]', count: 2
     end
 
     test 'renders item text' do
@@ -76,8 +78,8 @@ module Carbon
         c.with_item(value: 'opt2', text: 'Option 2')
       end
 
-      assert_selector 'li.cds--list-box__menu-item--active[aria-selected="true"]', count: 1
-      assert_selector 'li[aria-selected="false"]', count: 1
+      assert_selector 'div.cds--list-box__menu-item--active[aria-selected="true"]', count: 1
+      assert_selector 'div[aria-selected="false"]', count: 1
     end
 
     test 'displays selected item text in trigger' do
@@ -110,7 +112,7 @@ module Carbon
         c.with_item(value: 'opt1', text: 'Disabled', disabled: true)
       end
 
-      assert_selector 'li[aria-disabled="true"]'
+      assert_selector 'div[aria-disabled="true"]'
     end
 
     # -- Sizes --
@@ -202,7 +204,7 @@ module Carbon
         c.with_item(value: 'a', text: 'A')
       end
 
-      assert_selector 'ul[data-carbon--dropdown-target="menu"]'
+      assert_selector 'div[data-carbon--dropdown-target="menu"]'
     end
 
     test 'renders items with stimulus target and action' do
@@ -210,8 +212,8 @@ module Carbon
         c.with_item(value: 'a', text: 'A')
       end
 
-      assert_selector 'li[data-carbon--dropdown-target="item"]'
-      assert_selector 'li[data-action="click->carbon--dropdown#select"]'
+      assert_selector 'div[data-carbon--dropdown-target="item"]'
+      assert_selector 'div[data-action="click->carbon--dropdown#select"]'
     end
 
     # -- Menu icon --
@@ -234,7 +236,7 @@ module Carbon
       trigger = page.find('button[role="combobox"]')
       menu_id = trigger['aria-controls']
 
-      assert_selector "ul##{menu_id}"
+      assert_selector "div##{menu_id}"
     end
 
     # -- Validation --
@@ -262,5 +264,271 @@ module Carbon
 
       assert_selector 'div.cds--dropdown.custom-dd'
     end
+
+    # -- P0: ARIA improvements --
+
+    test 'renders aria-label on trigger when provided' do
+      render_inline(Carbon::DropdownComponent.new(aria_label: 'Select option')) do |c|
+        c.with_item(value: 'a', text: 'A')
+      end
+
+      assert_selector 'button[aria-label="Select option"]'
+      refute_selector 'button[aria-labelledby]'
+    end
+
+    test 'renders aria-labelledby on trigger when no aria_label provided' do
+      render_inline(Carbon::DropdownComponent.new(title_text: 'Color')) do |c|
+        c.with_item(value: 'a', text: 'A')
+      end
+
+      trigger = page.find('button[role="combobox"]')
+      label_id = trigger['aria-labelledby']
+
+      assert_predicate label_id, :present?
+      assert_selector "label##{label_id}", text: 'Color'
+    end
+
+    test 'renders aria-label on menu when aria_label provided' do
+      render_inline(Carbon::DropdownComponent.new(aria_label: 'Options')) do |c|
+        c.with_item(value: 'a', text: 'A')
+      end
+
+      assert_selector 'div[role="listbox"][aria-label="Options"]'
+    end
+
+    test 'renders aria-labelledby on menu when no aria_label provided' do
+      render_inline(Carbon::DropdownComponent.new(title_text: 'Size')) do |c|
+        c.with_item(value: 'a', text: 'A')
+      end
+
+      menu = page.find('div[role="listbox"]')
+      label_id = menu['aria-labelledby']
+
+      assert_predicate label_id, :present?
+      assert_selector "label##{label_id}", text: 'Size'
+    end
+
+    test 'menu items have unique IDs for aria-activedescendant' do
+      render_inline(Carbon::DropdownComponent.new) do |c|
+        c.with_item(value: 'a', text: 'A')
+        c.with_item(value: 'b', text: 'B')
+      end
+
+      menu = page.find('div[role="listbox"]')
+      menu_id = menu['id']
+
+      assert_selector "div##{menu_id}-item-0[role='option']"
+      assert_selector "div##{menu_id}-item-1[role='option']"
+    end
+
+    test 'renders required attribute on trigger when required' do
+      render_inline(Carbon::DropdownComponent.new(required: true)) do |c|
+        c.with_item(value: 'a', text: 'A')
+      end
+
+      assert_selector 'button[required]'
+      assert_selector 'button[aria-required="true"]'
+    end
+
+    # -- P1: Correctness --
+
+    test 'renders read_only state' do
+      render_inline(Carbon::DropdownComponent.new(read_only: true)) do |c|
+        c.with_item(value: 'a', text: 'A')
+      end
+
+      assert_selector 'div[data-carbon--dropdown-read-only-value="true"]'
+      refute_selector 'button[disabled]'
+    end
+
+    test 'renders open state with expanded class' do
+      render_inline(Carbon::DropdownComponent.new(open: true)) do |c|
+        c.with_item(value: 'a', text: 'A')
+      end
+
+      assert_selector 'div.cds--list-box--expanded'
+      assert_selector 'button[aria-expanded="true"]'
+    end
+
+    test 'renders closed state without expanded class' do
+      render_inline(Carbon::DropdownComponent.new(open: false)) do |c|
+        c.with_item(value: 'a', text: 'A')
+      end
+
+      refute_selector 'div.cds--list-box--expanded'
+      assert_selector 'button[aria-expanded="false"]'
+    end
+
+    test 'value prop selects matching item' do
+      render_inline(Carbon::DropdownComponent.new(value: 'opt2')) do |c|
+        c.with_item(value: 'opt1', text: 'Option 1')
+        c.with_item(value: 'opt2', text: 'Option 2')
+      end
+
+      assert_selector 'div[role="option"][data-value="opt2"][aria-selected="true"]'
+      assert_selector 'div[role="option"][data-value="opt1"][aria-selected="false"]'
+      assert_selector '.cds--list-box__label', text: 'Option 2'
+    end
+
+    test 'label prop provides placeholder text' do
+      render_inline(Carbon::DropdownComponent.new(label: 'Pick one')) do |c|
+        c.with_item(value: 'a', text: 'A')
+      end
+
+      assert_selector '.cds--list-box__label', text: 'Pick one'
+    end
+
+    test 'label prop shows when no item selected' do
+      render_inline(Carbon::DropdownComponent.new(label: 'Choose', value: nil)) do |c|
+        c.with_item(value: 'a', text: 'A')
+      end
+
+      assert_selector '.cds--list-box__label', text: 'Choose'
+    end
+
+    test 'renders validation invalid icon' do
+      render_inline(Carbon::DropdownComponent.new(invalid: true)) do |c|
+        c.with_item(value: 'a', text: 'A')
+      end
+
+      assert_selector 'svg.cds--list-box__invalid-icon'
+      refute_selector 'svg.cds--list-box__invalid-icon--warning'
+    end
+
+    test 'renders validation warning icon' do
+      render_inline(Carbon::DropdownComponent.new(warn: true)) do |c|
+        c.with_item(value: 'a', text: 'A')
+      end
+
+      assert_selector 'svg.cds--list-box__invalid-icon.cds--list-box__invalid-icon--warning'
+    end
+
+    test 'label has for attribute pointing to trigger' do
+      render_inline(Carbon::DropdownComponent.new(title_text: 'Test')) do |c|
+        c.with_item(value: 'a', text: 'A')
+      end
+
+      label = page.find('label')
+      trigger_id = label['for']
+
+      assert_predicate trigger_id, :present?
+      assert_selector "button##{trigger_id}"
+    end
+
+    # -- P2: Missing features --
+
+    test 'renders direction value' do
+      render_inline(Carbon::DropdownComponent.new(direction: :top)) do |c|
+        c.with_item(value: 'a', text: 'A')
+      end
+
+      assert_selector 'div[data-carbon--dropdown-direction-value="top"]'
+    end
+
+    test 'renders autoalign class when enabled' do
+      render_inline(Carbon::DropdownComponent.new(autoalign: true)) do |c|
+        c.with_item(value: 'a', text: 'A')
+      end
+
+      assert_selector 'div.cds--autoalign'
+    end
+
+    test 'renders inline type classes' do
+      render_inline(Carbon::DropdownComponent.new(type: 'inline')) do |c|
+        c.with_item(value: 'a', text: 'A')
+      end
+
+      assert_selector 'div.cds--dropdown--inline'
+      assert_selector 'div.cds--list-box--inline'
+    end
+
+    test 'renders name attribute and hidden input' do
+      render_inline(Carbon::DropdownComponent.new(name: 'color', value: 'red')) do |c|
+        c.with_item(value: 'red', text: 'Red')
+      end
+
+      assert_selector 'input[type="hidden"][name="color"][value="red"]', visible: :all
+    end
+
+    test 'renders selected class when item selected' do
+      render_inline(Carbon::DropdownComponent.new(value: 'opt1')) do |c|
+        c.with_item(value: 'opt1', text: 'Option 1')
+      end
+
+      assert_selector 'div.cds--dropdown--selected'
+    end
+
+    test 'does not render selected class when no item selected' do
+      render_inline(Carbon::DropdownComponent.new) do |c|
+        c.with_item(value: 'opt1', text: 'Option 1')
+      end
+
+      refute_selector 'div.cds--dropdown--selected'
+    end
+
+    test 'renders toggle_label_closed in aria-label when provided' do
+      render_inline(Carbon::DropdownComponent.new(toggle_label_closed: 'Open menu', toggle_label_open: 'Close menu',
+                                                  open: false)) do |c|
+        c.with_item(value: 'a', text: 'A')
+      end
+
+      assert_selector 'button[aria-label="Open menu"]'
+    end
+
+    test 'renders toggle_label_open in aria-label when provided and open' do
+      render_inline(Carbon::DropdownComponent.new(toggle_label_closed: 'Open menu', toggle_label_open: 'Close menu',
+                                                  open: true)) do |c|
+        c.with_item(value: 'a', text: 'A')
+      end
+
+      assert_selector 'button[aria-label="Close menu"]'
+    end
+
+    test 'renders disabled helper text class when disabled' do
+      render_inline(Carbon::DropdownComponent.new(disabled: true, helper_text: 'Help')) do |c|
+        c.with_item(value: 'a', text: 'A')
+      end
+
+      assert_selector '.cds--form__helper-text.cds--form__helper-text--disabled'
+    end
+
+    # -- P3: Polish --
+
+    test 'menu uses div not ul element' do
+      render_inline(Carbon::DropdownComponent.new) do |c|
+        c.with_item(value: 'a', text: 'A')
+      end
+
+      assert_selector 'div.cds--list-box__menu[role="listbox"]'
+      refute_selector 'ul.cds--list-box__menu'
+    end
+
+    test 'menu items use div not li element' do
+      render_inline(Carbon::DropdownComponent.new) do |c|
+        c.with_item(value: 'a', text: 'A')
+      end
+
+      assert_selector 'div.cds--list-box__menu-item[role="option"]'
+      refute_selector 'li.cds--list-box__menu-item'
+    end
+
+    # -- Backwards compatibility --
+
+    test 'label_text param still works (deprecated)' do
+      render_inline(Carbon::DropdownComponent.new(label_text: 'Old API')) do |c|
+        c.with_item(value: 'a', text: 'A')
+      end
+
+      assert_selector 'label', text: 'Old API'
+    end
+
+    test 'title_text overrides label_text when both provided' do
+      render_inline(Carbon::DropdownComponent.new(title_text: 'New', label_text: 'Old')) do |c|
+        c.with_item(value: 'a', text: 'A')
+      end
+
+      assert_selector 'label', text: 'New'
+    end
   end
+  # rubocop:enable Metrics/ClassLength
 end

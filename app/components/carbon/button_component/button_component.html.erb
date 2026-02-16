@@ -1,4 +1,7 @@
 <%= content_tag(tag_name, **html_attributes) do %>
+  <% if show_danger_assistive_text? %>
+    <span class="cds--visually-hidden">Danger</span>
+  <% end %>
   <span class="cds--btn__content">
     <%= content %>
     <% if icon? %>

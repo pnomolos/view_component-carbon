@@ -5,7 +5,7 @@
       <div class="cds--date-picker-input__wrapper" <%= 'data-invalid' if @invalid %>>
         <input <%= tag.attributes(**input_attributes) %> />
         <% if calendar_type? %>
-          <%= calendar_icon_svg.html_safe %>
+          <%= calendar_icon_button.html_safe %>
         <% end %>
         <% if @invalid %>
           <%= warning_icon_svg&.html_safe %>
@@ -35,7 +35,7 @@
                  <% if range_input.disabled %>disabled<% end %>
                  <% if range_input.readonly %>readonly<% end %>
                  data-carbon--date-picker-target="rangeInput" />
-          <%= calendar_icon_svg.html_safe %>
+          <%= calendar_icon_button.html_safe %>
         </div>
       </div>
     <% end %>

@@ -12,12 +12,20 @@ module Carbon
   class TabsComponent < Carbon::BaseComponent
     TYPES = %i[default contained].freeze
     DEFAULT_TYPE = :default
+    ACTIVATION_MODES = %i[automatic manual].freeze
+    DEFAULT_ACTIVATION = :automatic
 
-    renders_many :tabs, lambda { |label:, selected: false, disabled: false, **system_arguments, &content_block|
+    renders_many :tabs, lambda { |label:,
+                                   selected: false,
+                                   disabled: false,
+                                   dismissable: false,
+                                   **system_arguments,
+                                   &content_block|
       TabData.new(
         label: label,
         selected: selected,
         disabled: disabled,
+        dismissable: dismissable,
         system_arguments: system_arguments,
         content_block: content_block
       )
@@ -25,11 +33,46 @@ module Carbon
 
     # @return [Symbol] tabs type
     attr_reader :type
+    # @return [Symbol] keyboard activation mode
+    attr_reader :activation
+    # @return [Boolean] whether tabs are dismissable
+    attr_reader :dismissable
+    # @return [String] aria-label for tablist
+    attr_reader :aria_label
+    # @return [Boolean] whether to auto-scroll to selected tab
+    attr_reader :scroll_into_view
+    # @return [String] assistive text for selecting items
+    attr_reader :selecting_items_text
+    # @return [String] assistive text for selected item
+    attr_reader :selected_item_text
 
     # @param type [Symbol] tabs type (:default, :contained)
+    # @param activation [Symbol] keyboard activation mode (:automatic, :manual)
+    # @param dismissable [Boolean] whether tabs can be closed
+    # @param aria_label [String] accessible label for tab list
+    # @param scroll_into_view [Boolean] whether to scroll to selected tab
+    # @param selecting_items_text [String] assistive text when navigating
+    # @param selected_item_text [String] assistive text when item selected
     # @param system_arguments [Hash] additional HTML attributes
-    def initialize(type: DEFAULT_TYPE, **system_arguments)
+    def initialize(
+      type: DEFAULT_TYPE,
+      activation: DEFAULT_ACTIVATION,
+      dismissable: false,
+      contained: false,
+      aria_label: 'Tab navigation',
+      scroll_into_view: true,
+      selecting_items_text: 'Selecting items. Use left and right arrow keys to navigate.',
+      selected_item_text: 'Selected an item.',
+      **system_arguments
+    )
+      type = :contained if contained
       @type = validate_argument(:type, type, TYPES, DEFAULT_TYPE)
+      @activation = validate_argument(:activation, activation, ACTIVATION_MODES, DEFAULT_ACTIVATION)
+      @dismissable = dismissable
+      @aria_label = aria_label
+      @scroll_into_view = scroll_into_view
+      @selecting_items_text = selecting_items_text
+      @selected_item_text = selected_item_text
       @system_arguments = system_arguments
     end
 
@@ -38,6 +81,7 @@ module Carbon
     def css_classes
       classes = ['cds--tabs']
       classes << 'cds--tabs--contained' if @type == :contained
+      classes << 'cds--tabs--dismissable' if @dismissable
       classes << @system_arguments[:class] if @system_arguments[:class]
       class_names(classes)
     end
@@ -45,6 +89,10 @@ module Carbon
     def wrapper_attributes
       attrs = @system_arguments.except(:class).dup
       attrs['data-controller'] = 'carbon--tabs'
+      attrs['data-carbon--tabs-activation-value'] = @activation.to_s
+      attrs['data-carbon--tabs-scroll-into-view-value'] = @scroll_into_view.to_s
+      attrs['data-selecting-items-text'] = @selecting_items_text
+      attrs['data-selected-item-text'] = @selected_item_text
       attrs
     end
 
@@ -77,6 +125,8 @@ module Carbon
       attr_reader :selected
       # @return [Boolean] whether disabled
       attr_reader :disabled
+      # @return [Boolean] whether dismissable
+      attr_reader :dismissable
       # @return [Hash] additional HTML attributes
       attr_reader :system_arguments
       # @return [Proc, nil] block that produces tab panel content
@@ -89,12 +139,14 @@ module Carbon
       # @param label [String] tab label
       # @param selected [Boolean] whether selected
       # @param disabled [Boolean] whether disabled
+      # @param dismissable [Boolean] whether dismissable
       # @param system_arguments [Hash] additional HTML attributes
       # @param content_block [Proc, nil] block for panel content
-      def initialize(label:, selected:, disabled:, system_arguments:, content_block:)
+      def initialize(label:, selected:, disabled:, dismissable:, system_arguments:, content_block:)
         @label = label
         @selected = selected
         @disabled = disabled
+        @dismissable = dismissable
         @system_arguments = system_arguments
         @content_block = content_block
         @tab_id = "tab-#{SecureRandom.hex(8)}"

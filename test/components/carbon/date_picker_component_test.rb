@@ -115,16 +115,25 @@ module Carbon
       assert_no_selector '.cds--date-picker__icon'
     end
 
-    test 'single type has calendar icon' do
+    test 'single type has calendar icon button' do
       render_inline(Carbon::DatePickerComponent.new(type: :single))
 
-      assert_selector 'svg.cds--date-picker__icon'
+      assert_selector 'button.cds--date-picker__icon[type="button"]'
+      assert_selector 'button.cds--date-picker__icon[aria-label="Open calendar"]'
     end
 
-    test 'range type has calendar icon' do
+    test 'single type icon button contains svg' do
+      render_inline(Carbon::DatePickerComponent.new(type: :single))
+
+      assert_selector 'button.cds--date-picker__icon svg'
+      assert_selector 'button.cds--date-picker__icon svg[aria-hidden="true"]'
+    end
+
+    test 'range type has calendar icon button' do
       render_inline(Carbon::DatePickerComponent.new(type: :range))
 
-      assert_selector 'svg.cds--date-picker__icon'
+      assert_selector 'button.cds--date-picker__icon[type="button"]'
+      assert_selector 'button.cds--date-picker__icon[aria-label="Open calendar"]'
     end
 
     # -- Placeholder --

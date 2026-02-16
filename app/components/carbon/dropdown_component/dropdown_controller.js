@@ -1,13 +1,22 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-  static targets = ['trigger', 'menu', 'item', 'label'];
+  static targets = ['trigger', 'menu', 'item', 'label', 'menuIcon', 'hiddenInput'];
+  static values = {
+    readOnly: { type: Boolean, default: false },
+    direction: { type: String, default: 'bottom' }
+  };
 
   connect() {
-    this.isOpen = false;
+    this.isOpen = this.element.classList.contains('cds--list-box--expanded');
     this.highlightedIndex = -1;
     this._handleClickOutside = this.handleClickOutside.bind(this);
     document.addEventListener('click', this._handleClickOutside);
+
+    // Update menu icon state if already open
+    if (this.isOpen && this.hasMenuIconTarget) {
+      this.menuIconTarget.classList.add('cds--list-box__menu-icon--open');
+    }
   }
 
   disconnect() {
@@ -16,7 +25,11 @@ export default class extends Controller {
 
   toggle(event) {
     event.preventDefault();
-    if (this.element.classList.contains('cds--dropdown--disabled')) return;
+
+    // Prevent interaction if disabled or read-only
+    if (this.element.classList.contains('cds--dropdown--disabled') || this.readOnlyValue) {
+      return;
+    }
 
     if (this.isOpen) {
       this.close();
@@ -26,10 +39,18 @@ export default class extends Controller {
   }
 
   open() {
+    // Prevent opening if read-only
+    if (this.readOnlyValue) return;
+
     this.isOpen = true;
     this.element.classList.add('cds--dropdown--open');
     this.element.classList.add('cds--list-box--expanded');
     this.triggerTarget.setAttribute('aria-expanded', 'true');
+
+    // Add open class to menu icon
+    if (this.hasMenuIconTarget) {
+      this.menuIconTarget.classList.add('cds--list-box__menu-icon--open');
+    }
 
     // Highlight the currently selected item, or first item
     const selectedIndex = this.enabledItems.findIndex(
@@ -43,13 +64,25 @@ export default class extends Controller {
     this.element.classList.remove('cds--dropdown--open');
     this.element.classList.remove('cds--list-box--expanded');
     this.triggerTarget.setAttribute('aria-expanded', 'false');
+
+    // Remove open class from menu icon
+    if (this.hasMenuIconTarget) {
+      this.menuIconTarget.classList.remove('cds--list-box__menu-icon--open');
+    }
+
     this.clearHighlighted();
     this.highlightedIndex = -1;
+
+    // Clear aria-activedescendant when closed
+    this.triggerTarget.removeAttribute('aria-activedescendant');
   }
 
   select(event) {
     const item = event.currentTarget;
     if (item.getAttribute('aria-disabled') === 'true') return;
+
+    // Prevent selection if read-only
+    if (this.readOnlyValue) return;
 
     // Deselect all items
     this.itemTargets.forEach((i) => {
@@ -86,6 +119,14 @@ export default class extends Controller {
     const text = optionDiv ? optionDiv.textContent.trim() : item.textContent.trim();
     this.labelTarget.textContent = text;
 
+    // Update hidden input if present
+    if (this.hasHiddenInputTarget) {
+      this.hiddenInputTarget.value = item.dataset.value;
+    }
+
+    // Add selected class to dropdown
+    this.element.classList.add('cds--dropdown--selected');
+
     this.close();
     this.triggerTarget.focus();
 
@@ -94,11 +135,25 @@ export default class extends Controller {
   }
 
   handleTriggerKeydown(event) {
+    // Prevent keyboard interaction if read-only (but not disabled - accessibility difference)
+    if (this.readOnlyValue && event.key !== 'Tab') {
+      event.preventDefault();
+      return;
+    }
+
     switch (event.key) {
       case 'Enter':
       case ' ':
         event.preventDefault();
-        this.toggle(event);
+        if (this.isOpen && this.highlightedIndex >= 0) {
+          // Select the highlighted item
+          const items = this.enabledItems;
+          if (items[this.highlightedIndex]) {
+            items[this.highlightedIndex].click();
+          }
+        } else {
+          this.toggle(event);
+        }
         break;
       case 'ArrowDown':
         event.preventDefault();
@@ -166,6 +221,12 @@ export default class extends Controller {
       this.highlightedIndex = index;
       items[index].classList.add('cds--list-box__menu-item--highlighted');
       items[index].scrollIntoView({ block: 'nearest' });
+
+      // Set aria-activedescendant to the highlighted item's ID
+      const itemId = items[index].id;
+      if (itemId) {
+        this.triggerTarget.setAttribute('aria-activedescendant', itemId);
+      }
     }
   }
 

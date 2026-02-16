@@ -30,6 +30,8 @@ module Carbon
     attr_reader :hide_close_button
     # @return [Boolean] whether to use low-contrast styling
     attr_reader :low_contrast
+    # @return [String] accessible label for close button
+    attr_reader :close_label
 
     # @param title [String] notification title
     # @param kind [Symbol] notification kind (:info, :success, :warning, :error, :info_square)
@@ -42,6 +44,7 @@ module Carbon
       subtitle: nil,
       hide_close_button: false,
       low_contrast: false,
+      close_label: 'close notification',
       **system_arguments
     )
       @kind = validate_argument(:kind, kind, KINDS, DEFAULT_KIND)
@@ -49,6 +52,7 @@ module Carbon
       @subtitle = subtitle
       @hide_close_button = hide_close_button
       @low_contrast = low_contrast
+      @close_label = close_label
       @system_arguments = system_arguments
     end
 
@@ -98,6 +102,7 @@ module Carbon
     def info_icon
       '<svg class="cds--inline-notification__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" ' \
       'width="20" height="20" fill="currentColor">' \
+      '<title>Info</title>' \
       '<path d="M16 2a14 14 0 1 0 14 14A14 14 0 0 0 16 2zm0 26a12 12 0 1 1 12-12 12 12 0 0 1-12 12z"/>' \
       '<path d="M15 10h2v2h-2zm0 4h2v8h-2z"/></svg>'.html_safe
     end
@@ -105,6 +110,7 @@ module Carbon
     def success_icon
       '<svg class="cds--inline-notification__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" ' \
       'width="20" height="20" fill="currentColor">' \
+      '<title>Success</title>' \
       '<path d="M16 2a14 14 0 1 0 14 14A14 14 0 0 0 16 2zm0 26a12 12 0 1 1 12-12 12 12 0 0 1-12 12z"/>' \
       '<path d="M14 21.5l-5-4.96 1.59-1.57L14 18.35 21.41 11 23 12.58l-9 8.92z"/></svg>'.html_safe
     end
@@ -112,6 +118,7 @@ module Carbon
     def warning_icon
       '<svg class="cds--inline-notification__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" ' \
       'width="20" height="20" fill="currentColor">' \
+      '<title>Warning</title>' \
       '<path d="M16 2a14 14 0 1 0 14 14A14 14 0 0 0 16 2zm0 26a12 12 0 1 1 12-12 12 12 0 0 1-12 12z"/>' \
       '<path d="M15 8h2v11h-2zm1 14a1.5 1.5 0 1 0 1.5 1.5A1.5 1.5 0 0 0 16 22z"/></svg>'.html_safe
     end
@@ -119,6 +126,7 @@ module Carbon
     def error_icon
       '<svg class="cds--inline-notification__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" ' \
       'width="20" height="20" fill="currentColor">' \
+      '<title>Error</title>' \
       '<path d="M16 2a14 14 0 1 0 14 14A14 14 0 0 0 16 2zm0 26a12 12 0 1 1 12-12 12 12 0 0 1-12 12z"/>' \
       '<path d="M21.41 9l-5.41 5.41L10.59 9 9 10.59 14.41 16 9 21.41 10.59 23 16 17.59 21.41 23 23 21.41 ' \
       '17.59 16 23 10.59 21.41 9z"/></svg>'.html_safe

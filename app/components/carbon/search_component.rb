@@ -26,6 +26,12 @@ module Carbon
     attr_reader :expandable
     # @return [String] unique element ID
     attr_reader :id
+    # @return [String] aria-label text for close button
+    attr_reader :close_button_label_text
+    # @return [String, nil] input name attribute
+    attr_reader :name
+    # @return [String] autocomplete attribute value
+    attr_reader :autocomplete
 
     # @param size [Symbol] input size (:sm, :md, :lg)
     # @param placeholder [String] placeholder text
@@ -33,6 +39,9 @@ module Carbon
     # @param value [String, nil] initial value
     # @param disabled [Boolean] disables the input
     # @param expandable [Boolean] enables expandable mode
+    # @param close_button_label_text [String] aria-label for close button
+    # @param name [String, nil] input name attribute
+    # @param autocomplete [String] autocomplete attribute value
     # @param id [String, nil] unique element ID
     # @param system_arguments [Hash] additional HTML attributes
     def initialize(
@@ -42,6 +51,9 @@ module Carbon
       value: nil,
       disabled: false,
       expandable: false,
+      close_button_label_text: 'Clear search input',
+      name: nil,
+      autocomplete: 'off',
       id: nil,
       **system_arguments
     )
@@ -51,6 +63,9 @@ module Carbon
       @value = value
       @disabled = disabled
       @expandable = expandable
+      @close_button_label_text = close_button_label_text
+      @name = name
+      @autocomplete = autocomplete
       @id = id || "search-#{SecureRandom.hex(4)}"
       @system_arguments = system_arguments
     end

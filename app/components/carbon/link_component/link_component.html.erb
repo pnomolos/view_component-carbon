@@ -1,5 +1,9 @@
-<%= content_tag(:a, **html_attributes) do %>
-  <%= content %>
+<%= content_tag(tag_name, **html_attributes) do %>
+  <% if @inline %>
+    <span class="cds--link__text"><%= content %></span>
+  <% else %>
+    <%= content %>
+  <% end %>
   <% if icon? %>
     <span class="cds--link__icon"><%= icon %></span>
   <% end %>

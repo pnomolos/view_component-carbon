@@ -1,24 +1,48 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-  static targets = ['input', 'label'];
+  static values = {
+    selected: Boolean,
+    name: String,
+    value: String
+  };
 
   toggle() {
-    if (this.inputTarget.disabled) return;
+    // Check if disabled by looking at the element's disabled state
+    if (this.element.hasAttribute('disabled')) return;
 
-    const input = this.inputTarget;
-    const label = this.labelTarget;
-    const isSelected = input.checked;
+    // Toggle the selected state
+    this.selectedValue = !this.selectedValue;
 
-    input.checked = !isSelected;
-
-    if (input.checked) {
-      label.classList.add('cds--tile--is-selected');
+    // Update CSS classes
+    if (this.selectedValue) {
+      this.element.classList.add('cds--tile--is-selected');
     } else {
-      label.classList.remove('cds--tile--is-selected');
+      this.element.classList.remove('cds--tile--is-selected');
     }
 
-    label.setAttribute('aria-checked', input.checked.toString());
+    // Update aria-checked
+    this.element.setAttribute('aria-checked', this.selectedValue.toString());
+
+    // Dispatch custom event
+    const event = new CustomEvent('cds-selectable-tile-changed', {
+      bubbles: true,
+      composed: true,
+      detail: {
+        selected: this.selectedValue,
+        name: this.nameValue,
+        value: this.valueValue
+      }
+    });
+    this.element.dispatchEvent(event);
+
+    // Dispatch a native change event for form compatibility
+    // Create a synthetic checkbox change event
+    const changeEvent = new Event('change', {
+      bubbles: true,
+      cancelable: true
+    });
+    this.element.dispatchEvent(changeEvent);
   }
 
   handleKeydown(event) {

@@ -25,6 +25,8 @@ module Carbon
     attr_reader :label_text
     # @return [Boolean] whether the label is hidden
     attr_reader :hide_label
+    # @return [Boolean] whether readonly
+    attr_reader :readonly
     # @return [String] unique input ID
     attr_reader :input_id
 
@@ -35,11 +37,13 @@ module Carbon
     # @param label_b [String] text shown when on
     # @param label_text [String, nil] label text
     # @param hide_label [Boolean] visually hides the label
+    # @param readonly [Boolean] makes the toggle readonly
     # @param system_arguments [Hash] additional HTML attributes
     def initialize(
       size: DEFAULT_SIZE,
       toggled: false,
       disabled: false,
+      readonly: false,
       label_a: 'Off',
       label_b: 'On',
       label_text: nil,
@@ -49,6 +53,7 @@ module Carbon
       @size = validate_argument(:size, size, SIZES, DEFAULT_SIZE)
       @toggled = toggled
       @disabled = disabled
+      @readonly = readonly
       @label_a = label_a
       @label_b = label_b
       @label_text = label_text
@@ -62,6 +67,7 @@ module Carbon
     def wrapper_css_classes
       classes = ['cds--toggle']
       classes << 'cds--toggle--disabled' if @disabled
+      classes << 'cds--toggle--readonly' if @readonly
       classes << @system_arguments[:class] if @system_arguments[:class]
       class_names(classes)
     end
@@ -112,6 +118,7 @@ module Carbon
       attrs['aria-checked'] = @toggled.to_s
       attrs['aria-labelledby'] = "#{@input_id}_label"
       attrs[:disabled] = '' if @disabled
+      attrs[:readonly] = '' if @readonly
       attrs['data-action'] = 'click->carbon--toggle#toggle'
       attrs['data-carbon--toggle-target'] = 'button'
       attrs

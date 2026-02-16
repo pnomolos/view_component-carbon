@@ -1,20 +1,32 @@
 <div class="<%= wrapper_classes %>"<% if stimulus_controller? %> <%= tag.attributes(wrapper_data_attributes) %><% end %>>
   <div class="cds--text-area__label-wrapper">
     <% if @label_text %>
-      <label for="<%= @id %>" class="cds--label"><%= @label_text %></label>
+      <label for="<%= @id %>" class="cds--label<%= ' cds--label--disabled' if @disabled %>"><%= @label_text %></label>
     <% end %>
     <% if stimulus_controller? %>
-      <div class="cds--text-area__counter" data-carbon--text-area-target="counter">
+      <div class="cds--label cds--text-area__counter cds--text-area__label-counter<%= ' cds--label--disabled' if @disabled %>" data-carbon--text-area-target="counter" aria-live="polite" aria-atomic="true">
         0 / <%= @max_count %>
       </div>
     <% end %>
   </div>
+  <% if stimulus_controller? %>
+    <span id="<%= counter_description_id %>" class="cds--visually-hidden">
+      Character limit <%= @max_count %>
+    </span>
+  <% end %>
   <div class="<%= textarea_wrapper_classes %>" <%= tag.attributes(data_invalid_attrs) %>>
     <%= warning_icon_svg&.html_safe %>
     <textarea <%= tag.attributes(textarea_attributes) %>><%= @value %></textarea>
+    <% if stimulus_controller? %>
+      <span class="cds--text-area__counter-alert"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+            data-carbon--text-area-target="announcer"></span>
+    <% end %>
   </div>
   <% if @helper_text && !@invalid && !@warn %>
-    <div class="cds--form__helper-text" id="<%= aria_describedby_id %>"><%= @helper_text %></div>
+    <div class="cds--form__helper-text<%= ' cds--form__helper-text--disabled' if @disabled %>" id="<%= aria_describedby_id %>"><%= @helper_text %></div>
   <% end %>
   <% if @invalid && @invalid_text %>
     <div class="cds--form-requirement" id="<%= aria_describedby_id %>"><%= @invalid_text %></div>
