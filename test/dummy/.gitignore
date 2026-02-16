@@ -1,0 +1,10 @@
+/db/*.sqlite3
+/db/*.sqlite3-journal
+/db/*.sqlite3-[0-9]*
+/log/*.log
+/tmp/
+/app/assets/builds/
+/public/assets/
+/storage/*
+!/storage/.keep
+local_secret.txt
