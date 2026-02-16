@@ -1,0 +1,20 @@
+<div <%= tag.attributes(**html_attributes) %>>
+  <%= icon_svg %>
+  <div class="cds--toast-notification__details">
+    <div class="cds--toast-notification__title"><%= title %></div>
+    <% if subtitle.present? %>
+      <div class="cds--toast-notification__subtitle"><%= subtitle %></div>
+    <% end %>
+    <% if caption.present? %>
+      <div class="cds--toast-notification__caption"><%= caption %></div>
+    <% end %>
+  </div>
+  <% unless hide_close_button %>
+    <button class="cds--toast-notification__close-button"
+            aria-label="close notification"
+            type="button"
+            data-action="click->carbon--toast-notification#close">
+      <%= close_icon %>
+    </button>
+  <% end %>
+</div>

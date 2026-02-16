@@ -4,6 +4,7 @@
   "service": "app",
   "workspaceFolder": "/workspaces/view_component-carbon",
   "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
     "ghcr.io/devcontainers/features/node:1": {
       "version": "22",
     },
@@ -12,12 +13,13 @@
   "mounts": [
     "source=carbon-vc-bashhistory-${devcontainerId},target=/commandhistory,type=volume",
     "source=carbon-vc-claude-config-${devcontainerId},target=/home/vscode/.claude,type=volume",
+    "source=global-pnpm-store,target=${containerWorkspaceFolder}/.pnpm-store,type=volume",
   ],
   "containerEnv": {
     "NODE_OPTIONS": "--max-old-space-size=4096",
     "CLAUDE_CONFIG_DIR": "/home/vscode/.claude",
   },
-  "postCreateCommand": "corepack enable pnpm && pnpm add -g @anthropic-ai/claude-code@latest && bundle install && pnpm install",
+  "postStartCommand": "bin/setup",
   "customizations": {
     "vscode": {
       "extensions": [

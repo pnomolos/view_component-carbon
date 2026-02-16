@@ -1,0 +1,21 @@
+<%= content_tag :div, **html_attributes do %>
+  <button type="button"
+          class="cds--tile__chevron"
+          aria-expanded="<%= @expanded %>"
+          aria-controls="<%= below_fold_id %>"
+          aria-label="<%= current_aria_label %>"
+          data-action="click->carbon--expandable-tile#toggle"
+          data-carbon--expandable-tile-target="chevron">
+    <%= chevron_svg.html_safe %>
+  </button>
+  <div class="cds--tile-content" id="<%= @tile_id %>-content">
+    <div class="cds--tile-content__above-the-fold">
+      <%= above_the_fold %>
+    </div>
+    <div class="cds--tile-content__below-the-fold"
+         id="<%= below_fold_id %>"
+         data-carbon--expandable-tile-target="belowFold">
+      <%= below_the_fold %>
+    </div>
+  </div>
+<% end %>

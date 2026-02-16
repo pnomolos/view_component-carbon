@@ -1,0 +1,20 @@
+<%= content_tag :div, **html_attributes do %>
+  <button class="cds--overflow-menu__trigger" type="button"
+          aria-haspopup="true" aria-expanded="false"
+          aria-label="<%= @icon_description %>"
+          data-action="click->carbon--overflow-menu#toggle keydown->carbon--overflow-menu#triggerKeydown">
+    <svg class="cds--overflow-menu__icon" focusable="false" preserveAspectRatio="xMidYMid meet"
+         xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16"
+         viewBox="0 0 16 16" aria-hidden="true">
+      <circle cx="8" cy="3" r="1"></circle>
+      <circle cx="8" cy="8" r="1"></circle>
+      <circle cx="8" cy="13" r="1"></circle>
+    </svg>
+  </button>
+  <ul class="<%= menu_css_classes %>" role="menu"
+      data-carbon--overflow-menu-target="menu">
+    <% items.each do |item| %>
+      <%= item %>
+    <% end %>
+  </ul>
+<% end %>

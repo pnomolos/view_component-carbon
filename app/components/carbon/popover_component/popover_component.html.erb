@@ -1,0 +1,11 @@
+<span <%= tag.attributes(html_attributes) %>>
+  <%= content %>
+  <span class="cds--popover">
+    <span class="cds--popover-content">
+      <%= body %>
+    </span>
+    <% if caret %>
+      <span class="cds--popover-caret"></span>
+    <% end %>
+  </span>
+</span>

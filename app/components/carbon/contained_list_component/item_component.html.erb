@@ -1,0 +1,8 @@
+<div class="<%= css_classes %>" <%= tag.attributes(html_attributes) %>>
+  <div class="<%= carbon_class('contained-list-item', 'content') %>">
+    <%= content %>
+  </div>
+  <% if action %>
+    <%= action %>
+  <% end %>
+</div>

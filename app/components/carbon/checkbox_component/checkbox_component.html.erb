@@ -1,0 +1,17 @@
+<div class="<%= wrapper_classes %>"<% if stimulus_controller? %> <%= tag.attributes(wrapper_data_attributes) %><% end %>>
+  <input <%= tag.attributes(checkbox_attributes) %>>
+  <label for="<%= @id %>" class="<%= label_classes %>">
+    <div class="cds--checkbox-label-text"><%= @label_text %></div>
+  </label>
+  <% if validation_state %>
+    <div class="cds--checkbox__validation-msg">
+      <%= warning_icon_svg&.html_safe %>
+      <div class="cds--form-requirement">
+        <%= @invalid ? @invalid_text : @warn_text %>
+      </div>
+    </div>
+  <% end %>
+  <% if @helper_text %>
+    <div class="cds--form__helper-text"><%= @helper_text %></div>
+  <% end %>
+</div>

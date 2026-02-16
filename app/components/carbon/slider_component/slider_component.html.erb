@@ -1,0 +1,40 @@
+<div <%= tag.attributes(html_attributes) %>>
+  <% if label_text %>
+    <label for="<%= id %>" class="cds--label" id="<%= label_id %>"><%= label_text %></label>
+  <% end %>
+  <div class="cds--slider-container" data-controller="carbon--slider"
+       data-carbon--slider-min-value="<%= min %>"
+       data-carbon--slider-max-value="<%= max %>"
+       data-carbon--slider-step-value="<%= step %>"
+       data-carbon--slider-value-value="<%= value %>">
+    <span class="cds--slider__range-label"><%= min %></span>
+    <div class="cds--slider" role="presentation" tabindex="-1"
+         data-carbon--slider-target="slider"
+         data-action="mousedown->carbon--slider#onTrackMouseDown">
+      <span class="cds--slider__thumb-wrapper" data-carbon--slider-target="thumbWrapper"
+            style="inset-inline-start: <%= thumb_percent %>%">
+        <div class="cds--slider__thumb" role="slider" tabindex="0"
+             id="<%= id %>"
+             aria-valuenow="<%= value %>"
+             aria-valuemin="<%= min %>"
+             aria-valuemax="<%= max %>"
+             <% if label_text %>aria-labelledby="<%= label_id %>"<% end %>
+             data-carbon--slider-target="thumb"
+             data-action="keydown->carbon--slider#onKeyDown"
+             <%= 'aria-disabled=true' if disabled %>></div>
+      </span>
+      <div class="cds--slider__track"></div>
+      <div class="cds--slider__filled-track" data-carbon--slider-target="filledTrack"
+           style="transform: translate(0%, -50%) scaleX(<%= filled_fraction %>)"></div>
+    </div>
+    <span class="cds--slider__range-label"><%= max %></span>
+    <div class="cds--text-input-wrapper cds--slider-text-input__wrapper">
+      <input type="number" class="cds--text-input cds--slider-text-input"
+             name="<%= name %>"
+             data-carbon--slider-target="numberInput"
+             data-action="change->carbon--slider#onNumberChange"
+             value="<%= value %>" min="<%= min %>" max="<%= max %>" step="<%= step %>"
+             <%= 'disabled' if disabled %> />
+    </div>
+  </div>
+</div>

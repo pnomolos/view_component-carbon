@@ -1,0 +1,7 @@
+<nav aria-label="Breadcrumb">
+  <%= content_tag :ol, **html_attributes do %>
+    <% items.each do |item| %>
+      <%= item %>
+    <% end %>
+  <% end %>
+</nav>

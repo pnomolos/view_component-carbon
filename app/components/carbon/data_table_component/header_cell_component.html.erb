@@ -1,0 +1,14 @@
+<th <%= tag.attributes(html_attributes) %>>
+  <% if @sortable %>
+    <button class="<%= sort_button_classes %>"
+            data-action="click->carbon--data-table#handleSort"
+            data-carbon--data-table-target="sortHeader"
+            data-sort-key="<%= @key %>"
+            data-sort-direction="<%= @sort_direction %>">
+      <span class="cds--table-header-label"><%= content %></span>
+      <%= sort_icon_svg %>
+    </button>
+  <% else %>
+    <span class="cds--table-header-label"><%= content %></span>
+  <% end %>
+</th>

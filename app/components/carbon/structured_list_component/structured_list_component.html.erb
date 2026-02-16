@@ -1,0 +1,8 @@
+<%= content_tag :div, **html_attributes do %>
+  <%= header %>
+  <div class="cds--structured-list-tbody" role="rowgroup">
+    <% rows.each do |row| %>
+      <%= row %>
+    <% end %>
+  </div>
+<% end %>

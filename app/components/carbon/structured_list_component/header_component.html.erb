@@ -1,0 +1,7 @@
+<%= content_tag :div, **html_attributes do %>
+  <div class="cds--structured-list-row cds--structured-list-row--header-row" role="row">
+    <% cells.each do |cell| %>
+      <%= cell %>
+    <% end %>
+  </div>
+<% end %>

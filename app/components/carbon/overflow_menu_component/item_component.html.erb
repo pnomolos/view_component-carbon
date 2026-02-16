@@ -1,0 +1,12 @@
+<%= content_tag :li, **html_attributes do %>
+  <% if @href && !@disabled %>
+    <a class="cds--overflow-menu-options__btn" role="menuitem" href="<%= @href %>">
+      <span class="cds--overflow-menu-options__option-content"><%= @text %></span>
+    </a>
+  <% else %>
+    <button class="cds--overflow-menu-options__btn" role="menuitem" type="button"
+            <% if @disabled %>disabled<% end %>>
+      <span class="cds--overflow-menu-options__option-content"><%= @text %></span>
+    </button>
+  <% end %>
+<% end %>

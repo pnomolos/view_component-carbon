@@ -1,0 +1,25 @@
+<div <%= tag.attributes(**html_attributes) %>>
+  <div class="cds--search-magnifier">
+    <%= search_icon %>
+  </div>
+  <label for="<%= id %>" class="cds--label"><%= label_text %></label>
+  <input type="text"
+         class="cds--search-input"
+         id="<%= id %>"
+         role="searchbox"
+         autocomplete="off"
+         placeholder="<%= placeholder %>"
+         <%= 'disabled'.html_safe if disabled %>
+         <%= "value=\"#{value}\"".html_safe if value.present? %>
+         data-carbon--search-target="input"
+         data-action="input->carbon--search#onInput">
+  <button class="cds--search-close<%= ' cds--search-close--hidden' if value.blank? %>"
+          aria-label="Clear search"
+          title="Clear search"
+          type="button"
+          <%= 'disabled'.html_safe if disabled %>
+          data-action="click->carbon--search#clear"
+          data-carbon--search-target="closeButton">
+    <%= close_icon %>
+  </button>
+</div>

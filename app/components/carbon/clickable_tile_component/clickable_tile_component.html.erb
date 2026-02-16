@@ -1,0 +1,7 @@
+<% if link? && @disabled %>
+  <span class="<%= css_classes %>" tabindex="-1" aria-disabled="true" role="link"><%= content %></span>
+<% else %>
+  <%= content_tag tag_name, **html_attributes do %>
+    <%= content %>
+  <% end %>
+<% end %>

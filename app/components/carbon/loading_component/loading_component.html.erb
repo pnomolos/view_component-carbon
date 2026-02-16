@@ -1,0 +1,19 @@
+<% if overlay %>
+  <div class="<%= overlay_css_classes %>">
+    <%= content_tag(:div, **html_attributes) do %>
+      <svg class="cds--loading__svg" viewBox="0 0 100 100">
+        <title>Loading</title>
+        <circle class="cds--loading__stroke" cx="50" cy="50" r="44" />
+      </svg>
+      <span class="cds--visually-hidden">Loading</span>
+    <% end %>
+  </div>
+<% else %>
+  <%= content_tag(:div, **html_attributes) do %>
+    <svg class="cds--loading__svg" viewBox="0 0 100 100">
+      <title>Loading</title>
+      <circle class="cds--loading__stroke" cx="50" cy="50" r="44" />
+    </svg>
+    <span class="cds--visually-hidden">Loading</span>
+  <% end %>
+<% end %>

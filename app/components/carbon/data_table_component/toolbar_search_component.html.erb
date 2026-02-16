@@ -1,0 +1,30 @@
+<div <%= tag.attributes(html_attributes) %>>
+  <div class="cds--search cds--search--sm" role="search">
+    <div class="cds--search-magnifier">
+      <svg focusable="false" preserveAspectRatio="xMidYMid meet"
+           xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+           width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+        <path d="M15 14.3L10.7 10c1.9-2.3 1.6-5.8-.7-7.7S4.2.7 2.3 3 .7 8.8 3 10.7c2 1.7 5 1.7 7 0l4.3 4.3.7-.7zM2 6.5C2 4 4 2 6.5 2S11 4 11 6.5 9 11 6.5 11 2 9 2 6.5z"></path>
+      </svg>
+    </div>
+    <label class="cds--label" for="table-search">Filter table</label>
+    <input class="cds--search-input"
+           type="text"
+           id="table-search"
+           placeholder="<%= @placeholder %>"
+           autocomplete="off"
+           data-carbon--data-table-target="searchInput"
+           data-action="input->carbon--data-table#filterRows">
+    <button class="cds--search-close"
+            type="button"
+            aria-label="Clear search"
+            data-action="click->carbon--data-table#clearSearch">
+      <svg focusable="false" preserveAspectRatio="xMidYMid meet"
+           xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+           width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"
+           class="cds--search-close__icon">
+        <path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"></path>
+      </svg>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,17 @@
+<span <%= tag.attributes(html_attributes) %>>
+  <div class="cds--tooltip-trigger__wrapper">
+    <%= content %>
+  </div>
+  <span class="cds--popover">
+    <span class="cds--popover-content cds--tooltip-content" id="<%= tooltip_id %>" role="tooltip" aria-hidden="true"
+          data-carbon--tooltip-target="content">
+      <span><%= label %></span>
+      <% if description %>
+        <div class="cds--tooltip__footer">
+          <%= description %>
+        </div>
+      <% end %>
+    </span>
+    <span class="cds--popover-caret"></span>
+  </span>
+</span>

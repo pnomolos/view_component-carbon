@@ -1,0 +1,50 @@
+<div <%= tag.attributes(html_attributes) %>>
+  <div class="cds--pagination__left">
+    <label id="<%= label_id %>" class="cds--pagination__text" for="<%= select_id %>">Items per page:</label>
+    <div class="cds--select cds--select--inline cds--select__page-number">
+      <select id="<%= select_id %>" class="cds--select-input"
+              data-action="change->carbon--pagination#changePageSize"
+              data-carbon--pagination-target="pageSizeSelect"
+              <%= 'disabled' if disabled %>>
+        <% page_sizes.each do |size| %>
+          <option value="<%= size %>" <%= 'selected' if size == page_size %>><%= size %></option>
+        <% end %>
+      </select>
+      <svg class="cds--select__arrow" width="16" height="16" viewBox="0 0 16 16">
+        <path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"></path>
+      </svg>
+    </div>
+    <span class="cds--pagination__text cds--pagination__items-count" data-carbon--pagination-target="itemRange">
+      <%= start_item %>-<%= end_item %> of <%= total_items %> items
+    </span>
+  </div>
+  <div class="cds--pagination__right">
+    <span class="cds--pagination__text" data-carbon--pagination-target="pageDisplay">
+      Page <%= page %> of <%= total_pages %>
+    </span>
+    <div class="cds--pagination__control-buttons">
+      <button class="cds--pagination__button cds--pagination__button--backward"
+              type="button"
+              data-action="click->carbon--pagination#prevPage"
+              aria-label="Previous page"
+              <%= 'disabled' if page <= 1 || disabled %>>
+        <svg focusable="false" preserveAspectRatio="xMidYMid meet"
+             xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+             width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M10 16L11.3 14.7 5.6 9 11.3 3.3 10 2 3 9z"></path>
+        </svg>
+      </button>
+      <button class="cds--pagination__button cds--pagination__button--forward"
+              type="button"
+              data-action="click->carbon--pagination#nextPage"
+              aria-label="Next page"
+              <%= 'disabled' if page >= total_pages || disabled %>>
+        <svg focusable="false" preserveAspectRatio="xMidYMid meet"
+             xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+             width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M6 2L4.7 3.3 10.4 9 4.7 14.7 6 16 13 9z"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>

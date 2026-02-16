@@ -1,0 +1,6 @@
+<%= content_tag :li, **html_attributes do %>
+  <div class="cds--menu-item__label"><%= @label %></div>
+  <% if @shortcut %>
+    <div class="cds--menu-item__shortcut"><%= @shortcut %></div>
+  <% end %>
+<% end %>

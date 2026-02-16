@@ -1,0 +1,19 @@
+<div class="<%= wrapper_classes %>">
+  <div class="<%= time_picker_classes %>">
+    <div class="cds--time-picker__input">
+      <% if @label_text %>
+        <label for="<%= @id %>" class="cds--label"><%= @label_text %></label>
+      <% end %>
+      <input <%= tag.attributes(input_attributes) %>>
+    </div>
+    <% selects.each do |select| %>
+      <%= select %>
+    <% end %>
+  </div>
+  <% if @invalid && @invalid_text %>
+    <div class="cds--form-requirement" id="<%= aria_describedby_id %>"><%= @invalid_text %></div>
+  <% end %>
+  <% if @warn && @warn_text %>
+    <div class="cds--form-requirement" id="<%= aria_describedby_id %>"><%= @warn_text %></div>
+  <% end %>
+</div>

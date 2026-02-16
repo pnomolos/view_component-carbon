@@ -1,0 +1,19 @@
+<div <%= tag.attributes(**html_attributes) %>>
+  <div class="cds--inline-notification__details">
+    <%= icon_svg %>
+    <div class="cds--inline-notification__text-wrapper">
+      <div class="cds--inline-notification__title"><%= title %></div>
+      <% if subtitle.present? %>
+        <div class="cds--inline-notification__subtitle"><%= subtitle %></div>
+      <% end %>
+    </div>
+  </div>
+  <% unless hide_close_button %>
+    <button class="cds--inline-notification__close-button"
+            aria-label="close notification"
+            type="button"
+            data-action="click->carbon--inline-notification#close">
+      <%= close_icon %>
+    </button>
+  <% end %>
+</div>

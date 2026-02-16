@@ -1,0 +1,29 @@
+<div <%= tag.attributes(container_attributes) %>>
+  <% if @title || @description %>
+    <div class="cds--data-table-header">
+      <% if @title %>
+        <h4 class="cds--data-table-header__title"><%= @title %></h4>
+      <% end %>
+      <% if @description %>
+        <p class="cds--data-table-header__description"><%= @description %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <% if toolbar? %>
+    <%= toolbar %>
+  <% end %>
+
+  <div class="cds--data-table-content">
+    <table class="<%= table_css_classes %>">
+      <% if head? %>
+        <%= head %>
+      <% end %>
+      <tbody data-carbon--data-table-target="body">
+        <% rows.each do |row| %>
+          <%= row %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

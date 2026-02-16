@@ -1,0 +1,14 @@
+<%= content_tag :div, **wrapper_html_attributes do %>
+  <%= tag :button, **button_html_attributes %>
+  <label id="<%= input_id %>_label" for="<%= input_id %>" class="<%= class_names(label_css_classes) %>">
+    <% if @label_text %>
+      <span class="<%= label_text_css_classes %>"><%= @label_text %></span>
+    <% end %>
+    <div class="<%= appearance_css_classes %>">
+      <div class="<%= switch_css_classes %>"
+           data-carbon--toggle-target="switch"></div>
+      <span class="cds--toggle__text" aria-hidden="true"
+            data-carbon--toggle-target="text"><%= current_text %></span>
+    </div>
+  </label>
+<% end %>

@@ -1,0 +1,10 @@
+<div class="<%= wrapper_classes %>" <%= tag.attributes(wrapper_attributes) %>>
+  <fieldset class="<%= fieldset_classes %>">
+    <% if @legend_text %>
+      <legend class="cds--label"><%= @legend_text %></legend>
+    <% end %>
+    <% radios.each do |radio| %>
+      <%= radio %>
+    <% end %>
+  </fieldset>
+</div>

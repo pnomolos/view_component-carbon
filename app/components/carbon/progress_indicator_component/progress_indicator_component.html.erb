@@ -1,0 +1,7 @@
+<ul class="<%= css_classes %>" <%= tag.attributes(html_attributes) %>>
+  <% steps.each_with_index do |step, idx| %>
+    <% step.parent = self %>
+    <% step.index = idx %>
+    <%= step %>
+  <% end %>
+</ul>

@@ -1,0 +1,8 @@
+<%= content_tag(tag_name, **html_attributes) do %>
+  <span class="cds--btn__content">
+    <%= content %>
+    <% if icon? %>
+      <span class="cds--btn__icon"><%= icon %></span>
+    <% end %>
+  </span>
+<% end %>

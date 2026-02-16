@@ -1,0 +1,38 @@
+<div class="cds--form-item">
+  <div class="<%= wrapper_classes %>">
+    <label for="<%= select_id %>" class="<%= label_classes %>"><%= @label_text %></label>
+    <div class="cds--select-input__wrapper" <%= @invalid ? 'data-invalid' : '' %>>
+      <select <%= tag.attributes(**select_attributes) %>>
+        <% options.each do |option| %>
+          <option value="<%= option.value %>"
+                  class="cds--select-option"
+                  <% if option.selected %>selected<% end %>
+                  <% if option.disabled %>disabled<% end %>><%= option.text %></option>
+        <% end %>
+        <% option_groups.each do |group| %>
+          <optgroup label="<%= group.label %>" class="cds--select-optgroup">
+            <% group.options.each do |option| %>
+              <option value="<%= option.value %>"
+                      class="cds--select-option"
+                      <% if option.selected %>selected<% end %>
+                      <% if option.disabled %>disabled<% end %>><%= option.text %></option>
+            <% end %>
+          </optgroup>
+        <% end %>
+      </select>
+      <%= chevron_svg.html_safe %>
+      <% if @invalid || @warn %>
+        <%= warning_icon_svg.html_safe %>
+      <% end %>
+    </div>
+    <% if @helper_text && !@invalid && !@warn %>
+      <div class="cds--form__helper-text" id="<%= @helper_text_id %>"><%= @helper_text %></div>
+    <% end %>
+    <% if @invalid && @invalid_text %>
+      <div class="cds--form-requirement" id="<%= @helper_text_id %>"><%= @invalid_text %></div>
+    <% end %>
+    <% if @warn && @warn_text %>
+      <div class="cds--form-requirement" id="<%= @helper_text_id %>"><%= @warn_text %></div>
+    <% end %>
+  </div>
+</div>

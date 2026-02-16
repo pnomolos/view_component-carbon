@@ -1,0 +1,14 @@
+<div data-controller="carbon--ui-shell">
+  <% if skip_to_content? %>
+    <%= skip_to_content %>
+  <% end %>
+  <% if header? %>
+    <%= header %>
+  <% end %>
+  <% if side_nav? %>
+    <%= side_nav %>
+  <% end %>
+  <main class="cds--content" id="main-content" tabindex="-1">
+    <%= content %>
+  </main>
+</div>

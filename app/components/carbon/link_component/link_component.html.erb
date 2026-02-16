@@ -1,0 +1,6 @@
+<%= content_tag(:a, **html_attributes) do %>
+  <%= content %>
+  <% if icon? %>
+    <span class="cds--link__icon"><%= icon %></span>
+  <% end %>
+<% end %>

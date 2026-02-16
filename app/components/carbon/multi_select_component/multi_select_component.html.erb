@@ -1,0 +1,95 @@
+<div class="cds--form-item">
+  <div class="<%= wrapper_classes %>">
+    <% if @label_text %>
+      <label id="<%= @label_id %>" class="cds--label<%= ' cds--label--disabled' if @disabled %>"><%= @label_text %></label>
+    <% end %>
+    <div class="<%= listbox_classes %>"
+         data-controller="carbon--multi-select"
+         data-carbon--multi-select-title-text-value="<%= @title_text %>"
+         data-carbon--multi-select-filterable-value="<%= @filterable %>">
+      <% if selected_count > 0 %>
+        <div class="cds--list-box__selection cds--tag--filter"
+             role="button"
+             tabindex="0"
+             title="Clear all selected items"
+             data-action="click->carbon--multi-select#clearAll"
+             data-carbon--multi-select-target="clearButton">
+          <span class="cds--tag__label"><%= selected_count %></span>
+          <%= clear_svg.html_safe %>
+        </div>
+      <% end %>
+      <% if @filterable %>
+        <div class="cds--list-box__field"
+             role="combobox"
+             aria-expanded="false"
+             aria-haspopup="listbox"
+             aria-controls="<%= @menu_id %>"
+             <% if @label_text %>aria-labelledby="<%= @label_id %>"<% end %>
+             data-carbon--multi-select-target="field"
+             data-action="click->carbon--multi-select#toggle">
+          <input type="text"
+                 class="cds--text-input"
+                 placeholder="<%= @title_text %>"
+                 autocomplete="off"
+                 aria-autocomplete="list"
+                 aria-controls="<%= @menu_id %>"
+                 <% if @disabled %>disabled<% end %>
+                 data-carbon--multi-select-target="input"
+                 data-action="input->carbon--multi-select#filter keydown->carbon--multi-select#handleKeydown">
+          <div class="cds--list-box__menu-icon"
+               data-action="click->carbon--multi-select#toggle">
+            <%= chevron_svg.html_safe %>
+          </div>
+        </div>
+      <% else %>
+        <button type="button"
+                class="cds--list-box__field"
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-controls="<%= @menu_id %>"
+                <% if @label_text %>aria-labelledby="<%= @label_id %>"<% end %>
+                <% if @disabled %>disabled<% end %>
+                data-carbon--multi-select-target="field"
+                data-action="click->carbon--multi-select#toggle keydown->carbon--multi-select#handleKeydown">
+          <span class="cds--list-box__label"
+                data-carbon--multi-select-target="label"><%= trigger_label %></span>
+          <div class="cds--list-box__menu-icon">
+            <%= chevron_svg.html_safe %>
+          </div>
+        </button>
+      <% end %>
+      <ul class="cds--list-box__menu"
+          role="listbox"
+          aria-multiselectable="true"
+          id="<%= @menu_id %>"
+          data-carbon--multi-select-target="menu">
+        <% items.each do |item| %>
+          <li class="cds--list-box__menu-item<%= ' cds--list-box__menu-item--active' if item.selected %><%= ' cds--list-box__menu-item--disabled' if item.disabled %>"
+              role="option"
+              id="<%= item.item_id %>"
+              aria-selected="<%= item.selected %>"
+              data-value="<%= item.value %>"
+              data-carbon--multi-select-target="item"
+              <% unless item.disabled %>data-action="click->carbon--multi-select#selectItem"<% end %>>
+            <div class="cds--list-box__menu-item__option">
+              <div class="cds--checkbox-wrapper">
+                <span class="cds--checkbox-label">
+                  <span class="cds--checkbox-label-text"><%= item.text %></span>
+                </span>
+              </div>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+    <% if @helper_text && !@invalid && !@warn %>
+      <div class="cds--form__helper-text" id="<%= aria_describedby_id %>"><%= @helper_text %></div>
+    <% end %>
+    <% if @invalid && @invalid_text %>
+      <div class="cds--form-requirement" id="<%= aria_describedby_id %>"><%= @invalid_text %></div>
+    <% end %>
+    <% if @warn && @warn_text %>
+      <div class="cds--form-requirement" id="<%= aria_describedby_id %>"><%= @warn_text %></div>
+    <% end %>
+  </div>
+</div>

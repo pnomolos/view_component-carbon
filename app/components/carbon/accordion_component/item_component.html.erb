@@ -1,0 +1,18 @@
+<%= content_tag :li, **html_attributes do %>
+  <button class="cds--accordion__heading"
+          data-action="click->carbon--accordion-item#toggle"
+          aria-expanded="<%= @open %>"
+          aria-controls="<%= panel_id %>">
+    <svg class="cds--accordion__arrow" focusable="false" preserveAspectRatio="xMidYMid meet"
+         xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16"
+         viewBox="0 0 16 16" aria-hidden="true">
+      <path d="M11 8L6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z"></path>
+    </svg>
+    <div class="cds--accordion__title"><%= @title %></div>
+  </button>
+  <div class="cds--accordion__wrapper">
+    <div class="cds--accordion__content" id="<%= panel_id %>" role="region">
+      <%= content %>
+    </div>
+  </div>
+<% end %>

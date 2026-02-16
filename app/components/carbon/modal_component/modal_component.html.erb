@@ -1,0 +1,13 @@
+<div <%= tag.attributes(html_attributes) %>>
+  <div <%= tag.attributes(container_attributes) %>>
+    <% if header? %>
+      <%= header %>
+    <% end %>
+    <% if body? %>
+      <%= body %>
+    <% end %>
+    <% if footer? %>
+      <%= footer %>
+    <% end %>
+  </div>
+</div>
