@@ -81,8 +81,10 @@ module Carbon
     def listbox_classes
       classes = form_field_wrapper_classes('cds--multi-select')
       classes << 'cds--list-box'
-      classes << "cds--list-box--#{@size}" if @size != :md
-      classes << "cds--multi-select--#{@size}" if @size != :md
+      if @size != :md
+        classes << "cds--list-box--#{@size}"
+        classes << "cds--multi-select--#{@size}"
+      end
       classes << 'cds--multi-select--filterable' if @filterable
       classes << 'cds--list-box--disabled' if @disabled
       classes << 'cds--multi-select--readonly' if @readonly

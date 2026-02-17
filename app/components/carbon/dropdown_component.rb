@@ -221,24 +221,9 @@ module Carbon
       attrs
     end
 
-    # rubocop:disable Metrics/AbcSize
     def trigger_attributes
-      attrs = {}
-      attrs[:id] = @trigger_id
-      attrs[:type] = 'button'
-      attrs[:class] = 'cds--list-box__field'
-      attrs[:role] = 'combobox'
-      attrs['aria-expanded'] = @open.to_s
-      attrs['aria-haspopup'] = 'listbox'
-      attrs['aria-controls'] = @menu_id
-      attrs[:tabindex] = '0'
-
-      # ARIA labeling - use aria-label if provided, otherwise aria-labelledby
-      if trigger_aria_label.present?
-        attrs['aria-label'] = trigger_aria_label
-      elsif !@hide_label
-        attrs['aria-labelledby'] = @label_id
-      end
+      attrs = base_trigger_attributes
+      apply_trigger_aria_labeling(attrs)
 
       # aria-activedescendant will be managed by Stimulus
       attrs['data-carbon--dropdown-target'] = 'trigger'
@@ -251,7 +236,27 @@ module Carbon
 
       attrs
     end
-    # rubocop:enable Metrics/AbcSize
+
+    def base_trigger_attributes
+      {
+        id: @trigger_id,
+        type: 'button',
+        class: 'cds--list-box__field',
+        role: 'combobox',
+        'aria-expanded' => @open.to_s,
+        'aria-haspopup' => 'listbox',
+        'aria-controls' => @menu_id,
+        tabindex: '0'
+      }
+    end
+
+    def apply_trigger_aria_labeling(attrs)
+      if trigger_aria_label.present?
+        attrs['aria-label'] = trigger_aria_label
+      elsif !@hide_label
+        attrs['aria-labelledby'] = @label_id
+      end
+    end
 
     def menu_attributes
       attrs = {}
