@@ -3,7 +3,6 @@
 require 'test_helper'
 
 module Carbon
-  # rubocop:disable Metrics/ClassLength
   class DropdownComponentTest < CarbonViewComponents::TestCase
     # -- Default rendering --
 
@@ -530,5 +529,4 @@ module Carbon
       assert_selector 'label', text: 'New'
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end

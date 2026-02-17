@@ -3,7 +3,6 @@
 require 'test_helper'
 
 module Carbon
-  # rubocop:disable Metrics/ClassLength
   class SliderComponentTest < CarbonViewComponents::TestCase
     test 'renders default slider' do
       render_inline(Carbon::SliderComponent.new(name: 'volume', value: 50))
@@ -364,5 +363,4 @@ module Carbon
       assert_no_selector 'input[type="number"]'
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end

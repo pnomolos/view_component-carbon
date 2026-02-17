@@ -3,7 +3,6 @@
 require 'test_helper'
 
 module Carbon
-  # rubocop:disable Metrics/ClassLength
   class ProgressIndicatorComponentTest < CarbonViewComponents::TestCase
     # -- Default rendering --
 
@@ -421,5 +420,4 @@ module Carbon
       assert_selector 'button[aria-disabled="true"]'
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end

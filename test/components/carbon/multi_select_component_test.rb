@@ -3,7 +3,6 @@
 require 'test_helper'
 
 module Carbon
-  # rubocop:disable Metrics/ClassLength
   class MultiSelectComponentTest < CarbonViewComponents::TestCase
     # -- Default rendering --
 
@@ -369,5 +368,4 @@ module Carbon
       assert_no_selector '.cds--multi-select--readonly'
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end

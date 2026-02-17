@@ -6,7 +6,7 @@ module Carbon
   # Comprehensive markup verification test that renders every Stimulus-powered
   # component and checks the critical HTML structure matches Carbon Design System
   # expectations.
-  class MarkupVerificationTest < CarbonViewComponents::TestCase # rubocop:disable Metrics/ClassLength
+  class MarkupVerificationTest < CarbonViewComponents::TestCase
     # =========================================================================
     # ACCORDION
     # =========================================================================

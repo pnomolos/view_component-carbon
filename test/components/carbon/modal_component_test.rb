@@ -3,7 +3,7 @@
 require 'test_helper'
 
 module Carbon
-  class ModalComponentTest < CarbonViewComponents::TestCase # rubocop:disable Metrics/ClassLength
+  class ModalComponentTest < CarbonViewComponents::TestCase
     # -- Default rendering --
 
     test 'renders default modal' do

@@ -3,7 +3,7 @@
 require 'test_helper'
 
 module Carbon
-  class TabsComponentTest < CarbonViewComponents::TestCase # rubocop:disable Metrics/ClassLength
+  class TabsComponentTest < CarbonViewComponents::TestCase
     # -- Default rendering --
 
     test 'renders default tabs' do

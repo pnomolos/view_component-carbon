@@ -1,53 +1,56 @@
 plugins:
-  - rubocop-minitest
-  - rubocop-rails
+    - rubocop-minitest
+    - rubocop-rails
 
 AllCops:
-  TargetRubyVersion: 3.2
-  NewCops: enable
-  SuggestExtensions: false
-  Exclude:
-    - "node_modules/**/*"
-    - "vendor/**/*"
-    - "test/dummy/db/**/*"
-    - "test/dummy/tmp/**/*"
-    - "bin/**/*"
+    TargetRubyVersion: 3.2
+    NewCops: enable
+    SuggestExtensions: false
+    Exclude:
+        - "node_modules/**/*"
+        - "vendor/**/*"
+        - "test/dummy/db/**/*"
+        - "test/dummy/tmp/**/*"
+        - "test/tmp/**/*"
+        - "bin/**/*"
 
 Style/Documentation:
-  Enabled: false
+    Enabled: false
 
 Style/FrozenStringLiteralComment:
-  Enabled: true
+    Enabled: true
 
 Metrics/MethodLength:
-  Max: 20
+    Max: 20
 
 Metrics/ClassLength:
-  Max: 200
+    Max: 200
+    Exclude:
+        - "test/**/*"
 
 Metrics/ParameterLists:
-  Exclude:
-    - "app/components/**/*"
-    - "previews/**/*"
+    Exclude:
+        - "app/components/**/*"
+        - "previews/**/*"
 
 Minitest/MultipleAssertions:
-  Max: 8
+    Max: 8
 
 Lint/MissingSuper:
-  Exclude:
-    - "app/components/**/*"
+    Exclude:
+        - "app/components/**/*"
 
 Layout/LineLength:
-  Max: 120
+    Max: 120
 
 Rails/LexicallyScopedActionFilter:
-  Enabled: false
+    Enabled: false
 
 Rails/ApplicationRecord:
-  Enabled: false
+    Enabled: false
 
 Rails/ApplicationController:
-  Enabled: false
+    Enabled: false
 
 Rails/RakeEnvironment:
-  Enabled: false
+    Enabled: false

@@ -3,7 +3,6 @@
 require 'test_helper'
 
 module Carbon
-  # rubocop:disable Metrics/ClassLength
   class ContainedListComponentTest < CarbonViewComponents::TestCase
     # -- Default rendering --
 
@@ -334,5 +333,4 @@ module Carbon
       assert_selector 'button', text: 'Delete'
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end

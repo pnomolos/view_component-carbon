@@ -3,7 +3,6 @@
 require 'test_helper'
 
 module Carbon
-  # rubocop:disable Metrics/ClassLength
   class SelectComponentTest < CarbonViewComponents::TestCase
     # -- Default rendering --
 
@@ -375,5 +374,4 @@ module Carbon
       assert_selector '.cds--form__helper-text', text: 'Help'
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end
