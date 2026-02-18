@@ -1,0 +1,39 @@
+<span class="<%= item_classes %>" data-file-uuid="<%= @uuid %>" data-file-state="<%= @state %>">
+  <p class="cds--file-filename"><%= @name %></p>
+  <span class="cds--file__state-container">
+    <% if @state == :uploading %>
+      <div class="cds--loading cds--loading--small cds--file-loading" aria-live="assertive">
+        <label class="cds--visually-hidden"><%= @icon_description %></label>
+        <svg class="cds--loading__svg" viewBox="0 0 100 100">
+          <circle class="cds--loading__background" cx="50" cy="50" r="44"></circle>
+          <circle class="cds--loading__stroke" cx="50" cy="50" r="44"></circle>
+        </svg>
+      </div>
+    <% elsif @state == :edit %>
+      <% if @invalid %>
+        <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true" class="cds--file-invalid">
+          <path d="M16,2C8.3,2,2,8.3,2,16s6.3,14,14,14s14-6.3,14-14S23.7,2,16,2z M14.9,8h2.2v11h-2.2V8z M16,25c-0.8,0-1.5-0.7-1.5-1.5S15.2,22,16,22s1.5,0.7,1.5,1.5S16.8,25,16,25z"></path>
+        </svg>
+      <% end %>
+      <button class="cds--file-close" type="button" aria-label="<%= @icon_description %> - <%= @name %>"<% if @invalid %> aria-describedby="<%= @uuid %>-error"<% end %> data-action="click->carbon--file-uploader#removeServerItem">
+        <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"></path>
+        </svg>
+      </button>
+    <% elsif @state == :complete %>
+      <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true" class="cds--file-complete" aria-label="<%= @icon_description %>" tabindex="-1">
+        <path d="M13 24L4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"></path>
+      </svg>
+    <% end %>
+  </span>
+  <% if @invalid && (@error_subject || @error_body) %>
+    <div class="cds--form-requirement" role="alert" id="<%= @uuid %>-error">
+      <% if @error_subject %>
+        <div class="cds--form-requirement__title"><%= @error_subject %></div>
+      <% end %>
+      <% if @error_body %>
+        <p class="cds--form-requirement__supplement"><%= @error_body %></p>
+      <% end %>
+    </div>
+  <% end %>
+</span>

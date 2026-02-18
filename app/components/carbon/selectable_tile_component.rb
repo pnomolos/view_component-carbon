@@ -80,6 +80,10 @@ module Carbon
         'data-carbon--selectable-tile-value-value': @value
       }
       attrs[:tabindex] = 0 unless @disabled
+      if @disabled
+        attrs[:disabled] = ''
+        attrs['aria-disabled'] = 'true'
+      end
       attrs[:name] = @name if @name
       attrs[:value] = @value if @value
       attrs.merge!(@system_arguments)

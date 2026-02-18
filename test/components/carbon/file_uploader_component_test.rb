@@ -280,5 +280,281 @@ module Carbon
 
       assert_selector 'input[name="attachments[]"][multiple]'
     end
+
+    # -- File uploader items --
+
+    test 'renders a file item with edit state by default' do
+      render_inline(Carbon::FileUploaderComponent.new) do |uploader|
+        uploader.with_item(name: 'report.pdf')
+      end
+
+      assert_selector '.cds--file-container .cds--file__selected-file'
+      assert_selector 'p.cds--file-filename', text: 'report.pdf'
+      assert_selector 'button.cds--file-close[type="button"]'
+    end
+
+    test 'renders a file item with uploading state' do
+      render_inline(Carbon::FileUploaderComponent.new) do |uploader|
+        uploader.with_item(name: 'uploading.pdf', state: :uploading)
+      end
+
+      assert_selector '.cds--file__selected-file[data-file-state="uploading"]'
+      assert_selector '.cds--loading.cds--loading--small'
+      assert_selector '.cds--loading__svg'
+      assert_no_selector 'button.cds--file-close'
+      assert_no_selector '.cds--file-complete'
+    end
+
+    test 'renders a file item with complete state' do
+      render_inline(Carbon::FileUploaderComponent.new) do |uploader|
+        uploader.with_item(name: 'done.pdf', state: :complete)
+      end
+
+      assert_selector '.cds--file__selected-file[data-file-state="complete"]'
+      assert_selector 'svg.cds--file-complete'
+      assert_no_selector 'button.cds--file-close'
+      assert_no_selector '.cds--loading'
+    end
+
+    test 'renders a file item with invalid state and error messages' do
+      render_inline(Carbon::FileUploaderComponent.new) do |uploader|
+        uploader.with_item(
+          name: 'bad.exe',
+          invalid: true,
+          error_subject: 'Invalid file type',
+          error_body: 'Only PDF files are accepted'
+        )
+      end
+
+      assert_selector '.cds--file__selected-file.cds--file__selected-file--invalid'
+      assert_selector '.cds--form-requirement'
+      assert_selector '.cds--form-requirement__title', text: 'Invalid file type'
+      assert_selector '.cds--form-requirement__supplement', text: 'Only PDF files are accepted'
+    end
+
+    test 'renders invalid item without error messages when no subject or body' do
+      render_inline(Carbon::FileUploaderComponent.new) do |uploader|
+        uploader.with_item(name: 'bad.exe', invalid: true)
+      end
+
+      assert_selector '.cds--file__selected-file.cds--file__selected-file--invalid'
+      assert_no_selector '.cds--form-requirement'
+    end
+
+    test 'renders item size class from parent' do
+      render_inline(Carbon::FileUploaderComponent.new(size: :sm)) do |uploader|
+        uploader.with_item(name: 'small.pdf')
+      end
+
+      assert_selector '.cds--file__selected-file.cds--file__selected-file--sm'
+    end
+
+    test 'renders item with md size class' do
+      render_inline(Carbon::FileUploaderComponent.new(size: :md)) do |uploader|
+        uploader.with_item(name: 'medium.pdf')
+      end
+
+      assert_selector '.cds--file__selected-file.cds--file__selected-file--md'
+    end
+
+    test 'does not render size class for lg items' do
+      render_inline(Carbon::FileUploaderComponent.new(size: :lg)) do |uploader|
+        uploader.with_item(name: 'large.pdf')
+      end
+
+      assert_selector '.cds--file__selected-file'
+      assert_no_selector '.cds--file__selected-file--lg'
+    end
+
+    test 'renders remove button with accessible aria-label including file name' do
+      render_inline(Carbon::FileUploaderComponent.new) do |uploader|
+        uploader.with_item(name: 'doc.pdf', state: :edit)
+      end
+
+      assert_selector 'button.cds--file-close[aria-label="Remove file - doc.pdf"]'
+    end
+
+    test 'renders remove button with custom icon description including file name' do
+      render_inline(Carbon::FileUploaderComponent.new) do |uploader|
+        uploader.with_item(name: 'doc.pdf', state: :edit, icon_description: 'Delete')
+      end
+
+      assert_selector 'button.cds--file-close[aria-label="Delete - doc.pdf"]'
+    end
+
+    test 'renders file name correctly' do
+      render_inline(Carbon::FileUploaderComponent.new) do |uploader|
+        uploader.with_item(name: 'my-important-document.pdf')
+      end
+
+      assert_selector 'p.cds--file-filename', text: 'my-important-document.pdf'
+    end
+
+    test 'renders multiple pre-populated items' do
+      render_inline(Carbon::FileUploaderComponent.new) do |uploader|
+        uploader.with_item(name: 'file1.pdf', state: :complete)
+        uploader.with_item(name: 'file2.pdf', state: :edit)
+        uploader.with_item(name: 'file3.pdf', state: :uploading)
+      end
+
+      assert_selector '.cds--file__selected-file', count: 3
+      assert_selector 'p.cds--file-filename', text: 'file1.pdf'
+      assert_selector 'p.cds--file-filename', text: 'file2.pdf'
+      assert_selector 'p.cds--file-filename', text: 'file3.pdf'
+    end
+
+    test 'items render inside the file container' do
+      render_inline(Carbon::FileUploaderComponent.new) do |uploader|
+        uploader.with_item(name: 'test.pdf')
+      end
+
+      assert_selector '.cds--file-container > .cds--file__selected-file'
+    end
+
+    test 'renders item with data-file-uuid attribute' do
+      render_inline(Carbon::FileUploaderComponent.new) do |uploader|
+        uploader.with_item(name: 'test.pdf', uuid: 'custom-uuid-123')
+      end
+
+      assert_selector '.cds--file__selected-file[data-file-uuid="custom-uuid-123"]'
+    end
+
+    test 'generates uuid when not provided' do
+      render_inline(Carbon::FileUploaderComponent.new) do |uploader|
+        uploader.with_item(name: 'test.pdf')
+      end
+
+      item = page.find('.cds--file__selected-file')
+
+      assert_predicate item['data-file-uuid'], :present?
+    end
+
+    test 'raises ArgumentError for invalid item state' do
+      assert_raises(ArgumentError) do
+        Carbon::FileUploaderComponent::ItemComponent.new(name: 'test.pdf', state: :invalid)
+      end
+    end
+
+    test 'renders uploading item with loading label' do
+      render_inline(Carbon::FileUploaderComponent.new) do |uploader|
+        uploader.with_item(name: 'test.pdf', state: :uploading)
+      end
+
+      assert_selector '.cds--loading .cds--visually-hidden', text: 'Loading'
+    end
+
+    test 'renders uploading item with custom icon description' do
+      render_inline(Carbon::FileUploaderComponent.new) do |uploader|
+        uploader.with_item(name: 'test.pdf', state: :uploading, icon_description: 'Uploading test.pdf')
+      end
+
+      assert_selector '.cds--loading .cds--visually-hidden', text: 'Uploading test.pdf'
+    end
+
+    test 'renders remove button with stimulus action for server items' do
+      render_inline(Carbon::FileUploaderComponent.new) do |uploader|
+        uploader.with_item(name: 'test.pdf', state: :edit)
+      end
+
+      assert_selector 'button.cds--file-close[data-action="click->carbon--file-uploader#removeServerItem"]'
+    end
+
+    # -- P1: Warning icon for invalid edit state --
+
+    test 'renders warning icon when item is invalid in edit state' do
+      render_inline(Carbon::FileUploaderComponent.new) do |uploader|
+        uploader.with_item(name: 'bad.exe', state: :edit, invalid: true, error_subject: 'Error')
+      end
+
+      assert_selector 'svg.cds--file-invalid[aria-hidden="true"]'
+    end
+
+    test 'does not render warning icon when item is valid in edit state' do
+      render_inline(Carbon::FileUploaderComponent.new) do |uploader|
+        uploader.with_item(name: 'good.pdf', state: :edit)
+      end
+
+      assert_no_selector 'svg.cds--file-invalid'
+    end
+
+    # -- P1: Error container role="alert" --
+
+    test 'error container has role alert' do
+      render_inline(Carbon::FileUploaderComponent.new) do |uploader|
+        uploader.with_item(name: 'bad.exe', invalid: true, error_subject: 'Error')
+      end
+
+      assert_selector '.cds--form-requirement[role="alert"]'
+    end
+
+    test 'error container has matching id for aria-describedby' do
+      render_inline(Carbon::FileUploaderComponent.new) do |uploader|
+        uploader.with_item(name: 'bad.exe', invalid: true, error_subject: 'Error')
+      end
+
+      item = page.find('.cds--file__selected-file')
+      uuid = item['data-file-uuid']
+
+      assert_selector ".cds--form-requirement##{uuid}-error"
+      assert_selector "button.cds--file-close[aria-describedby='#{uuid}-error']"
+    end
+
+    # -- P2: cds--file-loading class --
+
+    test 'uploading state includes cds--file-loading class' do
+      render_inline(Carbon::FileUploaderComponent.new) do |uploader|
+        uploader.with_item(name: 'test.pdf', state: :uploading)
+      end
+
+      assert_selector '.cds--loading.cds--file-loading'
+    end
+
+    # -- P2: Drop container hidden label --
+
+    test 'drop container has visually hidden label for input' do
+      render_inline(Carbon::FileUploaderComponent.new(drop_container: true))
+
+      input = page.find('input[type="file"]')
+
+      assert_selector "label.cds--visually-hidden[for='#{input[:id]}']"
+    end
+
+    # -- P2: Expanded button kinds --
+
+    test 'renders secondary kind' do
+      render_inline(Carbon::FileUploaderComponent.new(kind: :secondary))
+
+      assert_selector 'label.cds--btn--secondary'
+    end
+
+    test 'renders ghost kind' do
+      render_inline(Carbon::FileUploaderComponent.new(kind: :ghost))
+
+      assert_selector 'label.cds--btn--ghost'
+    end
+
+    # -- P2: max_file_size prop --
+
+    test 'renders max_file_size as stimulus data value' do
+      render_inline(Carbon::FileUploaderComponent.new(max_file_size: 500_000))
+
+      assert_selector '[data-carbon--file-uploader-max-file-size-value="500000"]'
+    end
+
+    test 'does not render max_file_size when not provided' do
+      render_inline(Carbon::FileUploaderComponent.new)
+
+      assert_no_selector '[data-carbon--file-uploader-max-file-size-value]'
+    end
+
+    # -- P3: Complete checkmark tabindex --
+
+    test 'complete state checkmark has tabindex -1' do
+      render_inline(Carbon::FileUploaderComponent.new) do |uploader|
+        uploader.with_item(name: 'done.pdf', state: :complete)
+      end
+
+      assert_selector 'svg.cds--file-complete[tabindex="-1"]'
+    end
   end
 end

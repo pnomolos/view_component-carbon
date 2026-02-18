@@ -58,6 +58,18 @@ module Carbon
       assert_selector 'div[role="checkbox"]:not([tabindex])'
     end
 
+    test 'renders disabled attribute when disabled' do
+      render_inline(Carbon::SelectableTileComponent.new(disabled: true)) { 'Content' }
+
+      assert_selector 'div[role="checkbox"][disabled]'
+    end
+
+    test 'renders aria-disabled true when disabled' do
+      render_inline(Carbon::SelectableTileComponent.new(disabled: true)) { 'Content' }
+
+      assert_selector 'div[role="checkbox"][aria-disabled="true"]'
+    end
+
     test 'renders tabindex 0 when not disabled' do
       render_inline(Carbon::SelectableTileComponent.new) { 'Content' }
 

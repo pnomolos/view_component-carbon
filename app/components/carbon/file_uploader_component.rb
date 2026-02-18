@@ -10,8 +10,12 @@ module Carbon
   class FileUploaderComponent < BaseComponent
     SIZES = %i[sm md lg].freeze
     DEFAULT_SIZE = :md
-    KINDS = %i[primary tertiary].freeze
+    KINDS = %i[primary secondary tertiary ghost].freeze
     DEFAULT_KIND = :primary
+
+    renders_many :items, lambda { |**kwargs|
+      ItemComponent.new(size: @size, **kwargs)
+    }
 
     # @return [String] title for the uploader
     attr_reader :label_title
@@ -35,6 +39,8 @@ module Carbon
     attr_reader :id
     # @return [String, nil] name for form submission
     attr_reader :name
+    # @return [Integer, nil] maximum file size in bytes
+    attr_reader :max_file_size
 
     # @param label_title [String] title for the uploader
     # @param label_description [String, nil] description text
@@ -43,10 +49,11 @@ module Carbon
     # @param multiple [Boolean] allows multiple file selection
     # @param disabled [Boolean] disables the uploader
     # @param size [Symbol] button size (:sm, :md, :lg)
-    # @param kind [Symbol] button kind (:primary, :tertiary)
+    # @param kind [Symbol] button kind (:primary, :secondary, :tertiary, :ghost)
     # @param drop_container [Boolean] renders as a drop container
     # @param id [String, nil] unique element ID
     # @param name [String, nil] name for form submission
+    # @param max_file_size [Integer, nil] maximum file size in bytes
     # @param system_arguments [Hash] additional HTML attributes
     def initialize(
       label_title: 'Upload files',
@@ -60,6 +67,7 @@ module Carbon
       drop_container: false,
       id: nil,
       name: nil,
+      max_file_size: nil,
       **system_arguments
     )
       @label_title = label_title
@@ -73,6 +81,7 @@ module Carbon
       @drop_container = drop_container
       @id = id || "file-uploader-#{SecureRandom.hex(4)}"
       @name = name
+      @max_file_size = max_file_size
       @system_arguments = system_arguments
     end
 
@@ -135,6 +144,7 @@ module Carbon
         'carbon--file-uploader-size-value': @size.to_s
       }
       data['carbon--file-uploader-drop-container-value'] = true if @drop_container
+      data['carbon--file-uploader-max-file-size-value'] = @max_file_size if @max_file_size
       data
     end
 
@@ -145,6 +155,106 @@ module Carbon
       return value if allowed.include?(value)
 
       raise ArgumentError, "Invalid #{name}: #{value.inspect}. Must be one of: #{allowed.map(&:inspect).join(', ')}"
+    end
+
+    # Renders a single file item within a Carbon File Uploader.
+    #
+    # @example Basic usage
+    #   render Carbon::FileUploaderComponent.new do |uploader|
+    #     uploader.with_item(name: "report.pdf")
+    #   end
+    #
+    # @example With error state
+    #   render Carbon::FileUploaderComponent.new do |uploader|
+    #     uploader.with_item(name: "large.zip", invalid: true, error_subject: "File too large")
+    #   end
+    class ItemComponent < BaseComponent
+      STATES = %i[uploading edit complete].freeze
+      # NOTE: Upstream Carbon defaults to :uploading, but :edit is more practical
+      # for server-rendered items since they are typically already uploaded and
+      # the user needs the ability to remove them rather than see a loading state.
+      DEFAULT_STATE = :edit
+      SIZES = %i[sm md lg].freeze
+      DEFAULT_SIZE = :md
+      DEFAULT_ICON_DESCRIPTIONS = {
+        uploading: 'Loading',
+        edit: 'Remove file',
+        complete: 'Upload complete'
+      }.freeze
+
+      # @return [String] file name
+      attr_reader :name
+      # @return [Symbol] file state (:uploading, :edit, :complete)
+      attr_reader :state
+      # @return [Boolean] whether the file is in an invalid state
+      attr_reader :invalid
+      # @return [String, nil] error title text
+      attr_reader :error_subject
+      # @return [String, nil] error detail text
+      attr_reader :error_body
+      # @return [String] accessible label for the status icon
+      attr_reader :icon_description
+      # @return [Symbol] item size (:sm, :md, :lg)
+      attr_reader :size
+      # @return [String] unique identifier for this file item
+      attr_reader :uuid
+
+      # @param name [String] file name (required)
+      # @param state [Symbol] file state (:uploading, :edit, :complete)
+      # @param invalid [Boolean] marks file as invalid
+      # @param error_subject [String, nil] error title text
+      # @param error_body [String, nil] error detail text
+      # @param icon_description [String, nil] accessible label for the status icon
+      # @param size [Symbol] item size (:sm, :md, :lg)
+      # @param uuid [String, nil] unique identifier (auto-generated if nil)
+      # @param system_arguments [Hash] additional HTML attributes
+      def initialize(
+        name:,
+        state: DEFAULT_STATE,
+        invalid: false,
+        error_subject: nil,
+        error_body: nil,
+        icon_description: nil,
+        size: DEFAULT_SIZE,
+        uuid: nil,
+        **system_arguments
+      )
+        @name = name
+        @state = validate_state(state)
+        @invalid = invalid
+        @error_subject = error_subject
+        @error_body = error_body
+        @size = validate_size(size)
+        @uuid = uuid || "file-#{SecureRandom.hex(4)}"
+        @icon_description = icon_description || DEFAULT_ICON_DESCRIPTIONS[@state]
+        @system_arguments = system_arguments
+      end
+
+      # @return [String] CSS class string for the file item wrapper
+      def item_classes
+        classes = ['cds--file__selected-file']
+        classes << "cds--file__selected-file--#{@size}" if @size != :lg
+        classes << 'cds--file__selected-file--invalid' if @invalid
+        class_names(*classes)
+      end
+
+      private
+
+      def validate_state(value)
+        value = value.to_sym if value.is_a?(String)
+        return value if STATES.include?(value)
+
+        raise ArgumentError,
+              "Invalid state: #{value.inspect}. Must be one of: #{STATES.map(&:inspect).join(', ')}"
+      end
+
+      def validate_size(value)
+        value = value.to_sym if value.is_a?(String)
+        return value if SIZES.include?(value)
+
+        raise ArgumentError,
+              "Invalid size: #{value.inspect}. Must be one of: #{SIZES.map(&:inspect).join(', ')}"
+      end
     end
   end
 end
