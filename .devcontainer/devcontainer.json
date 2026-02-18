@@ -18,8 +18,9 @@
   "containerEnv": {
     "NODE_OPTIONS": "--max-old-space-size=4096",
     "CLAUDE_CONFIG_DIR": "/home/vscode/.claude",
+    "npm_config_store_dir": "${containerWorkspaceFolder}/.pnpm-store",
   },
-  "postStartCommand": "bin/setup",
+  "postStartCommand": "sudo chown -R vscode:vscode ${containerWorkspaceFolder}/.pnpm-store && bin/setup",
   "customizations": {
     "vscode": {
       "extensions": [
