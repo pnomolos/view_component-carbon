@@ -177,5 +177,64 @@ module Carbon
 
       assert_selector '.cds--pagination.custom-class'
     end
+
+    # -- Size tests --
+
+    test 'renders default size (md)' do
+      render_inline(Carbon::PaginationComponent.new(total_items: 100))
+
+      assert_selector '.cds--pagination:not(.cds--pagination--sm):not(.cds--pagination--lg)'
+    end
+
+    test 'renders sm size' do
+      render_inline(Carbon::PaginationComponent.new(total_items: 100, size: :sm))
+
+      assert_selector '.cds--pagination.cds--pagination--sm'
+    end
+
+    test 'renders md size' do
+      render_inline(Carbon::PaginationComponent.new(total_items: 100, size: :md))
+
+      assert_selector '.cds--pagination:not(.cds--pagination--sm):not(.cds--pagination--lg)'
+    end
+
+    test 'renders lg size' do
+      render_inline(Carbon::PaginationComponent.new(total_items: 100, size: :lg))
+
+      assert_selector '.cds--pagination.cds--pagination--lg'
+    end
+
+    test 'accepts string values for size' do
+      render_inline(Carbon::PaginationComponent.new(total_items: 100, size: 'lg'))
+
+      assert_selector '.cds--pagination.cds--pagination--lg'
+    end
+
+    test 'raises ArgumentError for invalid size' do
+      assert_raises(ArgumentError) do
+        Carbon::PaginationComponent.new(total_items: 100, size: :invalid)
+      end
+    end
+
+    # -- Visually hidden label tests --
+
+    test 'renders visually-hidden label for page number select' do
+      render_inline(Carbon::PaginationComponent.new(total_items: 100))
+
+      assert_selector 'label.cds--visually-hidden', text: 'Page number:'
+    end
+
+    test 'visually-hidden label has correct for attribute' do
+      render_inline(Carbon::PaginationComponent.new(total_items: 100))
+
+      # Get the select ID and verify the label references it
+      assert_selector 'label.cds--visually-hidden[for]'
+    end
+
+    test 'renders custom items per page text' do
+      render_inline(Carbon::PaginationComponent.new(total_items: 100, items_per_page_text: 'Rows per page:'))
+
+      assert_text 'Rows per page:'
+    end
   end
 end

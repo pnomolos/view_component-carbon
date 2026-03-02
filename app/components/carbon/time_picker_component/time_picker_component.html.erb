@@ -2,7 +2,7 @@
   <div class="<%= time_picker_classes %>">
     <div class="cds--time-picker__input">
       <% if @label_text %>
-        <label for="<%= @id %>" class="cds--label"><%= @label_text %></label>
+        <label for="<%= @id %>" class="<%= label_classes %>"><%= @label_text %></label>
       <% end %>
       <input <%= tag.attributes(input_attributes) %>>
     </div>

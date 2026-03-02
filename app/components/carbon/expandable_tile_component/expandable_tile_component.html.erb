@@ -1,6 +1,6 @@
 <%= content_tag :div, **html_attributes do %>
   <button type="button"
-          class="cds--tile__chevron"
+          class="<%= chevron_classes %>"
           aria-expanded="<%= @expanded %>"
           aria-controls="<%= below_fold_id %>"
           aria-label="<%= current_aria_label %>"
@@ -8,7 +8,7 @@
           data-carbon--expandable-tile-target="chevron">
     <%= chevron_svg.html_safe %>
   </button>
-  <div class="cds--tile-content" id="<%= @tile_id %>-content">
+  <div class="<%= tile_content_classes %>" id="<%= @tile_id %>-content">
     <div class="cds--tile-content__above-the-fold">
       <%= above_the_fold %>
     </div>

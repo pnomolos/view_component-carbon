@@ -147,5 +147,24 @@ module Carbon
 
       assert_selector '.cds--popover--high-contrast'
     end
+
+    test 'toggletip content has an ID' do
+      render_inline(Carbon::ToggletipComponent.new) do |c|
+        c.with_body { 'Content' }
+      end
+
+      assert_selector '.cds--toggletip-content[id^="toggletip-"]'
+    end
+
+    test 'button has aria-controls pointing to content ID' do
+      render_inline(Carbon::ToggletipComponent.new) do |c|
+        c.with_body { 'Content' }
+      end
+
+      button = page.find('button.cds--toggletip-button')
+      content = page.find('.cds--toggletip-content')
+
+      assert_equal button[:'aria-controls'], content[:id]
+    end
   end
 end

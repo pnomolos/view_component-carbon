@@ -21,11 +21,12 @@ module Carbon
 
     # @param size [Symbol] spinner size (:small, :normal)
     # @param active [Boolean] whether the spinner is active
+    # @param inactive [Boolean] alias for active: false
     # @param overlay [Boolean] shows an overlay behind the spinner
     # @param system_arguments [Hash] additional HTML attributes
-    def initialize(size: DEFAULT_SIZE, active: true, overlay: false, **system_arguments)
+    def initialize(size: DEFAULT_SIZE, active: true, inactive: false, overlay: false, **system_arguments)
       @size = validate_argument(:size, size, SIZES, DEFAULT_SIZE)
-      @active = active
+      @active = inactive ? false : active
       @overlay = overlay
       @system_arguments = system_arguments
     end
@@ -52,6 +53,7 @@ module Carbon
       attrs[:class] = css_classes
       attrs[:role] = 'status'
       attrs[:'aria-live'] = 'assertive'
+      attrs[:'aria-atomic'] = 'true'
       attrs
     end
 

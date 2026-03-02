@@ -28,6 +28,7 @@ module Carbon
       assert_selector '.cds--inline-loading--active'
       assert_selector '.cds--loading.cds--loading--small'
       assert_selector '.cds--loading__svg'
+      assert_selector '.cds--loading__svg title', text: 'Loading'
     end
 
     test 'renders finished status with checkmark' do
@@ -35,6 +36,7 @@ module Carbon
 
       assert_selector '.cds--inline-loading--finished'
       assert_selector '.cds--inline-loading__checkmark-container'
+      assert_selector '.cds--inline-loading__checkmark-container title', text: 'Finished'
       assert_no_selector '.cds--loading'
     end
 
@@ -43,6 +45,7 @@ module Carbon
 
       assert_selector '.cds--inline-loading--error'
       assert_selector 'svg.cds--inline-loading--error'
+      assert_selector 'svg.cds--inline-loading--error title', text: 'Error'
       assert_no_selector '.cds--loading'
     end
 
@@ -94,6 +97,26 @@ module Carbon
       render_inline(Carbon::InlineLoadingComponent.new(status: 'finished'))
 
       assert_selector '.cds--inline-loading--finished'
+    end
+
+    # -- Overlay variant --
+
+    test 'renders overlay class when overlay is true' do
+      render_inline(Carbon::InlineLoadingComponent.new(overlay: true))
+
+      assert_selector '.cds--inline-loading.cds--inline-loading--overlay'
+    end
+
+    test 'does not render overlay class when overlay is false' do
+      render_inline(Carbon::InlineLoadingComponent.new(overlay: false))
+
+      assert_no_selector '.cds--inline-loading--overlay'
+    end
+
+    test 'renders overlay with active status' do
+      render_inline(Carbon::InlineLoadingComponent.new(overlay: true, status: :active))
+
+      assert_selector '.cds--inline-loading.cds--inline-loading--overlay.cds--inline-loading--active'
     end
   end
 end

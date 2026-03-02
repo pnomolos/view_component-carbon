@@ -21,5 +21,8 @@
     "@ibm/plex-sans-thai-looped": "^1.1.0",
     "@ibm/plex-serif": "^2.0.0",
     "@ibm/telemetry-js": "^1.11.0"
+  },
+  "devDependencies": {
+    "@carbon/react": "^1.101.0"
   }
 }

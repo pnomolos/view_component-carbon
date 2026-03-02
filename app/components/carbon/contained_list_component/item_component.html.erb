@@ -1,8 +1,13 @@
-<div class="<%= css_classes %>" <%= tag.attributes(html_attributes) %>>
-  <div class="<%= carbon_class('contained-list-item', 'content') %>">
+<li class="<%= css_classes %>" <%= tag.attributes(html_attributes) %>>
+  <% if icon? %>
+    <div class="<%= carbon_class('contained-list-item', 'icon') %>">
+      <%= icon %>
+    </div>
+  <% end %>
+  <%= tag.send(content_tag_name, **content_attributes) do %>
     <%= content %>
-  </div>
-  <% if action %>
+  <% end %>
+  <% if action? %>
     <%= action %>
   <% end %>
-</div>
+</li>

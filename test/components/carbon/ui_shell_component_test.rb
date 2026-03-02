@@ -3,7 +3,7 @@
 require 'test_helper'
 
 module Carbon
-  class UIShellComponentTest < CarbonViewComponents::TestCase # rubocop:disable Metrics/ClassLength
+  class UIShellComponentTest < CarbonViewComponents::TestCase
     # -- Default rendering --
 
     test 'renders wrapper div with main content area' do

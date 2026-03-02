@@ -7,14 +7,15 @@
          class="cds--search-input"
          id="<%= id %>"
          role="searchbox"
-         autocomplete="off"
+         autocomplete="<%= autocomplete %>"
          placeholder="<%= placeholder %>"
+         <% if name.present? %>name="<%= name %>"<% end %>
          <%= 'disabled'.html_safe if disabled %>
          <%= "value=\"#{value}\"".html_safe if value.present? %>
          data-carbon--search-target="input"
          data-action="input->carbon--search#onInput">
   <button class="cds--search-close<%= ' cds--search-close--hidden' if value.blank? %>"
-          aria-label="Clear search"
+          aria-label="<%= close_button_label_text %>"
           title="Clear search"
           type="button"
           <%= 'disabled'.html_safe if disabled %>

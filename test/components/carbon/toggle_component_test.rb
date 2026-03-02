@@ -71,6 +71,22 @@ module Carbon
       assert_selector '.cds--toggle--disabled'
     end
 
+    # -- Readonly state --
+
+    test 'renders not readonly by default' do
+      render_inline(Carbon::ToggleComponent.new)
+
+      assert_no_selector 'button[readonly]'
+      assert_no_selector '.cds--toggle--readonly'
+    end
+
+    test 'renders readonly when readonly is true' do
+      render_inline(Carbon::ToggleComponent.new(readonly: true))
+
+      assert_selector 'button[readonly]'
+      assert_selector '.cds--toggle--readonly'
+    end
+
     # -- Labels --
 
     test 'renders current text based on toggle state' do
@@ -129,6 +145,12 @@ module Carbon
       render_inline(Carbon::ToggleComponent.new)
 
       assert_selector '.cds--toggle__switch'
+    end
+
+    test 'renders checkmark SVG icon inside switch' do
+      render_inline(Carbon::ToggleComponent.new)
+
+      assert_selector '.cds--toggle__switch svg.cds--toggle__check'
     end
 
     test 'renders single toggle text with aria-hidden' do

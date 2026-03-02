@@ -5,6 +5,12 @@ export default class extends Controller {
   static values = {
     open: { type: Boolean, default: false },
     preventCloseOnClickOutside: { type: Boolean, default: false },
+    preventClose: { type: Boolean, default: false },
+    shouldSubmitOnEnter: { type: Boolean, default: false },
+    loadingStatus: { type: String, default: 'inactive' },
+    loadingDescription: { type: String, default: '' },
+    loadingIconDescription: { type: String, default: 'Loading' },
+    loadingSuccessDelay: { type: Number, default: 1500 },
   };
 
   connect() {
@@ -34,6 +40,12 @@ export default class extends Controller {
   }
 
   close() {
+    // Dispatch beingclosed event (can be cancelled)
+    const beingClosedEvent = this.dispatch('beingclosed', { cancelable: true });
+    if (beingClosedEvent.defaultPrevented) {
+      return;
+    }
+
     this.openValue = false;
   }
 
@@ -76,18 +88,38 @@ export default class extends Controller {
 
   handleKeydown(event) {
     if (event.key === 'Escape') {
-      event.preventDefault();
-      this.close();
+      if (!this.preventCloseValue) {
+        event.preventDefault();
+        this.close();
+      }
       return;
     }
 
     if (event.key === 'Tab') {
       this.trapFocus(event);
+      return;
+    }
+
+    if (event.key === 'Enter' && this.shouldSubmitOnEnterValue) {
+      this.handleEnterKey(event);
+    }
+  }
+
+  handleEnterKey(event) {
+    // Find the primary button (look for data-modal-primary-focus or primary button)
+    const primaryButton = this.element.querySelector(
+      '[data-modal-primary-focus], .cds--btn--primary',
+    );
+
+    // Don't trigger if user is already focused on the primary button
+    if (primaryButton && document.activeElement !== primaryButton) {
+      event.preventDefault();
+      primaryButton.click();
     }
   }
 
   handleBackdropClick(event) {
-    if (this.preventCloseOnClickOutsideValue) {
+    if (this.preventCloseOnClickOutsideValue || this.preventCloseValue) {
       return;
     }
 

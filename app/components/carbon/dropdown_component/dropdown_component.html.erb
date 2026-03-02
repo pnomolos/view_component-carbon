@@ -1,42 +1,47 @@
 <div class="cds--form-item">
-  <div class="cds--dropdown__wrapper cds--list-box__wrapper">
-    <label class="<%= label_classes %>"><%= @label_text %></label>
+  <div class="<%= wrapper_classes %>">
+    <label id="<%= @label_id %>" class="<%= label_classes %>" for="<%= @trigger_id %>">
+      <%= @title_text %>
+    </label>
     <div <%= tag.attributes(**html_attributes) %>>
-      <button type="button"
-              class="cds--list-box__field"
-              role="combobox"
-              aria-expanded="false"
-              aria-haspopup="listbox"
-              aria-controls="<%= @menu_id %>"
-              aria-label="<%= @title_text %>"
-              tabindex="0"
-              <% if @disabled %>disabled<% end %>
-              data-carbon--dropdown-target="trigger"
-              data-action="click->carbon--dropdown#toggle keydown->carbon--dropdown#handleTriggerKeydown">
+      <% if @invalid %>
+        <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"
+             fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"
+             class="cds--list-box__invalid-icon">
+          <path d="M8,1C4.2,1,1,4.2,1,8s3.2,7,7,7s7-3.1,7-7S11.9,1,8,1z M7.5,4h1v5h-1C7.5,9,7.5,4,7.5,4z M8,12.2	c-0.4,0-0.8-0.4-0.8-0.8s0.3-0.8,0.8-0.8c0.4,0,0.8,0.4,0.8,0.8S8.4,12.2,8,12.2z"></path>
+          <path d="M7.5,4h1v5h-1C7.5,9,7.5,4,7.5,4z M8,12.2c-0.4,0-0.8-0.4-0.8-0.8s0.3-0.8,0.8-0.8	c0.4,0,0.8,0.4,0.8,0.8S8.4,12.2,8,12.2z" data-icon-path="inner-path" opacity="0"></path>
+        </svg>
+      <% elsif @warn %>
+        <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"
+             fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"
+             class="cds--list-box__invalid-icon cds--list-box__invalid-icon--warning">
+          <path d="M8,1C4.1,1,1,4.1,1,8s3.1,7,7,7s7-3.1,7-7S11.9,1,8,1z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
+          <path d="M7.5,4h1v5h-1V4z M8,12.2c-0.4,0-0.8-0.4-0.8-0.8s0.3-0.8,0.8-0.8c0.4,0,0.8,0.4,0.8,0.8S8.4,12.2,8,12.2z"></path>
+        </svg>
+      <% end %>
+      <button <%= tag.attributes(**trigger_attributes) %>>
         <span class="cds--list-box__label" data-carbon--dropdown-target="label"><%= display_text %></span>
-        <div class="cds--list-box__menu-icon">
+        <div class="cds--list-box__menu-icon" data-carbon--dropdown-target="menuIcon">
           <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"
                fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
             <path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"></path>
           </svg>
         </div>
       </button>
-      <ul class="cds--list-box__menu"
-          role="listbox"
-          id="<%= @menu_id %>"
-          data-carbon--dropdown-target="menu">
+      <div <%= tag.attributes(**menu_attributes) %>>
         <% items.each_with_index do |item, index| %>
-          <li class="<%= item.css_classes %>"
-              role="option"
-              aria-selected="<%= item.selected %>"
-              data-value="<%= item.value %>"
-              data-carbon--dropdown-target="item"
-              data-action="click->carbon--dropdown#select"
-              <% if item.disabled %>aria-disabled="true"<% end %>
-              tabindex="-1">
+          <div class="<%= item.css_classes %>"
+               id="<%= @menu_id %>-item-<%= index %>"
+               role="option"
+               aria-selected="<%= item.selected_for_value?(@value) %>"
+               data-value="<%= item.value %>"
+               data-carbon--dropdown-target="item"
+               data-action="click->carbon--dropdown#select"
+               <% if item.disabled %>aria-disabled="true"<% end %>
+               tabindex="-1">
             <div class="cds--list-box__menu-item__option">
               <%= item.text %>
-              <% if item.selected %>
+              <% if item.selected_for_value?(@value) %>
                 <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"
                      fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"
                      class="cds--list-box__menu-item__selected-icon">
@@ -44,12 +49,17 @@
                 </svg>
               <% end %>
             </div>
-          </li>
+          </div>
         <% end %>
-      </ul>
+      </div>
+      <% if @name.present? %>
+        <input type="hidden" name="<%= @name %>" value="<%= @value %>" data-carbon--dropdown-target="hiddenInput">
+      <% end %>
     </div>
     <% if @helper_text && !@invalid && !@warn %>
-      <div class="cds--form__helper-text" id="<%= @helper_text_id %>"><%= @helper_text %></div>
+      <div class="cds--form__helper-text <% if @disabled %>cds--form__helper-text--disabled<% end %>" id="<%= @helper_text_id %>">
+        <%= @helper_text %>
+      </div>
     <% end %>
     <% if @invalid && @invalid_text %>
       <div class="cds--form-requirement" id="<%= @helper_text_id %>"><%= @invalid_text %></div>

@@ -4,7 +4,10 @@
       <label id="<%= @label_id %>" for="<%= @input_id %>" class="cds--label<%= ' cds--label--disabled' if @disabled %>"><%= @label_text %></label>
     <% end %>
     <div class="<%= listbox_classes %>"
-         data-controller="carbon--combo-box">
+         data-controller="carbon--combo-box"
+         data-carbon--combo-box-typeahead-value="<%= @typeahead %>"
+         data-carbon--combo-box-allow-custom-value-value="<%= @allow_custom_value %>"
+         data-carbon--combo-box-should-filter-item-value="<%= @should_filter_item %>">
       <div class="cds--list-box__field"
            role="combobox"
            aria-expanded="false"
@@ -15,19 +18,23 @@
            data-carbon--combo-box-target="field"
            data-action="click->carbon--combo-box#toggle">
         <input type="text"
-               class="cds--text-input"
+               class="cds--text-input cds--text-input--empty"
                id="<%= @input_id %>"
                placeholder="<%= @placeholder %>"
                autocomplete="off"
                aria-autocomplete="list"
                aria-controls="<%= @menu_id %>"
+               aria-expanded="false"
+               <% if @input_label %>aria-label="<%= @input_label %>"<% elsif @label_text %>aria-labelledby="<%= @label_id %>"<% end %>
                <% if @disabled %>disabled<% end %>
+               <% if @readonly %>readonly<% end %>
                data-carbon--combo-box-target="input"
                data-action="input->carbon--combo-box#filter keydown->carbon--combo-box#handleKeydown">
         <div class="cds--list-box__selection"
              role="button"
              tabindex="0"
-             title="Clear selected item"
+             title="<%= @clear_selection_label %>"
+             aria-label="<%= @clear_selection_label %>"
              style="display: none;"
              data-action="click->carbon--combo-box#clear"
              data-carbon--combo-box-target="clearButton">

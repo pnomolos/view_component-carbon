@@ -1,8 +1,13 @@
 <li class="<%= css_classes %>" <%= tag.attributes(html_attributes) %>>
-  <%= icon_svg %>
-  <p class="<%= carbon_class('progress-label') %>"><%= label %></p>
-  <% if secondary_label %>
-    <p class="<%= carbon_class('progress-optional') %>"><%= secondary_label %></p>
-  <% end %>
+  <button <%= tag.attributes(button_attributes) %> class="<%= carbon_class('progress-step-button') %>">
+    <%= icon_svg %>
+    <div class="<%= carbon_class('progress-text') %>">
+      <p class="<%= carbon_class('progress-label') %>"><%= label %></p>
+      <% if secondary_label %>
+        <p class="<%= carbon_class('progress-optional') %>"><%= secondary_label %></p>
+      <% end %>
+    </div>
+    <span class="<%= carbon_class('assistive-text') %>"><%= assistive_text %></span>
+  </button>
   <span class="<%= carbon_class('progress-line') %>"></span>
 </li>

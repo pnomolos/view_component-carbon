@@ -1,6 +1,6 @@
 <%= content_tag :li, **html_attributes do %>
   <% if @current %>
-    <%= content %>
+    <%= content_tag :span, content, class: link_css_classes %>
   <% else %>
     <%= content_tag :a, content, href: @href, class: link_css_classes %>
   <% end %>

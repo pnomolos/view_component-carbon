@@ -5,7 +5,8 @@
       <button class="cds--copy-btn"
               aria-label="Copy to clipboard"
               type="button"
-              data-action="click->carbon--code-snippet#copy">
+              data-action="click->carbon--code-snippet#copy"
+              <%= 'disabled' if disabled %>>
         <%= copy_icon %>
       </button>
     <% end %>
@@ -20,7 +21,8 @@
       <button class="cds--copy-btn"
               aria-label="Copy to clipboard"
               type="button"
-              data-action="click->carbon--code-snippet#copy">
+              data-action="click->carbon--code-snippet#copy"
+              <%= 'disabled' if disabled %>>
         <%= copy_icon %>
       </button>
     <% end %>

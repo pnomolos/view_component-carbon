@@ -1,6 +1,6 @@
 <div <%= tag.attributes(html_attributes) %>>
   <div class="cds--pagination__left">
-    <label id="<%= label_id %>" class="cds--pagination__text" for="<%= select_id %>">Items per page:</label>
+    <label id="<%= label_id %>" class="cds--pagination__text" for="<%= select_id %>"><%= items_per_page_text %></label>
     <div class="cds--select cds--select--inline cds--select__page-number">
       <select id="<%= select_id %>" class="cds--select-input"
               data-action="change->carbon--pagination#changePageSize"
@@ -19,6 +19,7 @@
     </span>
   </div>
   <div class="cds--pagination__right">
+    <label class="cds--visually-hidden" for="<%= select_id %>">Page number:</label>
     <span class="cds--pagination__text" data-carbon--pagination-target="pageDisplay">
       Page <%= page %> of <%= total_pages %>
     </span>

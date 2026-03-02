@@ -8,7 +8,7 @@ module Carbon
   #
   # @see https://carbondesignsystem.com/components/tag/usage/
   class TagComponent < BaseComponent
-    TYPES = %i[read_only filter dismissible].freeze
+    TYPES = %i[read_only filter dismissible operational].freeze
     COLORS = %i[red magenta purple blue cyan teal green gray cool_gray warm_gray high_contrast outline].freeze
     SIZES = %i[sm md lg].freeze
 
@@ -40,7 +40,8 @@ module Carbon
     TYPE_CSS = {
       read_only: nil,
       filter: 'filter',
-      dismissible: 'dismissible'
+      dismissible: 'filter',
+      operational: 'interactive'
     }.freeze
 
     # @return [Symbol] tag type
@@ -51,18 +52,33 @@ module Carbon
     attr_reader :size
     # @return [Boolean] whether disabled
     attr_reader :disabled
+    # @return [String] title for close button aria-label
+    attr_reader :title
+    # @return [String] close button aria-label
+    attr_reader :close_label
 
     # @param type [Symbol] tag type (:read_only, :filter, :dismissible)
     # @param color [Symbol] tag color
     #   (:red, :magenta, :purple, :blue, :cyan, :teal, :green, :gray, :cool_gray, :warm_gray, :high_contrast, :outline)
     # @param size [Symbol] tag size (:sm, :md, :lg)
     # @param disabled [Boolean] disables the tag
+    # @param title [String] title for close button aria-label (default: "Clear filter")
     # @param system_arguments [Hash] additional HTML attributes
-    def initialize(type: DEFAULT_TYPE, color: DEFAULT_COLOR, size: DEFAULT_SIZE, disabled: false, **system_arguments)
+    def initialize(
+      type: DEFAULT_TYPE,
+      color: DEFAULT_COLOR,
+      size: DEFAULT_SIZE,
+      disabled: false,
+      title: 'Clear filter',
+      close_label: nil,
+      **system_arguments
+    )
       @type = validate_argument(:type, type, TYPES, DEFAULT_TYPE)
       @color = validate_argument(:color, color, COLORS, DEFAULT_COLOR)
       @size = validate_argument(:size, size, SIZES, DEFAULT_SIZE)
       @disabled = disabled
+      @title = title
+      @close_label = close_label || title
       @system_arguments = system_arguments
     end
 
@@ -70,6 +86,7 @@ module Carbon
     def css_classes
       classes = ['cds--tag', "cds--tag--#{SIZE_CSS[@size]}", "cds--tag--#{COLOR_CSS[@color]}"]
       classes << "cds--tag--#{TYPE_CSS[@type]}" if TYPE_CSS[@type]
+      classes << 'cds--tag--disabled' if @disabled
       classes << @system_arguments.delete(:class) if @system_arguments[:class]
       class_names(*classes)
     end
@@ -78,7 +95,6 @@ module Carbon
     def html_attributes
       attrs = @system_arguments.dup
       attrs[:class] = css_classes
-      attrs[:disabled] = '' if @disabled && closeable?
       attrs
     end
 
@@ -89,7 +105,10 @@ module Carbon
 
     # @return [Symbol] HTML tag to render (:button or :span)
     def tag_name
-      closeable? ? :button : :span
+      # Operational tags (with onClick) are button elements
+      # Filter/dismissible tags are span with button inside for close icon
+      # Read-only tags are span
+      @type == :operational ? :button : :span
     end
 
     # @return [String] SVG markup for the close icon

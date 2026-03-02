@@ -217,5 +217,31 @@ module Carbon
 
       assert_selector 'button.cds--btn--sm'
     end
+
+    # -- Assistive text for danger variants --
+
+    test 'renders assistive danger text for danger_ghost' do
+      render_inline(Carbon::ButtonComponent.new(kind: :danger_ghost)) { 'Delete' }
+
+      assert_selector 'button .cds--visually-hidden', text: 'Danger'
+    end
+
+    test 'renders assistive danger text for danger_tertiary' do
+      render_inline(Carbon::ButtonComponent.new(kind: :danger_tertiary)) { 'Delete' }
+
+      assert_selector 'button .cds--visually-hidden', text: 'Danger'
+    end
+
+    test 'does not render assistive danger text for primary danger' do
+      render_inline(Carbon::ButtonComponent.new(kind: :danger)) { 'Delete' }
+
+      assert_no_selector 'button .cds--visually-hidden'
+    end
+
+    test 'does not render assistive danger text for non-danger buttons' do
+      render_inline(Carbon::ButtonComponent.new(kind: :ghost)) { 'Cancel' }
+
+      assert_no_selector 'button .cds--visually-hidden'
+    end
   end
 end

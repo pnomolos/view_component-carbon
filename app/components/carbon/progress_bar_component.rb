@@ -87,6 +87,8 @@ module Carbon
       }
       attrs[:'aria-valuenow'] = @value if @value && @type == :default
       attrs[:'aria-label'] = @label if @label
+      attrs[:'aria-busy'] = 'true' if @status == :active
+      attrs[:'aria-invalid'] = 'true' if @status == :error
       attrs
     end
 

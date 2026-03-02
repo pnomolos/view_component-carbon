@@ -1,5 +1,6 @@
 <span <%= tag.attributes(html_attributes) %>>
   <button type="button" class="cds--toggletip-button" aria-label="Show information"
+          aria-controls="<%= toggletip_content_id %>"
           data-action="click->carbon--toggletip#toggle">
     <svg focusable="false" preserveAspectRatio="xMidYMid meet"
          xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16"
@@ -11,7 +12,7 @@
   </button>
   <span class="cds--popover">
     <span class="cds--popover-content">
-      <div class="cds--toggletip-content">
+      <div class="cds--toggletip-content" id="<%= toggletip_content_id %>">
         <%= body %>
       </div>
     </span>

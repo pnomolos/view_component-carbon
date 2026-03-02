@@ -99,6 +99,11 @@ module Carbon
       attrs
     end
 
+    # @return [Boolean] whether to show assistive danger text
+    def show_danger_assistive_text?
+      @kind == :danger_ghost || @kind == :danger_tertiary
+    end
+
     private
 
     def validate_argument(name, value, allowed, _default)

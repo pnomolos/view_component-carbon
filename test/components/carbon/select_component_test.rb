@@ -222,5 +222,156 @@ module Carbon
 
       assert_selector 'div.cds--select.custom-select'
     end
+
+    # -- P0 Accessibility fixes --
+
+    test 'adds aria-readonly attribute' do
+      render_inline(Carbon::SelectComponent.new(readonly: false)) do |c|
+        c.with_option(value: 'a', text: 'A')
+      end
+
+      assert_selector 'select[aria-readonly="false"]'
+    end
+
+    test 'sets aria-readonly to true when readonly' do
+      render_inline(Carbon::SelectComponent.new(readonly: true)) do |c|
+        c.with_option(value: 'a', text: 'A')
+      end
+
+      assert_selector 'select[aria-readonly="true"]'
+    end
+
+    test 'adds title attribute with value' do
+      render_inline(Carbon::SelectComponent.new(value: 'us')) do |c|
+        c.with_option(value: 'us', text: 'United States')
+      end
+
+      assert_selector 'select[title="us"]'
+    end
+
+    test 'does not add title when no value' do
+      render_inline(Carbon::SelectComponent.new) do |c|
+        c.with_option(value: 'us', text: 'United States')
+      end
+
+      assert_no_selector 'select[title]'
+    end
+
+    test 'adds required attribute' do
+      render_inline(Carbon::SelectComponent.new(required: true)) do |c|
+        c.with_option(value: 'a', text: 'A')
+      end
+
+      assert_selector 'select[required]'
+    end
+
+    # -- P1 Correctness fixes --
+
+    test 'readonly prop renders readonly class' do
+      render_inline(Carbon::SelectComponent.new(readonly: true)) do |c|
+        c.with_option(value: 'a', text: 'A')
+      end
+
+      assert_selector 'div.cds--select--readonly'
+    end
+
+    test 'readonly normalizes disabled state' do
+      render_inline(Carbon::SelectComponent.new(readonly: true, disabled: true)) do |c|
+        c.with_option(value: 'a', text: 'A')
+      end
+
+      # When readonly, disabled is normalized to false
+      assert_no_selector 'select[disabled]'
+      assert_no_selector 'div.cds--select--disabled'
+    end
+
+    test 'readonly normalizes invalid state' do
+      render_inline(Carbon::SelectComponent.new(readonly: true, invalid: true, invalid_text: 'Error')) do |c|
+        c.with_option(value: 'a', text: 'A')
+      end
+
+      # When readonly, invalid is normalized to false
+      assert_no_selector 'select[aria-invalid]'
+      assert_no_selector 'div.cds--select--invalid'
+      assert_no_selector '.cds--form-requirement', text: 'Error'
+    end
+
+    test 'readonly normalizes warn state' do
+      render_inline(Carbon::SelectComponent.new(readonly: true, warn: true, warn_text: 'Warning')) do |c|
+        c.with_option(value: 'a', text: 'A')
+      end
+
+      # When readonly, warn is normalized to false
+      assert_no_selector 'div.cds--select--warning'
+      assert_no_selector '.cds--form-requirement', text: 'Warning'
+    end
+
+    test 'placeholder renders as disabled hidden option' do
+      render_inline(Carbon::SelectComponent.new(placeholder: 'Choose an option')) do |c|
+        c.with_option(value: 'a', text: 'A')
+      end
+
+      assert_selector 'option[disabled][value=""]', text: 'Choose an option', visible: :hidden
+    end
+
+    test 'inline wrapper structure' do
+      render_inline(Carbon::SelectComponent.new(inline: true)) do |c|
+        c.with_option(value: 'a', text: 'A')
+      end
+
+      assert_selector '.cds--select-input--inline__wrapper'
+      assert_selector '.cds--select-input--inline__wrapper > .cds--select-input__wrapper'
+    end
+
+    test 'inline wrapper has data-invalid when invalid' do
+      render_inline(Carbon::SelectComponent.new(inline: true, invalid: true, invalid_text: 'Error')) do |c|
+        c.with_option(value: 'a', text: 'A')
+      end
+
+      assert_selector '.cds--select-input--inline__wrapper[data-invalid]'
+      assert_selector '.cds--select-input__wrapper[data-invalid]'
+    end
+
+    # -- P2 Feature additions --
+
+    test 'renders autofocus attribute' do
+      render_inline(Carbon::SelectComponent.new(autofocus: true)) do |c|
+        c.with_option(value: 'a', text: 'A')
+      end
+
+      assert_selector 'select[autofocus]'
+    end
+
+    test 'renders pattern attribute' do
+      render_inline(Carbon::SelectComponent.new(pattern: '[A-Z]+')) do |c|
+        c.with_option(value: 'a', text: 'A')
+      end
+
+      assert_selector 'select[pattern="[A-Z]+"]'
+    end
+
+    test 'fluid layout renders divider inside wrapper' do
+      render_inline(Carbon::SelectComponent.new(is_fluid: true)) do |c|
+        c.with_option(value: 'a', text: 'A')
+      end
+
+      assert_selector '.cds--select-input__wrapper hr.cds--select__divider'
+    end
+
+    test 'fluid layout renders error text' do
+      render_inline(Carbon::SelectComponent.new(is_fluid: true, invalid: true, invalid_text: 'Required')) do |c|
+        c.with_option(value: 'a', text: 'A')
+      end
+
+      assert_selector '.cds--form-requirement', text: 'Required'
+    end
+
+    test 'non-fluid layout shows helper text outside wrapper' do
+      render_inline(Carbon::SelectComponent.new(is_fluid: false, helper_text: 'Help')) do |c|
+        c.with_option(value: 'a', text: 'A')
+      end
+
+      assert_selector '.cds--form__helper-text', text: 'Help'
+    end
   end
 end

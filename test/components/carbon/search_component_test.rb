@@ -111,10 +111,16 @@ module Carbon
 
     # -- Close button --
 
-    test 'renders close button' do
+    test 'renders close button with default label' do
       render_inline(Carbon::SearchComponent.new)
 
-      assert_selector "button.cds--search-close[aria-label='Clear search']", visible: :all
+      assert_selector "button.cds--search-close[aria-label='Clear search input']", visible: :all
+    end
+
+    test 'renders close button with custom label' do
+      render_inline(Carbon::SearchComponent.new(close_button_label_text: 'Remove search'))
+
+      assert_selector "button.cds--search-close[aria-label='Remove search']", visible: :all
     end
 
     test 'close button is hidden by default when no value' do
@@ -239,6 +245,24 @@ module Carbon
       render_inline(Carbon::SearchComponent.new(size: 'lg'))
 
       assert_selector '.cds--search--lg'
+    end
+
+    test 'renders name attribute' do
+      render_inline(Carbon::SearchComponent.new(label_text: 'Search', name: 'q'))
+
+      assert_selector 'input[name="q"]'
+    end
+
+    test 'renders autocomplete attribute' do
+      render_inline(Carbon::SearchComponent.new(label_text: 'Search', autocomplete: 'on'))
+
+      assert_selector 'input[autocomplete="on"]'
+    end
+
+    test 'defaults autocomplete to off' do
+      render_inline(Carbon::SearchComponent.new(label_text: 'Search'))
+
+      assert_selector 'input[autocomplete="off"]'
     end
   end
 end

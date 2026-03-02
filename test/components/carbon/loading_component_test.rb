@@ -9,7 +9,7 @@ module Carbon
     test 'renders default loading spinner' do
       render_inline(Carbon::LoadingComponent.new)
 
-      assert_selector 'div.cds--loading[role="status"][aria-live="assertive"]'
+      assert_selector 'div.cds--loading[role="status"][aria-live="assertive"][aria-atomic="true"]'
       assert_selector '.cds--loading__svg'
       assert_selector '.cds--visually-hidden', text: 'Loading'
     end
@@ -104,6 +104,12 @@ module Carbon
       assert_raises(ArgumentError) do
         Carbon::LoadingComponent.new(size: :invalid)
       end
+    end
+
+    test 'renders inactive state with stop class' do
+      render_inline(Carbon::LoadingComponent.new(inactive: true))
+
+      assert_selector '.cds--loading--stop'
     end
 
     test 'accepts string values for size' do

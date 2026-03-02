@@ -14,10 +14,14 @@ module Carbon
 
     # @param ordered [Boolean] renders as an ordered list
     # @param nested [Boolean] applies nested list styling
+    # @param is_expressive [Boolean] applies expressive styling
+    # @param native [Boolean] renders ordered lists with native numbering
     # @param system_arguments [Hash] additional HTML attributes
-    def initialize(ordered: false, nested: false, **system_arguments)
+    def initialize(ordered: false, nested: false, is_expressive: false, native: false, **system_arguments)
       @ordered = ordered
       @nested = nested
+      @is_expressive = is_expressive
+      @native = native
       @system_arguments = system_arguments
     end
 
@@ -31,6 +35,8 @@ module Carbon
       classes = []
       classes << (@ordered ? 'cds--list--ordered' : 'cds--list--unordered')
       classes << 'cds--list--nested' if @nested
+      classes << 'cds--list--expressive' if @is_expressive
+      classes << 'cds--list--ordered--native' if @native && @ordered
       classes << @system_arguments[:class] if @system_arguments[:class]
       class_names(classes)
     end

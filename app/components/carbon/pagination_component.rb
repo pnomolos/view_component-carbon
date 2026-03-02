@@ -8,6 +8,10 @@ module Carbon
   #
   # @see https://carbondesignsystem.com/components/pagination/usage/
   class PaginationComponent < BaseComponent
+    SIZES = %i[sm md lg].freeze
+
+    DEFAULT_SIZE = :md
+
     # @return [Integer] total number of items
     attr_reader :total_items
     # @return [Integer] current page number
@@ -18,6 +22,14 @@ module Carbon
     attr_reader :page_sizes
     # @return [Boolean] whether disabled
     attr_reader :disabled
+    # @return [Symbol] component size
+    attr_reader :size
+    # @return [String] items per page label text
+    attr_reader :items_per_page_text
+    # @return [Proc, nil] custom page text formatter
+    attr_reader :page_text
+    # @return [Proc, nil] custom item range text formatter
+    attr_reader :item_range_text
     # @return [String] unique select element ID
     attr_reader :select_id
     # @return [String] unique label element ID
@@ -28,14 +40,23 @@ module Carbon
     # @param page_size [Integer] items per page
     # @param page_sizes [Array<Integer>] available page size options
     # @param disabled [Boolean] disables the pagination controls
+    # @param size [Symbol] component size (:sm, :md, :lg)
+    # @param items_per_page_text [String] label for items per page
+    # @param page_text [Proc, nil] custom page text formatter
+    # @param item_range_text [Proc, nil] custom item range text formatter
     # @param system_arguments [Hash] additional HTML attributes
     def initialize(total_items:, page: 1, page_size: 10, page_sizes: [10, 20, 30, 40, 50],
-                   disabled: false, **system_arguments)
+                   disabled: false, size: DEFAULT_SIZE, items_per_page_text: 'Items per page:',
+                   page_text: nil, item_range_text: nil, **system_arguments)
       @total_items = total_items
       @page = page
       @page_size = page_size
       @page_sizes = page_sizes
       @disabled = disabled
+      @size = validate_argument(:size, size, SIZES, DEFAULT_SIZE)
+      @items_per_page_text = items_per_page_text
+      @page_text = page_text
+      @item_range_text = item_range_text
       @system_arguments = system_arguments
       hex = SecureRandom.hex(4)
       @select_id = "cds-pagination-select-#{hex}"
@@ -63,6 +84,7 @@ module Carbon
     # @return [String] CSS class string
     def css_classes
       classes = ['cds--pagination']
+      classes << "cds--pagination--#{@size}" unless @size == :md
       classes << @system_arguments.delete(:class) if @system_arguments[:class]
       class_names(*classes)
     end
@@ -77,6 +99,15 @@ module Carbon
       attrs[:data][:'carbon--pagination-page-value'] = @page
       attrs[:data][:'carbon--pagination-page-size-value'] = @page_size
       attrs
+    end
+
+    private
+
+    def validate_argument(name, value, allowed, _default)
+      value = value.to_sym if value.is_a?(String)
+      return value if allowed.include?(value)
+
+      raise ArgumentError, "Invalid #{name}: #{value.inspect}. Must be one of: #{allowed.map(&:inspect).join(', ')}"
     end
   end
 end

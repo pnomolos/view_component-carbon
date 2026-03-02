@@ -15,9 +15,16 @@ module Carbon
     renders_many :rows, 'Carbon::StructuredListComponent::RowComponent'
 
     # @param selection [Boolean] enables row selection mode
+    # @param condensed [Boolean] enables condensed variant (mutually exclusive with flush)
+    # @param flush [Boolean] enables flush variant (mutually exclusive with condensed)
+    # @param aria_label [String] accessible label for the list
     # @param system_arguments [Hash] additional HTML attributes
-    def initialize(selection: false, **system_arguments)
+    def initialize(selection: false, condensed: false, flush: false, aria_label: 'Structured list section',
+                   **system_arguments)
       @selection = selection
+      @condensed = condensed
+      @flush = flush
+      @aria_label = aria_label
       @system_arguments = system_arguments
     end
 
@@ -26,6 +33,8 @@ module Carbon
     def css_classes
       classes = ['cds--structured-list']
       classes << 'cds--structured-list--selection' if @selection
+      classes << 'cds--structured-list--condensed' if @condensed
+      classes << 'cds--structured-list--flush' if @flush
       classes << @system_arguments[:class] if @system_arguments[:class]
       class_names(classes)
     end
@@ -34,6 +43,7 @@ module Carbon
       attrs = @system_arguments.dup
       attrs[:class] = css_classes
       attrs[:role] = 'table'
+      attrs[:'aria-label'] = @aria_label
       attrs
     end
 

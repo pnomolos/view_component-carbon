@@ -20,6 +20,8 @@ module Carbon
     attr_reader :indeterminate
     # @return [Boolean] whether disabled
     attr_reader :disabled
+    # @return [Boolean] whether readonly
+    attr_reader :readonly
     # @return [String] visible label text
     attr_reader :label_text
     # @return [Boolean] whether to visually hide the label
@@ -43,6 +45,7 @@ module Carbon
     # @param checked [Boolean] initial checked state
     # @param indeterminate [Boolean] indeterminate state
     # @param disabled [Boolean] disables the checkbox
+    # @param readonly [Boolean] makes the checkbox readonly
     # @param hide_label [Boolean] visually hides the label
     # @param invalid [Boolean] marks as invalid
     # @param invalid_text [String, nil] validation error message
@@ -58,6 +61,7 @@ module Carbon
       checked: false,
       indeterminate: false,
       disabled: false,
+      readonly: false,
       hide_label: false,
       invalid: false,
       invalid_text: nil,
@@ -73,6 +77,7 @@ module Carbon
       @checked = checked
       @indeterminate = indeterminate
       @disabled = disabled
+      @readonly = readonly
       @hide_label = hide_label
       @id = id || "checkbox-#{SecureRandom.hex(4)}"
       @system_arguments = system_arguments
@@ -90,6 +95,7 @@ module Carbon
     def wrapper_classes
       classes = form_field_wrapper_classes('cds--checkbox-wrapper')
       classes.unshift('cds--form-item')
+      classes << 'cds--checkbox-wrapper--readonly' if @readonly
       classes << @system_arguments.delete(:class) if @system_arguments[:class]
       class_names(*classes)
     end
@@ -105,6 +111,7 @@ module Carbon
       }
       attrs[:checked] = '' if @checked
       attrs[:disabled] = '' if @disabled
+      attrs[:readonly] = '' if @readonly
       attrs[:'aria-checked'] = @indeterminate ? 'mixed' : @checked.to_s
       attrs[:'data-invalid'] = '' if @invalid
       attrs.merge!(@system_arguments)

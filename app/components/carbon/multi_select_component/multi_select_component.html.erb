@@ -8,9 +8,9 @@
          data-carbon--multi-select-title-text-value="<%= @title_text %>"
          data-carbon--multi-select-filterable-value="<%= @filterable %>">
       <% if selected_count > 0 %>
-        <div class="cds--list-box__selection cds--tag--filter"
+        <div class="cds--list-box__selection cds--list-box__selection--multi cds--tag cds--tag--filter cds--tag--high-contrast"
              role="button"
-             tabindex="0"
+             tabindex="-1"
              title="Clear all selected items"
              data-action="click->carbon--multi-select#clearAll"
              data-carbon--multi-select-target="clearButton">
@@ -68,14 +68,22 @@
               role="option"
               id="<%= item.item_id %>"
               aria-selected="<%= item.selected %>"
+              aria-checked="<%= item.selected %>"
               data-value="<%= item.value %>"
               data-carbon--multi-select-target="item"
               <% unless item.disabled %>data-action="click->carbon--multi-select#selectItem"<% end %>>
             <div class="cds--list-box__menu-item__option">
               <div class="cds--checkbox-wrapper">
-                <span class="cds--checkbox-label">
+                <input type="checkbox"
+                       class="cds--checkbox"
+                       id="checkbox-<%= item.item_id %>"
+                       <%= 'checked' if item.selected %>
+                       <%= 'disabled' if item.disabled %>
+                       tabindex="-1"
+                       aria-hidden="true">
+                <label for="checkbox-<%= item.item_id %>" class="cds--checkbox-label">
                   <span class="cds--checkbox-label-text"><%= item.text %></span>
-                </span>
+                </label>
               </div>
             </div>
           </li>

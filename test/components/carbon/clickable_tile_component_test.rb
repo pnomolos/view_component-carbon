@@ -81,5 +81,53 @@ module Carbon
 
       assert_selector '#my-clickable.cds--tile.cds--tile--clickable'
     end
+
+    # -- Link class --
+
+    test 'renders cds--link class when href provided' do
+      render_inline(Carbon::ClickableTileComponent.new(href: '/page')) { 'Content' }
+
+      assert_selector 'a.cds--link'
+    end
+
+    test 'does not render cds--link class without href' do
+      render_inline(Carbon::ClickableTileComponent.new) { 'Content' }
+
+      assert_no_selector '.cds--link'
+    end
+
+    # -- Color scheme --
+
+    test 'renders regular color scheme by default' do
+      render_inline(Carbon::ClickableTileComponent.new) { 'Content' }
+
+      assert_no_selector '.cds--tile--light'
+    end
+
+    test 'renders light color scheme' do
+      render_inline(Carbon::ClickableTileComponent.new(color_scheme: :light)) { 'Content' }
+
+      assert_selector '.cds--tile--light'
+    end
+
+    test 'raises error for invalid color scheme' do
+      assert_raises(ArgumentError) do
+        Carbon::ClickableTileComponent.new(color_scheme: :invalid)
+      end
+    end
+
+    # -- Rounded corners --
+
+    test 'does not render rounded corners by default' do
+      render_inline(Carbon::ClickableTileComponent.new) { 'Content' }
+
+      assert_no_selector '.cds--tile--slug-rounded'
+    end
+
+    test 'renders rounded corners class when enabled' do
+      render_inline(Carbon::ClickableTileComponent.new(has_rounded_corners: true)) { 'Content' }
+
+      assert_selector '.cds--tile--slug-rounded'
+    end
   end
 end

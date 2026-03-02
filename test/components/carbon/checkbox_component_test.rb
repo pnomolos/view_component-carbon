@@ -68,6 +68,22 @@ module Carbon
       assert_selector 'input[disabled]'
     end
 
+    # -- Readonly state --
+
+    test 'renders not readonly by default' do
+      render_inline(Carbon::CheckboxComponent.new(label_text: 'Test'))
+
+      assert_no_selector 'input[readonly]'
+      assert_no_selector '.cds--checkbox-wrapper--readonly'
+    end
+
+    test 'renders readonly when readonly is true' do
+      render_inline(Carbon::CheckboxComponent.new(label_text: 'Test', readonly: true))
+
+      assert_selector 'input[readonly]'
+      assert_selector '.cds--checkbox-wrapper--readonly'
+    end
+
     # -- Indeterminate state --
 
     test 'renders with aria-checked mixed when indeterminate' do

@@ -220,5 +220,133 @@ module Carbon
         Carbon::ComboBoxComponent.new(size: :xl)
       end
     end
+
+    # -- P0 Fixes: ARIA attributes --
+
+    test 'input has aria-expanded attribute' do
+      render_inline(Carbon::ComboBoxComponent.new) do |c|
+        c.with_item(value: 'opt1', text: 'Option 1')
+      end
+
+      input = page.find('input.cds--text-input')
+
+      assert_equal 'false', input['aria-expanded']
+    end
+
+    test 'input has aria-label when input_label provided' do
+      render_inline(Carbon::ComboBoxComponent.new(input_label: 'Select option')) do |c|
+        c.with_item(value: 'opt1', text: 'Option 1')
+      end
+
+      assert_selector 'input[aria-label="Select option"]'
+    end
+
+    test 'input has aria-labelledby when label_text provided and no input_label' do
+      render_inline(Carbon::ComboBoxComponent.new(label_text: 'Choose')) do |c|
+        c.with_item(value: 'opt1', text: 'Option 1')
+      end
+
+      input = page.find('input.cds--text-input')
+      label = page.find('label.cds--label')
+
+      assert_equal label['id'], input['aria-labelledby']
+    end
+
+    test 'field has aria-owns pointing to menu' do
+      render_inline(Carbon::ComboBoxComponent.new) do |c|
+        c.with_item(value: 'opt1', text: 'Option 1')
+      end
+
+      field = page.find('.cds--list-box__field[role="combobox"]')
+      menu = page.find('ul.cds--list-box__menu')
+
+      assert_equal menu['id'], field['aria-owns']
+    end
+
+    # -- P1 Fixes: CSS classes --
+
+    test 'input has cds--text-input--empty class by default' do
+      render_inline(Carbon::ComboBoxComponent.new) do |c|
+        c.with_item(value: 'opt1', text: 'Option 1')
+      end
+
+      assert_selector 'input.cds--text-input.cds--text-input--empty'
+    end
+
+    # -- P2 Fixes: readonly support --
+
+    test 'renders readonly input when readonly is true' do
+      render_inline(Carbon::ComboBoxComponent.new(readonly: true)) do |c|
+        c.with_item(value: 'opt1', text: 'Option 1')
+      end
+
+      assert_selector 'input[readonly]'
+    end
+
+    test 'renders without readonly attribute by default' do
+      render_inline(Carbon::ComboBoxComponent.new) do |c|
+        c.with_item(value: 'opt1', text: 'Option 1')
+      end
+
+      assert_no_selector 'input[readonly]'
+    end
+
+    # -- P2 Fixes: clear button label --
+
+    test 'clear button has default title and aria-label' do
+      render_inline(Carbon::ComboBoxComponent.new) do |c|
+        c.with_item(value: 'opt1', text: 'Option 1')
+      end
+
+      button = page.find('.cds--list-box__selection', visible: :all)
+
+      assert_equal 'Clear selected item', button['title']
+      assert_equal 'Clear selected item', button['aria-label']
+    end
+
+    test 'clear button has custom clear_selection_label' do
+      render_inline(Carbon::ComboBoxComponent.new(clear_selection_label: 'Remove selection')) do |c|
+        c.with_item(value: 'opt1', text: 'Option 1')
+      end
+
+      button = page.find('.cds--list-box__selection', visible: :all)
+
+      assert_equal 'Remove selection', button['title']
+      assert_equal 'Remove selection', button['aria-label']
+    end
+
+    # -- P2 Fixes: new props --
+
+    test 'renders with typeahead data value' do
+      render_inline(Carbon::ComboBoxComponent.new(typeahead: true)) do |c|
+        c.with_item(value: 'opt1', text: 'Option 1')
+      end
+
+      assert_selector '[data-carbon--combo-box-typeahead-value="true"]'
+    end
+
+    test 'renders with allow_custom_value data value' do
+      render_inline(Carbon::ComboBoxComponent.new(allow_custom_value: true)) do |c|
+        c.with_item(value: 'opt1', text: 'Option 1')
+      end
+
+      assert_selector '[data-carbon--combo-box-allow-custom-value-value="true"]'
+    end
+
+    test 'renders with should_filter_item data value' do
+      render_inline(Carbon::ComboBoxComponent.new(should_filter_item: false)) do |c|
+        c.with_item(value: 'opt1', text: 'Option 1')
+      end
+
+      assert_selector '[data-carbon--combo-box-should-filter-item-value="false"]'
+    end
+
+    test 'should_filter_item defaults to true' do
+      render_inline(Carbon::ComboBoxComponent.new) do |c|
+        c.with_item(value: 'opt1', text: 'Option 1')
+      end
+
+      assert_selector '[data-carbon--combo-box-should-filter-item-value="true"]'
+    end
   end
 end

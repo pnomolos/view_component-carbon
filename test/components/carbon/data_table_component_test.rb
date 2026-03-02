@@ -3,7 +3,7 @@
 require 'test_helper'
 
 module Carbon
-  class DataTableComponentTest < CarbonViewComponents::TestCase # rubocop:disable Metrics/ClassLength
+  class DataTableComponentTest < CarbonViewComponents::TestCase
     # -- Default rendering --
 
     test 'renders default data table container' do

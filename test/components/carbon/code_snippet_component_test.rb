@@ -188,5 +188,75 @@ module Carbon
 
       assert_selector '.cds--snippet--multi'
     end
+
+    # -- Disabled tests --
+
+    test 'renders without disabled class by default' do
+      render_inline(Carbon::CodeSnippetComponent.new(code: 'code'))
+
+      assert_no_selector '.cds--snippet--disabled'
+    end
+
+    test 'adds disabled class when disabled is true' do
+      render_inline(Carbon::CodeSnippetComponent.new(code: 'code', disabled: true))
+
+      assert_selector '.cds--snippet.cds--snippet--disabled'
+    end
+
+    test 'disables copy button when disabled is true' do
+      render_inline(Carbon::CodeSnippetComponent.new(code: 'code', disabled: true))
+
+      assert_selector 'button.cds--copy-btn[disabled]'
+    end
+
+    test 'does not disable copy button when disabled is false' do
+      render_inline(Carbon::CodeSnippetComponent.new(code: 'code', disabled: false))
+
+      assert_no_selector 'button.cds--copy-btn[disabled]'
+    end
+
+    test 'disables copy button for inline type when disabled' do
+      render_inline(Carbon::CodeSnippetComponent.new(type: :inline, code: 'code', disabled: true))
+
+      assert_selector 'span.cds--snippet button.cds--copy-btn[disabled]'
+    end
+
+    test 'disables copy button for multi type when disabled' do
+      render_inline(Carbon::CodeSnippetComponent.new(type: :multi, code: 'code', disabled: true))
+
+      assert_selector 'div.cds--snippet button.cds--copy-btn[disabled]'
+    end
+
+    # -- Wrap text tests --
+
+    test 'renders without wrap text class by default' do
+      render_inline(Carbon::CodeSnippetComponent.new(code: 'code'))
+
+      assert_no_selector '.cds--snippet--wraptext'
+    end
+
+    test 'adds wrap text class when wrap_text is true' do
+      render_inline(Carbon::CodeSnippetComponent.new(code: 'code', wrap_text: true))
+
+      assert_selector '.cds--snippet.cds--snippet--wraptext'
+    end
+
+    test 'does not add wrap text class when wrap_text is false' do
+      render_inline(Carbon::CodeSnippetComponent.new(code: 'code', wrap_text: false))
+
+      assert_no_selector '.cds--snippet--wraptext'
+    end
+
+    test 'renders wrap text variant' do
+      render_inline(Carbon::CodeSnippetComponent.new(type: :multi, wrap_text: true)) { 'code' }
+
+      assert_selector '.cds--snippet--wraptext'
+    end
+
+    test 'combines disabled and wrap_text classes' do
+      render_inline(Carbon::CodeSnippetComponent.new(code: 'code', disabled: true, wrap_text: true))
+
+      assert_selector '.cds--snippet.cds--snippet--disabled.cds--snippet--wraptext'
+    end
   end
 end

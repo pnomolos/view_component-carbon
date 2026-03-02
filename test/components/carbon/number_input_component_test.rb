@@ -19,15 +19,15 @@ module Carbon
     test 'renders increment and decrement buttons with SVG icons' do
       render_inline(Carbon::NumberInputComponent.new(label_text: 'Test'))
 
-      assert_selector '.cds--number__controls button.down-icon[aria-label="Decrease number"] svg'
-      assert_selector '.cds--number__controls button.up-icon[aria-label="Increase number"] svg'
+      assert_selector '.cds--number__controls button.down-icon[aria-label="decrease number input"] svg'
+      assert_selector '.cds--number__controls button.up-icon[aria-label="increase number input"] svg'
     end
 
     test 'buttons have correct attributes' do
       render_inline(Carbon::NumberInputComponent.new(label_text: 'Test'))
 
-      assert_selector 'button.down-icon[tabindex="-1"][title="Decrement"]'
-      assert_selector 'button.up-icon[tabindex="-1"][title="Increment"]'
+      assert_selector 'button.down-icon[tabindex="-1"]'
+      assert_selector 'button.up-icon[tabindex="-1"]'
     end
 
     test 'buttons have stimulus actions' do
@@ -194,7 +194,7 @@ module Carbon
         )
       )
 
-      assert_selector '.cds--number--warning'
+      assert_selector '.cds--number--warn'
       assert_selector '.cds--number__input-wrapper--warning'
       assert_selector '.cds--form-requirement', text: 'Check this value'
       assert_selector '.cds--number__input-wrapper svg.cds--text-input__invalid-icon'
@@ -212,7 +212,7 @@ module Carbon
       )
 
       assert_selector '.cds--number--invalid'
-      assert_no_selector '.cds--number--warning'
+      assert_no_selector '.cds--number--warn'
       assert_selector '.cds--form-requirement', text: 'Invalid'
     end
 
@@ -268,6 +268,186 @@ module Carbon
       render_inline(Carbon::NumberInputComponent.new(label_text: 'Test', size: 'sm'))
 
       assert_selector '.cds--number--sm'
+    end
+
+    # -- P0 Accessibility: ARIA attributes --
+
+    test 'buttons have aria-label for accessibility' do
+      render_inline(Carbon::NumberInputComponent.new(label_text: 'Test'))
+
+      assert_selector 'button.down-icon[aria-label="decrease number input"]'
+      assert_selector 'button.up-icon[aria-label="increase number input"]'
+    end
+
+    test 'buttons have aria-live for live region announcements' do
+      render_inline(Carbon::NumberInputComponent.new(label_text: 'Test'))
+
+      assert_selector 'button.down-icon[aria-live="polite"]'
+      assert_selector 'button.up-icon[aria-live="polite"]'
+    end
+
+    test 'buttons have aria-atomic for atomic announcements' do
+      render_inline(Carbon::NumberInputComponent.new(label_text: 'Test'))
+
+      assert_selector 'button.down-icon[aria-atomic="true"]'
+      assert_selector 'button.up-icon[aria-atomic="true"]'
+    end
+
+    test 'input has role alert for value announcements' do
+      render_inline(Carbon::NumberInputComponent.new(label_text: 'Test'))
+
+      assert_selector 'input[role="alert"]'
+    end
+
+    test 'input has aria-atomic for atomic announcements' do
+      render_inline(Carbon::NumberInputComponent.new(label_text: 'Test'))
+
+      assert_selector 'input[aria-atomic="true"]'
+    end
+
+    # -- P1 Correctness: CSS classes --
+
+    test 'always has helpertext class' do
+      render_inline(Carbon::NumberInputComponent.new(label_text: 'Test'))
+
+      assert_selector '.cds--number--helpertext'
+    end
+
+    test 'uses warn class not warning class' do
+      render_inline(Carbon::NumberInputComponent.new(label_text: 'Test', warn: true, warn_text: 'Warning'))
+
+      assert_selector '.cds--number--warn'
+      assert_no_selector '.cds--number--warning'
+    end
+
+    test 'label has disabled class when disabled' do
+      render_inline(Carbon::NumberInputComponent.new(label_text: 'Test', disabled: true))
+
+      assert_selector 'label.cds--label--disabled'
+    end
+
+    test 'label does not have disabled class when not disabled' do
+      render_inline(Carbon::NumberInputComponent.new(label_text: 'Test'))
+
+      assert_no_selector 'label.cds--label--disabled'
+    end
+
+    test 'helper text has disabled class when disabled' do
+      render_inline(
+        Carbon::NumberInputComponent.new(
+          label_text: 'Test',
+          helper_text: 'Help text',
+          disabled: true
+        )
+      )
+
+      assert_selector '.cds--form__helper-text--disabled'
+    end
+
+    test 'helper text does not have disabled class when not disabled' do
+      render_inline(
+        Carbon::NumberInputComponent.new(
+          label_text: 'Test',
+          helper_text: 'Help text'
+        )
+      )
+
+      assert_no_selector '.cds--form__helper-text--disabled'
+    end
+
+    # -- Aria-describedby linking --
+
+    test 'input has aria-describedby when helper text is present' do
+      render_inline(
+        Carbon::NumberInputComponent.new(
+          label_text: 'Test',
+          helper_text: 'Enter a valid number'
+        )
+      )
+
+      input = page.find('input[type="number"]')
+      helper_text = page.find('.cds--form__helper-text')
+
+      assert_equal input[:'aria-describedby'], helper_text[:id]
+    end
+
+    test 'input has aria-describedby when invalid text is present' do
+      render_inline(
+        Carbon::NumberInputComponent.new(
+          label_text: 'Test',
+          invalid: true,
+          invalid_text: 'Number required'
+        )
+      )
+
+      input = page.find('input[type="number"]')
+      error_text = page.find('.cds--form-requirement')
+
+      assert_equal input[:'aria-describedby'], error_text[:id]
+    end
+
+    test 'input has aria-describedby when warning text is present' do
+      render_inline(
+        Carbon::NumberInputComponent.new(
+          label_text: 'Test',
+          warn: true,
+          warn_text: 'Verify this number'
+        )
+      )
+
+      input = page.find('input[type="number"]')
+      warning_text = page.find('.cds--form-requirement')
+
+      assert_equal input[:'aria-describedby'], warning_text[:id]
+    end
+
+    test 'increment button has aria-label "Increment number input"' do
+      render_inline(Carbon::NumberInputComponent.new(label_text: 'Test'))
+
+      assert_selector 'button.up-icon[aria-label="increase number input"]'
+    end
+
+    test 'decrement button has aria-label "Decrement number input"' do
+      render_inline(Carbon::NumberInputComponent.new(label_text: 'Test'))
+
+      assert_selector 'button.down-icon[aria-label="decrease number input"]'
+    end
+
+    # -- Readonly state --
+
+    test 'renders readonly state' do
+      render_inline(Carbon::NumberInputComponent.new(label_text: 'Num', readonly: true))
+
+      assert_selector '.cds--number--readonly'
+      assert_selector 'input[readonly]'
+      assert_selector 'input[aria-readonly="true"]'
+    end
+
+    test 'renders not readonly by default' do
+      render_inline(Carbon::NumberInputComponent.new(label_text: 'Num'))
+
+      assert_no_selector '.cds--number--readonly'
+      assert_no_selector 'input[readonly]'
+    end
+
+    test 'disables buttons when readonly' do
+      render_inline(Carbon::NumberInputComponent.new(label_text: 'Num', readonly: true))
+
+      assert_selector 'button[disabled]', count: 2
+    end
+
+    test 'hides steppers when hide_steppers is true' do
+      render_inline(Carbon::NumberInputComponent.new(label_text: 'Num', hide_steppers: true))
+
+      assert_selector '.cds--number--nosteppers'
+      assert_no_selector '.cds--number__controls'
+    end
+
+    test 'shows steppers by default' do
+      render_inline(Carbon::NumberInputComponent.new(label_text: 'Num'))
+
+      assert_no_selector '.cds--number--nosteppers'
+      assert_selector '.cds--number__controls'
     end
   end
 end

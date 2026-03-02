@@ -27,33 +27,63 @@ module Carbon
     attr_reader :placeholder
     # @return [Boolean] whether the combo box is disabled
     attr_reader :disabled
+    # @return [Boolean] whether the combo box is readonly
+    attr_reader :readonly
+    # @return [String, nil] aria-label for input
+    attr_reader :input_label
+    # @return [String] aria-label for clear button
+    attr_reader :clear_selection_label
+    # @return [Boolean] enables autocomplete suggestions
+    attr_reader :typeahead
+    # @return [Boolean] allows custom values
+    attr_reader :allow_custom_value
+    # @return [Boolean] enables built-in filtering
+    attr_reader :should_filter_item
 
     # @param label_text [String, nil] label text
     # @param size [Symbol] combo box size (:sm, :md, :lg)
     # @param disabled [Boolean] disables the combo box
+    # @param readonly [Boolean] makes the combo box readonly
     # @param invalid [Boolean] marks as invalid
     # @param invalid_text [String, nil] validation error message
     # @param warn [Boolean] marks as warning
     # @param warn_text [String, nil] warning message
     # @param helper_text [String, nil] helper text
     # @param placeholder [String] placeholder text for the input
+    # @param input_label [String, nil] aria-label for the input field
+    # @param clear_selection_label [String] aria-label for clear button
+    # @param typeahead [Boolean] enables autocomplete suggestions
+    # @param allow_custom_value [Boolean] allows values not in the list
+    # @param should_filter_item [Boolean] enables built-in filtering
     # @param system_arguments [Hash] additional HTML attributes
     def initialize(
       label_text: nil,
       size: DEFAULT_SIZE,
       disabled: false,
+      readonly: false,
       invalid: false,
       invalid_text: nil,
       warn: false,
       warn_text: nil,
       helper_text: nil,
       placeholder: 'Filter...',
+      input_label: nil,
+      clear_selection_label: 'Clear selected item',
+      typeahead: false,
+      allow_custom_value: false,
+      should_filter_item: true,
       **system_arguments
     )
       @size = validate_argument(:size, size, SIZES, DEFAULT_SIZE)
       @label_text = label_text
       @placeholder = placeholder
       @disabled = disabled
+      @readonly = readonly
+      @input_label = input_label
+      @clear_selection_label = clear_selection_label
+      @typeahead = typeahead
+      @allow_custom_value = allow_custom_value
+      @should_filter_item = should_filter_item
       @system_arguments = system_arguments
       @id = system_arguments[:id] || "combo-box-#{SecureRandom.hex(4)}"
       @input_id = "combo-input-#{SecureRandom.hex(4)}"

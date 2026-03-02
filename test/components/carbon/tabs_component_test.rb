@@ -171,6 +171,189 @@ module Carbon
       end
     end
 
+    test 'raises ArgumentError for invalid activation' do
+      assert_raises(ArgumentError) do
+        Carbon::TabsComponent.new(activation: :invalid)
+      end
+    end
+
+    # -- Activation Mode --
+
+    test 'renders with automatic activation by default' do
+      render_inline(Carbon::TabsComponent.new) do |c|
+        c.with_tab(label: 'Tab') { 'Content' }
+      end
+
+      assert_selector '[data-carbon--tabs-activation-value="automatic"]'
+    end
+
+    test 'renders with manual activation' do
+      render_inline(Carbon::TabsComponent.new(activation: :manual)) do |c|
+        c.with_tab(label: 'Tab') { 'Content' }
+      end
+
+      assert_selector '[data-carbon--tabs-activation-value="manual"]'
+    end
+
+    # -- Dismissable --
+
+    test 'renders dismissable class when dismissable is true' do
+      render_inline(Carbon::TabsComponent.new(dismissable: true)) do |c|
+        c.with_tab(label: 'Tab') { 'Content' }
+      end
+
+      assert_selector 'div.cds--tabs--dismissable'
+    end
+
+    test 'renders close button when dismissable is true' do
+      render_inline(Carbon::TabsComponent.new(dismissable: true)) do |c|
+        c.with_tab(label: 'Tab') { 'Content' }
+      end
+
+      assert_selector 'button.cds--tabs__nav-item-close[type="button"]'
+    end
+
+    test 'renders close button on individual tab when dismissable' do
+      render_inline(Carbon::TabsComponent.new) do |c|
+        c.with_tab(label: 'Tab 1', dismissable: true) { 'Content 1' }
+        c.with_tab(label: 'Tab 2') { 'Content 2' }
+      end
+
+      assert_selector 'button.cds--tabs__nav-item-close', count: 1
+    end
+
+    test 'close button has aria-label' do
+      render_inline(Carbon::TabsComponent.new(dismissable: true)) do |c|
+        c.with_tab(label: 'Tab') { 'Content' }
+      end
+
+      assert_selector 'button.cds--tabs__nav-item-close[aria-label="Close tab"]'
+    end
+
+    # -- Scroll Infrastructure --
+
+    test 'renders scroll container structure' do
+      render_inline(Carbon::TabsComponent.new) do |c|
+        c.with_tab(label: 'Tab') { 'Content' }
+      end
+
+      assert_selector '.cds--tabs-nav-content-container'
+      assert_selector '.cds--tabs-nav-content[data-carbon--tabs-target="scrollContainer"]'
+      assert_selector '.cds--tabs-nav'
+    end
+
+    test 'renders previous scroll button' do
+      render_inline(Carbon::TabsComponent.new) do |c|
+        c.with_tab(label: 'Tab') { 'Content' }
+      end
+
+      assert_selector 'button.cds--tab--overflow-nav-button--previous[type="button"][tabindex="-1"][aria-hidden="true"]'
+      assert_selector '.cds--tabs__nav-caret-left'
+    end
+
+    test 'renders next scroll button' do
+      render_inline(Carbon::TabsComponent.new) do |c|
+        c.with_tab(label: 'Tab') { 'Content' }
+      end
+
+      assert_selector 'button.cds--tab--overflow-nav-button--next[type="button"][tabindex="-1"][aria-hidden="true"]'
+      assert_selector '.cds--tabs__nav-caret-right'
+    end
+
+    test 'scroll buttons are hidden by default' do
+      render_inline(Carbon::TabsComponent.new) do |c|
+        c.with_tab(label: 'Tab') { 'Content' }
+      end
+
+      assert_selector 'button.cds--tab--overflow-nav-button--hidden', count: 2
+    end
+
+    test 'renders intersection sentinels' do
+      render_inline(Carbon::TabsComponent.new) do |c|
+        c.with_tab(label: 'Tab') { 'Content' }
+      end
+
+      assert_selector '.cds--sub-content-left[data-carbon--tabs-target="leftSentinel"]'
+      assert_selector '.cds--sub-content-right[data-carbon--tabs-target="rightSentinel"]'
+    end
+
+    test 'scroll buttons have stimulus actions' do
+      render_inline(Carbon::TabsComponent.new) do |c|
+        c.with_tab(label: 'Tab') { 'Content' }
+      end
+
+      assert_selector 'button[data-action="click->carbon--tabs#scrollPrevious"]'
+      assert_selector 'button[data-action="click->carbon--tabs#scrollNext"]'
+    end
+
+    # -- Assistive Text --
+
+    test 'renders assistive text live region' do
+      render_inline(Carbon::TabsComponent.new) do |c|
+        c.with_tab(label: 'Tab') { 'Content' }
+      end
+
+      assert_selector '.cds--assistive-text[role="status"][aria-live="assertive"][aria-relevant="additions text"]'
+    end
+
+    test 'assistive text has stimulus target' do
+      render_inline(Carbon::TabsComponent.new) do |c|
+        c.with_tab(label: 'Tab') { 'Content' }
+      end
+
+      assert_selector '[data-carbon--tabs-target="assistiveText"]'
+    end
+
+    test 'renders with custom assistive text' do
+      render_inline(Carbon::TabsComponent.new(
+                      selecting_items_text: 'Custom navigating',
+                      selected_item_text: 'Custom selected'
+                    )) do |c|
+        c.with_tab(label: 'Tab') { 'Content' }
+      end
+
+      wrapper = page.find('[data-controller="carbon--tabs"]')
+
+      assert_equal 'Custom navigating', wrapper['data-selecting-items-text']
+      assert_equal 'Custom selected', wrapper['data-selected-item-text']
+    end
+
+    # -- Aria Label --
+
+    test 'renders default aria-label on tablist' do
+      render_inline(Carbon::TabsComponent.new) do |c|
+        c.with_tab(label: 'Tab') { 'Content' }
+      end
+
+      assert_selector '[role="tablist"][aria-label="Tab navigation"]'
+    end
+
+    test 'renders custom aria-label on tablist' do
+      render_inline(Carbon::TabsComponent.new(aria_label: 'Settings tabs')) do |c|
+        c.with_tab(label: 'Tab') { 'Content' }
+      end
+
+      assert_selector '[role="tablist"][aria-label="Settings tabs"]'
+    end
+
+    # -- Scroll Into View --
+
+    test 'renders with scroll_into_view enabled by default' do
+      render_inline(Carbon::TabsComponent.new) do |c|
+        c.with_tab(label: 'Tab') { 'Content' }
+      end
+
+      assert_selector '[data-carbon--tabs-scroll-into-view-value="true"]'
+    end
+
+    test 'renders with scroll_into_view disabled' do
+      render_inline(Carbon::TabsComponent.new(scroll_into_view: false)) do |c|
+        c.with_tab(label: 'Tab') { 'Content' }
+      end
+
+      assert_selector '[data-carbon--tabs-scroll-into-view-value="false"]'
+    end
+
     # -- System arguments --
 
     test 'passes through system arguments' do
@@ -187,6 +370,32 @@ module Carbon
       end
 
       assert_selector 'div.cds--tabs.custom-tabs'
+    end
+
+    # -- Roving tabindex --
+
+    test 'renders contained variant via contained param' do
+      render_inline(Carbon::TabsComponent.new(contained: true)) do |c|
+        c.with_tab(label: 'Tab 1') { 'Content' }
+      end
+
+      assert_selector '.cds--tabs--contained'
+    end
+
+    test 'implements roving tabindex with only selected tab having tabindex=0' do
+      render_inline(Carbon::TabsComponent.new) do |c|
+        c.with_tab(label: 'Tab 1', selected: true) { 'Content 1' }
+        c.with_tab(label: 'Tab 2') { 'Content 2' }
+        c.with_tab(label: 'Tab 3') { 'Content 3' }
+      end
+
+      selected_tab = page.find('button[aria-selected="true"]')
+      unselected_tabs = page.all('button[aria-selected="false"]')
+
+      assert_equal '0', selected_tab['tabindex']
+      unselected_tabs.each do |tab|
+        assert_equal '-1', tab['tabindex']
+      end
     end
   end
 end

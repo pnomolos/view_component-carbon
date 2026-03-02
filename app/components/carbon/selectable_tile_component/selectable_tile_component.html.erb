@@ -1,21 +1,15 @@
-<div <%= tag.attributes(wrapper_html_attributes) %>>
-  <input type="checkbox"
-         class="cds--tile-input"
-         id="<%= @input_id %>"
-         <% if @name %>name="<%= @name %>"<% end %>
-         <% if @value %>value="<%= @value %>"<% end %>
-         tabindex="-1"
-         <% if @selected %>checked<% end %>
-         <% if @disabled %>disabled<% end %>
-         data-carbon--selectable-tile-target="input">
-  <label for="<%= @input_id %>"
-         class="<%= label_css_classes %>"
-         tabindex="0"
-         role="checkbox"
-         aria-checked="<%= @selected %>"
-         data-action="click->carbon--selectable-tile#toggle keydown->carbon--selectable-tile#handleKeydown"
-         data-carbon--selectable-tile-target="label">
-    <span class="cds--tile__checkmark"><%= checkmark_svg.html_safe %></span>
-    <span class="cds--tile-content"><%= content %></span>
-  </label>
+<div class="<%= tile_css_classes %>"
+     <%= tag.attributes(tile_html_attributes) %>>
+  <span class="cds--tile__checkmark cds--tile__checkmark--persistent">
+    <%= checkmark_icon %>
+  </span>
+  <div class="cds--tile-content">
+    <%= content %>
+  </div>
+  <% if decorator? %>
+    <%= decorator %>
+  <% end %>
+  <% if ai_label? %>
+    <%= ai_label %>
+  <% end %>
 </div>

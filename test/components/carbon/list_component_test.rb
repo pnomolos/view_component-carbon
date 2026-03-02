@@ -56,6 +56,51 @@ module Carbon
       assert_selector 'ol.cds--list--ordered.cds--list--nested'
     end
 
+    # -- Expressive variant --
+
+    test 'renders with is_expressive modifier' do
+      render_inline(Carbon::ListComponent.new(is_expressive: true)) do |c|
+        c.with_item { 'Expressive item' }
+      end
+
+      assert_selector 'ul.cds--list--unordered.cds--list--expressive'
+    end
+
+    test 'renders expressive ordered list' do
+      render_inline(Carbon::ListComponent.new(ordered: true, is_expressive: true)) do |c|
+        c.with_item { 'Expressive ordered item' }
+      end
+
+      assert_selector 'ol.cds--list--ordered.cds--list--expressive'
+    end
+
+    # -- Native variant --
+
+    test 'renders with native modifier on ordered list' do
+      render_inline(Carbon::ListComponent.new(ordered: true, native: true)) do |c|
+        c.with_item { 'Native item' }
+      end
+
+      assert_selector 'ol.cds--list--ordered.cds--list--ordered--native'
+    end
+
+    test 'does not render native modifier on unordered list' do
+      render_inline(Carbon::ListComponent.new(ordered: false, native: true)) do |c|
+        c.with_item { 'Item' }
+      end
+
+      assert_selector 'ul.cds--list--unordered'
+      assert_no_selector 'ul.cds--list--ordered--native'
+    end
+
+    test 'renders with both is_expressive and native modifiers' do
+      render_inline(Carbon::ListComponent.new(ordered: true, is_expressive: true, native: true)) do |c|
+        c.with_item { 'Complex item' }
+      end
+
+      assert_selector 'ol.cds--list--ordered.cds--list--expressive.cds--list--ordered--native'
+    end
+
     # -- System arguments --
 
     test 'passes through system arguments on list' do
@@ -88,6 +133,17 @@ module Carbon
       end
 
       assert_selector 'li.cds--list__item.custom-item-class'
+    end
+
+    # -- Accessibility --
+
+    test 'list items have role=listitem' do
+      render_inline(Carbon::ListComponent.new) do |c|
+        c.with_item { 'Item 1' }
+        c.with_item { 'Item 2' }
+      end
+
+      assert_selector 'li.cds--list__item[role="listitem"]', count: 2
     end
   end
 end

@@ -94,6 +94,48 @@ module Carbon
       assert_selector 'div.cds--structured-list.cds--structured-list--selection'
     end
 
+    # -- Condensed and flush variants --
+
+    test 'renders with condensed modifier' do
+      render_inline(Carbon::StructuredListComponent.new(condensed: true)) do |c|
+        c.with_row do |r|
+          r.with_cell { 'Data' }
+        end
+      end
+
+      assert_selector 'div.cds--structured-list.cds--structured-list--condensed'
+    end
+
+    test 'renders with flush modifier' do
+      render_inline(Carbon::StructuredListComponent.new(flush: true)) do |c|
+        c.with_row do |r|
+          r.with_cell { 'Data' }
+        end
+      end
+
+      assert_selector 'div.cds--structured-list.cds--structured-list--flush'
+    end
+
+    test 'renders with both selection and condensed modifiers' do
+      render_inline(Carbon::StructuredListComponent.new(selection: true, condensed: true)) do |c|
+        c.with_row do |r|
+          r.with_cell { 'Data' }
+        end
+      end
+
+      assert_selector 'div.cds--structured-list.cds--structured-list--selection.cds--structured-list--condensed'
+    end
+
+    test 'renders with both selection and flush modifiers' do
+      render_inline(Carbon::StructuredListComponent.new(selection: true, flush: true)) do |c|
+        c.with_row do |r|
+          r.with_cell { 'Data' }
+        end
+      end
+
+      assert_selector 'div.cds--structured-list.cds--structured-list--selection.cds--structured-list--flush'
+    end
+
     # -- Complete example --
 
     test 'renders complete structured list with header and multiple rows' do
@@ -182,6 +224,28 @@ module Carbon
       end
 
       assert_selector 'div.cds--structured-list-row.custom-row-class'
+    end
+
+    # -- Aria label --
+
+    test 'renders default aria-label' do
+      render_inline(Carbon::StructuredListComponent.new) do |c|
+        c.with_row do |r|
+          r.with_cell { 'Data' }
+        end
+      end
+
+      assert_selector 'div[role="table"][aria-label="Structured list section"]'
+    end
+
+    test 'renders custom aria-label' do
+      render_inline(Carbon::StructuredListComponent.new(aria_label: 'My custom list')) do |c|
+        c.with_row do |r|
+          r.with_cell { 'Data' }
+        end
+      end
+
+      assert_selector 'div[role="table"][aria-label="My custom list"]'
     end
   end
 end

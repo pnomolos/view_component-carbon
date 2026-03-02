@@ -6,7 +6,13 @@
     <% end %>
     <div class="<%= appearance_css_classes %>">
       <div class="<%= switch_css_classes %>"
-           data-carbon--toggle-target="switch"></div>
+           data-carbon--toggle-target="switch">
+        <svg class="cds--toggle__check" focusable="false" preserveAspectRatio="xMidYMid meet"
+             xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="10" height="10"
+             viewBox="0 0 10 10" aria-hidden="true">
+          <path d="M8.6 1.5L3.7 6.4 1.4 4.1 0 5.5l3.7 3.7 5-5z"></path>
+        </svg>
+      </div>
       <span class="cds--toggle__text" aria-hidden="true"
             data-carbon--toggle-target="text"><%= current_text %></span>
     </div>

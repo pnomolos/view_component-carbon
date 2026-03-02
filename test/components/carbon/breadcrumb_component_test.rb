@@ -46,6 +46,67 @@ module Carbon
       assert_selector 'li.cds--breadcrumb-item.cds--breadcrumb-item--current'
     end
 
+    test 'renders current item with span.cds--link wrapper' do
+      render_inline(Carbon::BreadcrumbComponent.new) do |c|
+        c.with_item(current: true) { 'Current Page' }
+      end
+
+      assert_selector 'li.cds--breadcrumb-item--current span.cds--link', text: 'Current Page'
+      assert_no_selector 'li.cds--breadcrumb-item--current a'
+    end
+
+    # -- Size --
+
+    test 'renders with default md size' do
+      render_inline(Carbon::BreadcrumbComponent.new) do |c|
+        c.with_item(href: '/') { 'Home' }
+      end
+
+      assert_selector 'ol.cds--breadcrumb'
+      assert_no_selector 'ol.cds--breadcrumb--sm'
+    end
+
+    test 'renders with sm size' do
+      render_inline(Carbon::BreadcrumbComponent.new(size: :sm)) do |c|
+        c.with_item(href: '/') { 'Home' }
+      end
+
+      assert_selector 'ol.cds--breadcrumb.cds--breadcrumb--sm'
+    end
+
+    test 'renders with md size explicitly' do
+      render_inline(Carbon::BreadcrumbComponent.new(size: :md)) do |c|
+        c.with_item(href: '/') { 'Home' }
+      end
+
+      assert_selector 'ol.cds--breadcrumb'
+      assert_no_selector 'ol.cds--breadcrumb--sm'
+    end
+
+    test 'raises ArgumentError for invalid size' do
+      assert_raises(ArgumentError) do
+        Carbon::BreadcrumbComponent.new(size: :invalid)
+      end
+    end
+
+    # -- Aria label --
+
+    test 'renders with default aria-label' do
+      render_inline(Carbon::BreadcrumbComponent.new) do |c|
+        c.with_item(href: '/') { 'Home' }
+      end
+
+      assert_selector 'nav[aria-label="Breadcrumb"]'
+    end
+
+    test 'renders with custom aria-label' do
+      render_inline(Carbon::BreadcrumbComponent.new(aria_label: 'Custom Navigation')) do |c|
+        c.with_item(href: '/') { 'Home' }
+      end
+
+      assert_selector 'nav[aria-label="Custom Navigation"]'
+    end
+
     # -- No trailing slash --
 
     test 'renders with no_trailing_slash modifier' do

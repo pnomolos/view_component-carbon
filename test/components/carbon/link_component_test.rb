@@ -40,18 +40,19 @@ module Carbon
 
     # -- Disabled --
 
-    test 'renders disabled link with CSS class and aria-disabled' do
+    test 'renders disabled link as span with role=button and aria-disabled' do
       render_inline(Carbon::LinkComponent.new(href: '/test', disabled: true)) { 'Disabled' }
 
-      assert_selector "a.cds--link--disabled[aria-disabled='true']"
-      assert_no_selector 'a[href]'
+      assert_selector "span.cds--link--disabled[role='button'][aria-disabled='true']"
+      assert_no_selector 'a'
+      assert_no_selector 'span[href]'
     end
 
     test 'disabled link has no href attribute' do
       render_inline(Carbon::LinkComponent.new(href: '/test', disabled: true)) { 'Disabled' }
 
-      assert_selector 'a.cds--link--disabled'
-      assert_no_selector 'a[href]'
+      assert_selector 'span.cds--link--disabled'
+      assert_no_selector '[href]'
     end
 
     # -- Inline --
@@ -60,6 +61,12 @@ module Carbon
       render_inline(Carbon::LinkComponent.new(href: '/test', inline: true)) { 'Inline' }
 
       assert_selector 'a.cds--link--inline'
+    end
+
+    test 'renders inline link with text wrapped in span' do
+      render_inline(Carbon::LinkComponent.new(href: '/test', inline: true)) { 'Inline Text' }
+
+      assert_selector 'a.cds--link--inline span.cds--link__text', text: 'Inline Text'
     end
 
     # -- Visited --
@@ -119,11 +126,17 @@ module Carbon
       assert_selector 'a.cds--link--inline.cds--link--visited'
     end
 
+    test 'renders inline variant' do
+      render_inline(Carbon::LinkComponent.new(href: '#', inline: true)) { 'Link' }
+
+      assert_selector '.cds--link--inline'
+    end
+
     test 'renders disabled inline link' do
       render_inline(Carbon::LinkComponent.new(href: '/test', disabled: true, inline: true)) { 'Disabled Inline' }
 
-      assert_selector 'a.cds--link--disabled.cds--link--inline'
-      assert_no_selector 'a[href]'
+      assert_selector 'span.cds--link--disabled.cds--link--inline[role="button"]'
+      assert_no_selector '[href]'
     end
   end
 end

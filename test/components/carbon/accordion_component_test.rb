@@ -169,5 +169,75 @@ module Carbon
 
       assert_selector 'ul.cds--accordion.custom-class'
     end
+
+    # -- Button type attribute --
+
+    test 'renders accordion button with type=button' do
+      render_inline(Carbon::AccordionComponent.new) do |c|
+        c.with_item(title: 'Item') { 'Content' }
+      end
+
+      assert_selector 'button.cds--accordion__heading[type="button"]'
+    end
+
+    # -- Flush variant --
+
+    test 'renders flush variant' do
+      render_inline(Carbon::AccordionComponent.new(is_flush: true)) do |a|
+        a.with_item(title: 'Test') { 'Content' }
+      end
+
+      assert_selector '.cds--accordion--flush'
+    end
+
+    test 'flush variant not applied when align is start' do
+      render_inline(Carbon::AccordionComponent.new(is_flush: true, align: :start)) do |a|
+        a.with_item(title: 'Test') { 'Content' }
+      end
+
+      assert_no_selector '.cds--accordion--flush'
+    end
+
+    # -- Disabled item --
+
+    test 'renders disabled item' do
+      render_inline(Carbon::AccordionComponent.new) do |a|
+        a.with_item(title: 'Test', disabled: true) { 'Content' }
+      end
+
+      assert_selector '.cds--accordion__item--disabled'
+    end
+
+    # -- Ordered list --
+
+    test 'renders as ul by default' do
+      render_inline(Carbon::AccordionComponent.new) do |c|
+        c.with_item(title: 'Item 1') { 'Content 1' }
+      end
+
+      assert_selector 'ul.cds--accordion'
+      assert_no_selector 'ol.cds--accordion'
+    end
+
+    test 'renders as ol when ordered is true' do
+      render_inline(Carbon::AccordionComponent.new(ordered: true)) do |c|
+        c.with_item(title: 'Item 1') { 'Content 1' }
+      end
+
+      assert_selector 'ol.cds--accordion'
+      assert_no_selector 'ul.cds--accordion'
+    end
+
+    test 'list_tag method returns ul by default' do
+      component = Carbon::AccordionComponent.new
+
+      assert_equal :ul, component.list_tag
+    end
+
+    test 'list_tag method returns ol when ordered' do
+      component = Carbon::AccordionComponent.new(ordered: true)
+
+      assert_equal :ol, component.list_tag
+    end
   end
 end

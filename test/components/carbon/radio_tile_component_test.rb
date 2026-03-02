@@ -82,5 +82,70 @@ module Carbon
 
       assert_selector '.cds--tile__checkmark svg'
     end
+
+    # -- CSS classes --
+
+    test 'renders cds--tile--radio class' do
+      render_inline(Carbon::RadioTileComponent.new(value: 'option1')) { 'Content' }
+
+      assert_selector 'label.cds--tile--radio'
+    end
+
+    # -- Content wrapper --
+
+    test 'renders content wrapper as div element' do
+      render_inline(Carbon::RadioTileComponent.new(value: 'option1')) { 'Content' }
+
+      assert_selector 'div.cds--tile-content', text: 'Content'
+      assert_no_selector 'span.cds--tile-content'
+    end
+
+    # -- Color scheme --
+
+    test 'renders regular color scheme by default' do
+      render_inline(Carbon::RadioTileComponent.new(value: 'option1')) { 'Content' }
+
+      assert_no_selector '.cds--tile--light'
+    end
+
+    test 'renders light color scheme' do
+      render_inline(Carbon::RadioTileComponent.new(value: 'option1', color_scheme: :light)) { 'Content' }
+
+      assert_selector 'label.cds--tile--light'
+    end
+
+    test 'raises error for invalid color scheme' do
+      assert_raises(ArgumentError) do
+        Carbon::RadioTileComponent.new(value: 'option1', color_scheme: :invalid)
+      end
+    end
+
+    # -- Checkmark label --
+
+    test 'renders default checkmark label' do
+      render_inline(Carbon::RadioTileComponent.new(value: 'option1')) { 'Content' }
+
+      assert_selector '.cds--tile__checkmark svg title', text: 'Tile checkmark'
+    end
+
+    test 'renders custom checkmark label' do
+      render_inline(Carbon::RadioTileComponent.new(value: 'option1', checkmark_label: 'Custom label')) { 'Content' }
+
+      assert_selector '.cds--tile__checkmark svg title', text: 'Custom label'
+    end
+
+    # -- Rounded corners --
+
+    test 'does not render rounded corners by default' do
+      render_inline(Carbon::RadioTileComponent.new(value: 'option1')) { 'Content' }
+
+      assert_no_selector '.cds--tile--slug-rounded'
+    end
+
+    test 'renders rounded corners class when enabled' do
+      render_inline(Carbon::RadioTileComponent.new(value: 'option1', has_rounded_corners: true)) { 'Content' }
+
+      assert_selector 'label.cds--tile--slug-rounded'
+    end
   end
 end

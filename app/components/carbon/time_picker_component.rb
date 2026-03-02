@@ -25,6 +25,8 @@ module Carbon
     attr_reader :size
     # @return [Boolean] whether disabled
     attr_reader :disabled
+    # @return [Boolean] whether readonly
+    attr_reader :readonly
     # @return [String] placeholder text
     attr_reader :placeholder
     # @return [String, nil] current value
@@ -33,6 +35,8 @@ module Carbon
     attr_reader :id
     # @return [String, nil] input name attribute
     attr_reader :name
+    # @return [Boolean] whether to visually hide the label
+    attr_reader :hide_label
 
     # @param label_text [String, nil] label text
     # @param size [Symbol] input size (:sm, :md, :lg)
@@ -45,11 +49,13 @@ module Carbon
     # @param value [String, nil] initial time value
     # @param id [String, nil] unique element ID
     # @param name [String, nil] input name attribute
+    # @param hide_label [Boolean] visually hides the label but keeps it accessible
     # @param system_arguments [Hash] additional HTML attributes
     def initialize(
       label_text: nil,
       size: DEFAULT_SIZE,
       disabled: false,
+      readonly: false,
       invalid: false,
       invalid_text: nil,
       warn: false,
@@ -58,15 +64,18 @@ module Carbon
       value: nil,
       id: nil,
       name: nil,
+      hide_label: false,
       **system_arguments
     )
       @label_text = label_text
       @size = validate_argument(:size, size, SIZES, DEFAULT_SIZE)
       @disabled = disabled
+      @readonly = readonly
       @placeholder = placeholder
       @value = value
       @id = id || "time-picker-#{SecureRandom.hex(4)}"
       @name = name
+      @hide_label = hide_label
       @system_arguments = system_arguments
 
       initialize_form_field(
@@ -89,6 +98,14 @@ module Carbon
       classes = ['cds--time-picker', "cds--time-picker--#{@size}"]
       classes << 'cds--time-picker--invalid' if @invalid
       classes << 'cds--time-picker--warning' if @warn
+      classes << 'cds--time-picker--readonly' if @readonly
+      class_names(*classes)
+    end
+
+    # @return [String] CSS class string for the label
+    def label_classes
+      classes = ['cds--label']
+      classes << 'cds--visually-hidden' if @hide_label
       class_names(*classes)
     end
 
@@ -111,6 +128,8 @@ module Carbon
         pattern: '(1[012]|[1-9]):[0-5][0-9](\\s)?'
       }
       attrs[:disabled] = '' if @disabled
+      attrs[:readonly] = '' if @readonly
+      attrs[:'aria-readonly'] = @readonly.to_s if @readonly
       attrs[:'data-invalid'] = '' if @invalid
       attrs[:'aria-invalid'] = 'true' if @invalid
       attrs[:'aria-describedby'] = aria_describedby_id if aria_describedby_id
